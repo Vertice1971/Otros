@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartas con Dilemas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        .titulo-dilema {
+            font-size: 24px; /* Tamaño de fuente grande */
+            font-weight: bold; /* Negrita */
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .botones {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .resultado {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            min-height: 200px;
+            position: relative;
+        }
+        .error {
+            color: red;
+            text-align: center;
+        }
+        .imagen-dilema {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .puntuaciones {
+            margin-top: 20px;
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            display: none; /* Oculto por defecto */
+        }
+        .progreso {
+            text-align: center;
+            margin-top: 10px;
+            color: #555;
+        }
+        /* Estilos para la fase de constitución de grupos */
+        .grupo-setup {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border: 2px solid #007BFF;
+            border-radius: 10px;
+        }
+        .grupo-setup input[type="number"],
+        .grupo-setup input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .grupo-setup label {
+            font-weight: bold;
+        }
+        /* Estilos para las opciones del dilema */
+        .opciones-dilema {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .opcion {
+            margin: 10px 0;
+            font-size: 20px;
+        }
+        .grupo-seleccion {
+            margin: 5px 0;
+        }
+        /* Estilos para la explicación de puntuaciones */
+        .explicacion-puntuaciones {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 5px;
+        }
+        /* Estilos para la tabla de puntuaciones */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        /* Estilos para el temporizador y botón adicional */
+        #temporizadorYBoton {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        #enviarDecisionesBtn {
+            background-color: #28a745;
+        }
+        #enviarDecisionesBtn:hover:not(:disabled) {
+            background-color: #1e7e34;
+        }
+        /* Estilos para el resumen de puntos perdidos */
+        .resumen-puntos {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 5px;
+            text-align: left;
+        }
+        /* Estilos para grupos eliminados */
+        .grupo-eliminado {
+            text-decoration: line-through;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Cartas con Dilemas</h1>
+
+    <!-- Fase de Constitución de Grupos -->
+    <div id="grupoSetup" class="grupo-setup">
+        <h2>Constitución de Grupos</h2>
+        <div id="numeroGruposDiv">
+            <label for="numeroGrupos">¿Cuántos grupos jugarán? (Máximo 20)</label>
+            <input type="number" id="numeroGrupos" min="1" max="20" placeholder="Ingrese el número de grupos">
+            <button onclick="establecerNumeroGrupos()">Aceptar</button>
+        </div>
+        <div id="nombresGruposDiv" style="display: none;">
+            <form id="formNombresGrupos">
+                <h3>Asignar Nombre a Cada Grupo</h3>
+                <div id="camposNombres"></div>
+                <button type="button" onclick="guardarNombresGrupos()">Guardar Nombres</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Explicación de Puntuaciones -->
+    <div id="explicacionPuntuaciones" class="explicacion-puntuaciones" style="display: none;">
+        <h2>Cómo Puntuar</h2>
+        <p>
+            Cada grupo comienza con 3 puntos en cada uno de los ocho valores del juego:
+        </p>
+        <ul>
+            <li>Desarrollo económico</li>
+            <li>Igualdad de oportunidades</li>
+            <li>Libertades públicas</li>
+            <li>Justicia social</li>
+            <li>Sostenibilidad medioambiental</li>
+            <li>Seguridad ciudadana</li>
+            <li>Defensa territorial</li>
+            <li>Bienestar individual</li>
+        </ul>
+        <p>
+            Al seleccionar una opción en cada dilema, se quitará un punto al valor correspondiente según la elección realizada.
+        </p>
+    </div>
+
+    <!-- Contenido Principal (Oculto hasta que se configuren los grupos) -->
+    <div id="contenidoPrincipal" style="display: none;">
+        <div class="botones">
+            <button id="siguienteBtn" onclick="mostrarDilema()">Siguiente Dilema</button>
+        </div>
+
+        <div class="progreso" id="progreso">Has visto 0 de 56 dilemas.</div>
+
+        <div id="resultado" class="resultado">
+            <img id="imagenDilema" class="imagen-dilema" src="" alt="Imagen del Dilema" style="display: none;">
+            <div id="textoDilema" class="titulo-dilema" style="display: none;"></div>
+            <div id="opcionesDilema" class="opciones-dilema" style="display: none;"></div>
+            <div id="puntuaciones" class="puntuaciones"></div>
+            <div id="temporizadorYBoton" style="display: none;">
+                <p id="progresoTiempo" style="font-size: 18px;">Tiempo restante: 60 segundos</p>
+                <button id="pasarPuntuacionesBtn" onclick="pasarAPuntuaciones()">Pasar a Puntuaciones</button>
+            </div>
+        </div>
+
+        <!-- Resumen de Puntos Perdidos -->
+        <div id="resumenPuntos" class="resumen-puntos" style="display: none;"></div>
+    </div>
+
+    <!-- Tabla de Puntuaciones -->
+    <div id="tablaPuntuaciones" style="display: none;">
+        <h2>Puntuaciones Actuales</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Grupo</th>
+                    <th>Desarrollo Económico</th>
+                    <th>Igualdad de Oportunidades</th>
+                    <th>Libertades Públicas</th>
+                    <th>Justicia Social</th>
+                    <th>Sostenibilidad Medioambiental</th>
+                    <th>Seguridad Ciudadana</th>
+                    <th>Defensa Territorial</th>
+                    <th>Bienestar Individual</th>
+                </tr>
+            </thead>
+            <tbody id="tablaCuerpo">
+                <!-- Filas de grupos se generarán dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Estructura de los dilemas con sus puntuaciones
+        const dilemas = [
+            {
+                titulo: "Dilema 1: Desarrollo económico vs. Igualdad de oportunidades",
+                descripcion: "Los niños con malas notas empiezan a trabajar con 14 años para que la economía del país crezca o se les educa hasta los 16 por si mejoran.",
+                opcion1: "Que los niños trabajen para mejorar la economía.",
+                opcion2: "Que continúen estudiando.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Desarrollo económico"
+            },
+            {
+                titulo: "Dilema 2: Libertades públicas vs. Igualdad de oportunidades",
+                descripcion: "Las familias ricas deberían poder elegir el colegio o todo el mundo debería ir al mismo tipo de colegio.",
+                opcion1: "Permitir que las familias ricas elijan el colegio.",
+                opcion2: "Decidir que todo el mundo vaya al mismo tipo de colegio.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Libertades públicas"
+            },
+            {
+                titulo: "Dilema 3: Justicia social vs. Sostenibilidad medioambiental",
+                descripcion: "Prohibir los coches de gasolina o permitírselos a quien no pueda pagar uno eléctrico.",
+                opcion1: "Prohibir los coches de gasolina.",
+                opcion2: "Permitir que solo quienes no puedan pagar uno eléctrico usen coches de gasolina.",
+                valor1: "Justicia social",
+                valor2: "Sostenibilidad medioambiental"
+            },
+            {
+                titulo: "Dilema 4: Bienestar individual vs. Seguridad ciudadana",
+                descripcion: "Permitir las armas para crear un bienestar propio de protección o restringir las armas para asegurar la seguridad pública.",
+                opcion1: "Permitir las armas para crear un bienestar propio de protección.",
+                opcion2: "Restringir las armas para asegurar la seguridad pública.",
+                valor1: "Seguridad ciudadana",
+                valor2: "Bienestar individual"
+            },
+            {
+                titulo: "Dilema 5: Desarrollo económico vs. Igualdad de oportunidades",
+                descripcion: "Los puestos que generen más riqueza para la sociedad serán exclusivamente para hombres ya que no se quedan embarazados.",
+                opcion1: "Asignar puestos exclusivamente a hombres para generar más riqueza.",
+                opcion2: "No asignar puestos exclusivamente a hombres.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Desarrollo económico"
+            },
+            {
+                titulo: "Dilema 6: Seguridad ciudadana vs. Defensa territorial",
+                descripcion: "¿Qué es mejor: gastar dinero en policías para proteger las calles o gastar dinero en el ejército para defender las fronteras?",
+                opcion1: "Gastar en policías para proteger las calles.",
+                opcion2: "Gastar en el ejército para defender las fronteras.",
+                valor1: "Defensa territorial",
+                valor2: "Seguridad ciudadana"
+            },
+            {
+                titulo: "Dilema 7: Justicia social vs. Defensa territorial",
+                descripcion: "Permitir el homicidio de un intruso en la propiedad o delegar la situación a las fuerzas de seguridad pertinentes.",
+                opcion1: "Permitir el homicidio de un intruso en la propiedad.",
+                opcion2: "Delegar la situación a las fuerzas de seguridad pertinentes.",
+                valor1: "Justicia social",
+                valor2: "Defensa territorial"
+            },
+            {
+                titulo: "Dilema 8: Justicia social vs. Igualdad de oportunidades",
+                descripcion: "¿Debemos dar a los niños y niñas pobres un punto extra en los exámenes o que cada uno consiga la nota según su esfuerzo sin atender al contexto?",
+                opcion1: "Dar un punto extra a los niños y niñas pobres en los exámenes.",
+                opcion2: "Que cada uno consiga la nota según su esfuerzo sin atender al contexto.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Justicia social"
+            },
+            {
+                titulo: "Dilema 9: Seguridad ciudadana vs. Sostenibilidad medioambiental",
+                descripcion: "¿Usamos los bosques para que entre la policía o se los dejamos a las cabras?",
+                opcion1: "Usar los bosques para que entre la policía.",
+                opcion2: "Dejar los bosques a las cabras.",
+                valor1: "Sostenibilidad medioambiental",
+                valor2: "Seguridad ciudadana"
+            },
+            {
+                titulo: "Dilema 10: Bienestar individual vs. Desarrollo económico",
+                descripcion: "Aumentar los impuestos para la creación de nuevas carreteras para facilitar el comercio.",
+                opcion1: "Aumentar los impuestos para la creación de nuevas carreteras.",
+                opcion2: "No aumentar los impuestos.",
+                valor1: "Bienestar individual",
+                valor2: "Desarrollo económico"
+            },
+            {
+                titulo: "Dilema 11: Libertades públicas vs. Desarrollo económico",
+                descripcion: "¿Qué es mejor: que las personas sean obligadas a dar riqueza al país a través de trabajo muy necesario o que realicen un trabajo por decisión?",
+                opcion1: "Obligar a las personas a dar riqueza al país a través de trabajo muy necesario.",
+                opcion2: "Permitir que realicen un trabajo por decisión.",
+                valor1: "Libertades públicas",
+                valor2: "Desarrollo económico"
+            },
+            {
+                titulo: "Dilema 12: Justicia social vs. Desarrollo económico",
+                descripcion: "¿El gobierno debería gastar más dinero en los ancianos pobres o en construir carreteras para el comercio?",
+                opcion1: "Gastar más en los ancianos pobres.",
+                opcion2: "Gastar en construir carreteras para el comercio.",
+                valor1: "Desarrollo económico",
+                valor2: "Justicia social"
+            },
+            {
+                titulo: "Dilema 13: Sostenibilidad medioambiental vs. Igualdad de oportunidades",
+                descripcion: "Hay que elegir entre mantener los ríos solo para los peces o que se usen para que las personas que no tienen piscina se bañen.",
+                opcion1: "Mantener los ríos solo para los peces.",
+                opcion2: "Usar los ríos para que las personas que no tienen piscina se bañen.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Sostenibilidad medioambiental"
+            },
+            {
+                titulo: "Dilema 14: Seguridad ciudadana vs. Desarrollo económico",
+                descripcion: "Aceptar que a nuestro municipio vengan a vivir mafiosos ricos para impulsar la economía.",
+                opcion1: "Aceptar que mafiosos ricos vengan a vivir al municipio para impulsar la economía.",
+                opcion2: "No aceptar su llegada.",
+                valor1: "Seguridad ciudadana",
+                valor2: "Desarrollo económico"
+            },
+            {
+                titulo: "Dilema 15: Bienestar individual vs. Justicia social",
+                descripcion: "¿Los hijos de los ricos pueden quedarse con todo o tienen que compartirlo con el resto de la sociedad?",
+                opcion1: "Permitir que los hijos de los ricos se queden con todo.",
+                opcion2: "Obligar a compartir la riqueza con el resto de la sociedad.",
+                valor1: "Justicia social",
+                valor2: "Bienestar individual"
+            },
+            {
+                titulo: "Dilema 16: Bienestar individual vs. Igualdad de oportunidades",
+                descripcion: "¿Qué es mejor? Contratar en mi empresa a un familiar o a alguien que sea apto para el puesto.",
+                opcion1: "Contratar a un familiar en la empresa.",
+                opcion2: "Contratar a alguien apto para el puesto.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Bienestar individual"
+            },
+            {
+                titulo: "Dilema 17: Justicia social vs. Seguridad ciudadana",
+                descripcion: "Aumentar la financiación de los comedores sociales o de los cuerpos de seguridad.",
+                opcion1: "Aumentar la financiación de los comedores sociales.",
+                opcion2: "Aumentar la financiación de los cuerpos de seguridad.",
+                valor1: "Seguridad ciudadana",
+                valor2: "Justicia social"
+            },
+            {
+                titulo: "Dilema 18: Libertades públicas vs. Sostenibilidad medioambiental",
+                descripcion: "¿Limitamos el acceso público a la naturaleza para proteger el medio ambiente, o dejamos que todo el mundo disfrute de esos espacios verdes comunes?",
+                opcion1: "Limitar el acceso público a la naturaleza para proteger el medio ambiente.",
+                opcion2: "Dejar que todo el mundo disfrute de esos espacios verdes comunes.",
+                valor1: "Libertades públicas",
+                valor2: "Sostenibilidad medioambiental"
+            },
+            {
+                titulo: "Dilema 19: Defensa territorial vs. Igualdad de oportunidades",
+                descripcion: "¿Se debería de dar oportunidades a las personas discapacitadas para ser soldados?",
+                opcion1: "Dar oportunidades a las personas discapacitadas para ser soldados.",
+                opcion2: "No dar oportunidades a las personas discapacitadas para ser soldados.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Defensa territorial"
+            },
+            {
+                titulo: "Dilema 20: Justicia social vs. Libertades públicas",
+                descripcion: "¿Es correcto quitarle dinero al que más gana para dárselo al que gana menos?",
+                opcion1: "Quitarle dinero al que más gana para dárselo al que gana menos.",
+                opcion2: "No realizar la redistribución de dinero.",
+                valor1: "Libertades públicas",
+                valor2: "Justicia social"
+            },
+            {
+                titulo: "Dilema 21: Libertades públicas vs. Defensa territorial",
+                descripcion: "¿Deberíamos obligar a los jóvenes pacifistas a alistarse en el ejército para proteger las fronteras?",
+                opcion1: "Obligar a los jóvenes pacifistas a alistarse en el ejército.",
+                opcion2: "No obligar a los jóvenes pacifistas a alistarse en el ejército.",
+                valor1: "Libertades públicas",
+                valor2: "Defensa territorial"
+            },
+            {
+                titulo: "Dilema 22: Bienestar individual vs. Libertades públicas",
+                descripcion: "Como no me gusta ver gente diferente, deben prohibirlo a los gays venir a mi clase.",
+                opcion1: "Prohibir a los gays venir a tu clase.",
+                opcion2: "Permitir la diversidad en tu clase.",
+                valor1: "Libertades públicas",
+                valor2: "Bienestar individual"
+            },
+            {
+                titulo: "Dilema 23: Defensa territorial vs. Sostenibilidad medioambiental",
+                descripcion: "Ante el peligro de la invasión zombi, no queda más remedio que talar el bosque para levantar una muralla de protección.",
+                opcion1: "Talar el bosque para levantar una muralla de protección contra zombis.",
+                opcion2: "Dejar el bosque a los zombis.",
+                valor1: "Sostenibilidad medioambiental",
+                valor2: "Defensa territorial"
+            },
+            {
+                titulo: "Dilema 24: Bienestar individual vs. Defensa territorial",
+                descripcion: "¿Si una persona se siente infeliz en la guerra, deberíamos permitirle no ir a luchar por la patria?",
+                opcion1: "Permitir que una persona infeliz no participe en la guerra.",
+                opcion2: "Obligar a participar en la guerra.",
+                valor1: "Defensa territorial",
+                valor2: "Bienestar individual"
+            },
+            {
+                titulo: "Dilema 25: Seguridad ciudadana vs. Igualdad de oportunidades",
+                descripcion: "¿Qué es mejor? Que las personas de baja estatura no puedan permitirse solicitar para ser bombero o las acepten si se esfuerzan.",
+                opcion1: "Impedir que personas de baja estatura soliciten ser bomberos.",
+                opcion2: "Aceptar solo si se esfuerzan.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Seguridad ciudadana"
+            },
+            {
+                titulo: "Dilema 26: Defensa territorial vs. Desarrollo económico",
+                descripcion: "¿Qué es mejor? Crear puestos de trabajo o comprar armas.",
+                opcion1: "Crear puestos de trabajo.",
+                opcion2: "Comprar armas.",
+                valor1: "Defensa territorial",
+                valor2: "Desarrollo económico"
+            },
+            {
+                titulo: "Dilema 27: Justicia social vs. Seguridad ciudadana",
+                descripcion: "¿Qué es mejor? Gastar el dinero en policías para vigilar barrios pobres o en educadores para sus habitantes.",
+                opcion1: "Gastar dinero en policías para vigilar barrios pobres.",
+                opcion2: "Gastar dinero en educadores para sus habitantes.",
+                valor1: "Justicia social",
+                valor2: "Seguridad ciudadana"
+            },
+            {
+                titulo: "Dilema 28: Bienestar individual vs. Sostenibilidad medioambiental",
+                descripcion: "Vive en una ciudad donde el transporte público es limitado, para llegar al trabajo puede utilizar el transporte público o ir en su propio medio de transporte.",
+                opcion1: "Utilizar el transporte público limitado.",
+                opcion2: "Usar su propio medio de transporte.",
+                valor1: "Bienestar individual",
+                valor2: "Sostenibilidad medioambiental"
+            },
+            {
+                titulo: "Dilema 29: Libertades públicas vs. Sostenibilidad medioambiental",
+                descripcion: "¿Qué es mejor: continuar con las cazas furtivas o dejar que los animales vivan en paz?",
+                opcion1: "Continuar con las cazas furtivas.",
+                opcion2: "Dejar que los animales vivan en paz.",
+                valor1: "Sostenibilidad medioambiental",
+                valor2: "Libertades públicas"
+            },
+            {
+                titulo: "Dilema 30: Libertades públicas vs. Seguridad ciudadana",
+                descripcion: "Un partido político propone instalar cámaras de vigilancia en todas las casas para detectar la planificación de atentados terroristas.",
+                opcion1: "Instalar cámaras de vigilancia en todas las casas.",
+                opcion2: "No instalar cámaras de vigilancia.",
+                valor1: "Libertades públicas",
+                valor2: "Seguridad ciudadana"
+            },
+            {
+                titulo: "Dilema 31: Bienestar individual vs. Libertades públicas",
+                descripcion: "Como no me gustan los musulmanes y soy la jefa, no voy a contratar a musulmanes en mi empresa.",
+                opcion1: "No contratar a musulmanes en la empresa.",
+                opcion2: "Contratar a musulmanes.",
+                valor1: "Libertades públicas",
+                valor2: "Bienestar individual"
+            },
+            {
+                titulo: "Dilema 32: Seguridad ciudadana vs. Sostenibilidad medioambiental",
+                descripcion: "Los perros se han extinguido. ¿Entrenamos a los lobos para usarlos como perros policía o dejamos que vivan en los bosques?",
+                opcion1: "Entrenar a los lobos para usarlos como perros policía.",
+                opcion2: "Dejar que los lobos vivan en los bosques.",
+                valor1: "Sostenibilidad medioambiental",
+                valor2: "Seguridad ciudadana"
+            },
+            {
+                titulo: "Dilema 33: Sostenibilidad medioambiental vs. Desarrollo económico",
+                descripcion: "Una fábrica ofrece crear 500 empleos pero hay que destruir el bosque.",
+                opcion1: "La fábrica destruye el bosque para crear 500 empleos.",
+                opcion2: "La fábrica no destruye el bosque.",
+                valor1: "Sostenibilidad medioambiental",
+                valor2: "Desarrollo económico"
+            },
+            {
+                titulo: "Dilema 34: Sostenibilidad medioambiental vs. Desarrollo económico",
+                descripcion: "¿Qué es mejor: explotar minas para dar empleo a los ciudadanos o dejarlas en su estado natural?",
+                opcion1: "Explotar minas para dar empleo a los ciudadanos.",
+                opcion2: "Dejar las minas en su estado natural.",
+                valor1: "Sostenibilidad medioambiental",
+                valor2: "Desarrollo económico"
+            },
+            {
+                titulo: "Dilema 35: Seguridad ciudadana vs. Defensa territorial",
+                descripcion: "Permitir el uso de armas para poder defender el territorio o prohibirlas para mantener la seguridad de los ciudadanos.",
+                opcion1: "Permitir el uso de armas para defender el territorio.",
+                opcion2: "Prohibir el uso de armas para mantener la seguridad de los ciudadanos.",
+                valor1: "Seguridad ciudadana",
+                valor2: "Defensa territorial"
+            },
+            {
+                titulo: "Dilema 36: Bienestar individual vs. Seguridad ciudadana",
+                descripcion: "La delincuencia no para de crecer. ¿Podemos quedarnos viendo el partido o nos unimos a una comisión vecinal que vigile que no vengan ladrones al barrio?",
+                opcion1: "Quedarse viendo el partido.",
+                opcion2: "Unirse a una comisión vecinal para vigilar ladrones.",
+                valor1: "Seguridad ciudadana",
+                valor2: "Bienestar individual"
+            },
+            {
+                titulo: "Dilema 37: Defensa territorial vs. Igualdad de oportunidades",
+                descripcion: "Ante los peligros internacionales, hay que decidir si el gobierno dedica más dinero a tanques o en libros de texto gratis para la ESO.",
+                opcion1: "Dedicar más dinero a tanques.",
+                opcion2: "Dedicar más dinero a libros de texto gratis para la ESO.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Defensa territorial"
+            },
+            {
+                titulo: "Dilema 38: Justicia social vs. Igualdad de oportunidades",
+                descripcion: "¿Debemos rebajar las medicinas de los ancianos o gastar ese dinero en poner profesores de refuerzo?",
+                opcion1: "Rebajar las medicinas de los ancianos.",
+                opcion2: "Gastar el dinero en profesores de refuerzo.",
+                valor1: "Justicia social",
+                valor2: "Igualdad de oportunidades"
+            },
+            {
+                titulo: "Dilema 39: Defensa territorial vs. Sostenibilidad medioambiental",
+                descripcion: "¿Es justo sacrificar parte del entorno natural para defender al país o debemos plantear una alternativa poniendo en riesgo la seguridad territorial?",
+                opcion1: "Sacrificar parte del entorno natural para defender al país.",
+                opcion2: "Plantear una alternativa poniendo en riesgo la seguridad territorial.",
+                valor1: "Sostenibilidad medioambiental",
+                valor2: "Defensa territorial"
+            },
+            {
+                titulo: "Dilema 40: Libertades públicas vs. Desarrollo económico",
+                descripcion: "Prohibir las huelgas para que la gente trabaje y produzca más dinero.",
+                opcion1: "Prohibir las huelgas para que la gente trabaje más.",
+                opcion2: "Permitir las huelgas.",
+                valor1: "Libertades públicas",
+                valor2: "Desarrollo económico"
+            },
+            {
+                titulo: "Dilema 41: Bienestar individual vs. Desarrollo económico",
+                descripcion: "Destruir un parque de atracciones para construir fábricas.",
+                opcion1: "Destruir un parque de atracciones para construir fábricas.",
+                opcion2: "Mantener el parque de atracciones.",
+                valor1: "Bienestar individual",
+                valor2: "Desarrollo económico"
+            },
+            {
+                titulo: "Dilema 42: Justicia social vs. Sostenibilidad medioambiental",
+                descripcion: "¿Debe el gobierno gastar el dinero en ayudar a los niños con riesgo de malos tratos o en reducir el calentamiento global?",
+                opcion1: "Gastar dinero en ayudar a niños con riesgo de malos tratos.",
+                opcion2: "Gastar dinero en reducir el calentamiento global.",
+                valor1: "Sostenibilidad medioambiental",
+                valor2: "Justicia social"
+            },
+            {
+                titulo: "Dilema 43: Seguridad ciudadana vs. Igualdad de oportunidades",
+                descripcion: "¿Debe el ayuntamiento gastar el dinero que le da Europa en más policía o en clases de inglés para quien lo necesite?",
+                opcion1: "Gastar en más policía.",
+                opcion2: "Gastar en clases de inglés para quien lo necesite.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Seguridad ciudadana"
+            },
+            {
+                titulo: "Dilema 44: Sostenibilidad medioambiental vs. Igualdad de oportunidades",
+                descripcion: "Europa le ha dado un millón de euros a nuestro pueblo. ¿Lo gastamos en proteger el bosque o en pagarle el transporte a los hijos de los pueblos para que vengan al instituto?",
+                opcion1: "Gastar el millón de euros en proteger el bosque.",
+                opcion2: "Gastar en pagar el transporte a los hijos de los pueblos para que vengan al instituto.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Sostenibilidad medioambiental"
+            },
+            {
+                titulo: "Dilema 45: Bienestar individual vs. Justicia social",
+                descripcion: "He inventado una vacuna. ¿Debería cobrar por ella o darla gratis a la humanidad?",
+                opcion1: "Cobrar por la vacuna.",
+                opcion2: "Darla gratis a la humanidad.",
+                valor1: "Justicia social",
+                valor2: "Bienestar individual"
+            },
+            {
+                titulo: "Dilema 46: Justicia social vs. Libertades públicas",
+                descripcion: "Reclamo el derecho a tener mi dinero, y el Estado no tiene derecho a quitarme lo mío para dárselo a los que son huérfanos.",
+                opcion1: "Permitir que el Estado quite dinero a algunos para dárselo a huérfanos.",
+                opcion2: "No permitir que el Estado lo haga.",
+                valor1: "Libertades públicas",
+                valor2: "Justicia social"
+            },
+            {
+                titulo: "Dilema 47: Libertades públicas vs. Seguridad ciudadana",
+                descripcion: "Vamos a leer todos los correos electrónicos para asegurarnos de que nadie planea crímenes.",
+                opcion1: "Leer todos los correos electrónicos para prevenir crímenes.",
+                opcion2: "No leer los correos electrónicos.",
+                valor1: "Libertades públicas",
+                valor2: "Seguridad ciudadana"
+            },
+            {
+                titulo: "Dilema 48: Bienestar individual vs. Igualdad de oportunidades",
+                descripcion: "¿Qué es mejor? Implantar becas gratis en escuelas privadas a gente con menos dinero o dejarle solo acceso a las que puedan pagar las tasas.",
+                opcion1: "Implantar becas gratis en escuelas privadas para personas con menos recursos.",
+                opcion2: "Dejar solo el acceso a quienes puedan pagar las tasas.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Bienestar individual"
+            },
+            {
+                titulo: "Dilema 49: Bienestar individual vs. Defensa territorial",
+                descripcion: "Vivimos en un país que necesita protección por una invasión y todos los ciudadanos tienen que defender. ¿Tendrán que defender el territorio o seguir realizando su vida cotidiana?",
+                opcion1: "Que los ciudadanos defiendan el territorio.",
+                opcion2: "Que los ciudadanos sigan realizando su vida cotidiana.",
+                valor1: "Defensa territorial",
+                valor2: "Bienestar individual"
+            },
+            {
+                titulo: "Dilema 50: Defensa territorial vs. Desarrollo económico",
+                descripcion: "¿Gastamos el dinero de los impuestos en pistas para aviones militares o en pistas para aviones de turistas?",
+                opcion1: "Gastar el dinero en pistas para aviones militares.",
+                opcion2: "Gastar el dinero en pistas para aviones de turistas.",
+                valor1: "Desarrollo económico",
+                valor2: "Defensa territorial"
+            },
+            {
+                titulo: "Dilema 51: Justicia social vs. Defensa territorial",
+                descripcion: "Como no me gusta la compañía de extranjeros no me siento segura por la calle si no hay policía patrullando.",
+                opcion1: "Dedicar más recursos a la defensa territorial (más policías).",
+                opcion2: "Mantener la justicia social sin aumentar la defensa territorial.",
+                valor1: "Justicia social",
+                valor2: "Defensa territorial"
+            },
+            {
+                titulo: "Dilema 52: Libertades públicas vs. Igualdad de oportunidades",
+                descripcion: "Los homófobos debemos tener libertad de contratar solo a heterosexuales.",
+                opcion1: "Permitir que los homófobos contraten solo a heterosexuales.",
+                opcion2: "No permitirlo y promover la diversidad.",
+                valor1: "Igualdad de oportunidades",
+                valor2: "Libertades públicas"
+            },
+            {
+                titulo: "Dilema 53: Defensa territorial vs. Desarrollo económico",
+                descripcion: "Soy presidente: ¿Debería invertir en el ejército para defenderme de posibles futuras guerras que puedan suceder o en sus empresas desarrollo tecnológico?",
+                opcion1: "Invertir en el ejército para defenderse de futuras guerras.",
+                opcion2: "Invertir en empresas de desarrollo tecnológico.",
+                valor1: "Desarrollo económico",
+                valor2: "Defensa territorial"
+            },
+            {
+                titulo: "Dilema 54: Bienestar individual vs. Sostenibilidad medioambiental",
+                descripcion: "Me gustan los coches potentes y me los puedo permitir. Pero quieren que no los use porque contaminan.",
+                opcion1: "Permitir el uso de coches potentes que contaminan.",
+                opcion2: "Restringir el uso de coches potentes.",
+                valor1: "Sostenibilidad medioambiental",
+                valor2: "Bienestar individual"
+            },
+            {
+                titulo: "Dilema 55: Libertades públicas vs. Defensa territorial",
+                descripcion: "Como hay amenaza de guerra tenemos que controlar todas las conversaciones en móvil del país para detectar posibles espías extranjeros.",
+                opcion1: "Controlar todas las conversaciones en móvil para detectar espías.",
+                opcion2: "No controlar las conversaciones en móvil.",
+                valor1: "Libertades públicas",
+                valor2: "Defensa territorial"
+            },
+            {
+                titulo: "Dilema 56: Justicia social vs. Desarrollo económico",
+                descripcion: "Como gobernante de la ciudad, ¿gastarías más en medicina para los ancianos o en un nuevo puerto comercial?",
+                opcion1: "Gastar más en medicina para los ancianos.",
+                opcion2: "Gastar en un nuevo puerto comercial.",
+                valor1: "Desarrollo económico",
+                valor2: "Justicia social"
+            }
+        ];
+
+        // Verificar que el número de dilemas coincida con el esperado
+        if (dilemas.length !== 56) {
+            console.error(`El arreglo 'dilemas' debe contener 56 elementos, pero contiene ${dilemas.length}.`);
+        }
+
+        // Generar una lista de números del 0 al 55 y desordenarla
+        let numerosAleatorios = Array.from({length: 56}, (_, i) => i)
+            .sort(() => Math.random() - 0.5);
+        let turnoActual = 0;
+
+        // Referencias a elementos del DOM
+        const resultadoDiv = document.getElementById("resultado");
+        const imagenDilema = document.getElementById("imagenDilema");
+        const textoDilema = document.getElementById("textoDilema");
+        const opcionesDilema = document.getElementById("opcionesDilema");
+        const puntuacionesDiv = document.getElementById("puntuaciones");
+        const siguienteBtn = document.getElementById("siguienteBtn");
+        const progresoDiv = document.getElementById("progreso");
+        const explicacionPuntuaciones = document.getElementById("explicacionPuntuaciones");
+        const tablaPuntuaciones = document.getElementById("tablaPuntuaciones");
+        const tablaCuerpo = document.getElementById("tablaCuerpo");
+        const temporizadorYBotonDiv = document.getElementById("temporizadorYBoton");
+        const progresoTiempoP = document.getElementById("progresoTiempo");
+        const pasarPuntuacionesBtn = document.getElementById("pasarPuntuacionesBtn");
+        const resumenPuntosDiv = document.getElementById("resumenPuntos"); // Nuevo elemento
+
+        // Variables para la constitución de grupos
+        let numeroGrupos = 0;
+        let nombresGrupos = [];
+        let grupos = []; // Array de objetos { nombre: '', valores: {valor1: 3, ... }, eliminado: false }
+
+        // Temporizador
+        let temporizador;
+        const TIEMPO_LIMIT = 60; // 60 segundos
+
+        // Variable global para almacenar el dilema actual
+        let dilemaActual;
+
+        function establecerNumeroGrupos() {
+            const numeroInput = document.getElementById("numeroGrupos");
+            const valor = parseInt(numeroInput.value);
+            if (isNaN(valor) || valor < 1 || valor > 20) {
+                alert("Por favor, ingrese un número válido de grupos (entre 1 y 20).");
+                return;
+            }
+            numeroGrupos = valor;
+            mostrarCamposNombresGrupos();
+        }
+
+        function mostrarCamposNombresGrupos() {
+            document.getElementById("numeroGruposDiv").style.display = "none";
+            const nombresDiv = document.getElementById("nombresGruposDiv");
+            const camposNombres = document.getElementById("camposNombres");
+            camposNombres.innerHTML = ""; // Limpiar campos previos
+
+            for (let i = 1; i <= numeroGrupos; i++) {
+                const label = document.createElement("label");
+                label.setAttribute("for", `grupo${i}`);
+                label.textContent = `Nombre del Grupo ${i}:`;
+                const input = document.createElement("input");
+                input.type = "text";
+                input.id = `grupo${i}`;
+                input.name = `grupo${i}`;
+                input.placeholder = `Ingrese el nombre del Grupo ${i}`;
+                input.required = true;
+
+                camposNombres.appendChild(label);
+                camposNombres.appendChild(input);
+            }
+
+            nombresDiv.style.display = "block";
+        }
+
+        function guardarNombresGrupos() {
+            const camposNombres = document.getElementById("camposNombres").getElementsByTagName("input");
+            nombresGrupos = [];
+            grupos = [];
+            for (let i = 0; i < camposNombres.length; i++) {
+                const nombre = camposNombres[i].value.trim();
+                if (nombre === "") {
+                    alert(`Por favor, ingrese un nombre para el Grupo ${i + 1}.`);
+                    return;
+                }
+                nombresGrupos.push(nombre);
+                // Inicializar cada grupo con 3 puntos en cada valor y no eliminado
+                grupos.push({
+                    nombre: nombre,
+                    valores: {
+                        "Desarrollo económico": 3,
+                        "Igualdad de oportunidades": 3,
+                        "Libertades públicas": 3,
+                        "Justicia social": 3,
+                        "Sostenibilidad medioambiental": 3,
+                        "Seguridad ciudadana": 3,
+                        "Defensa territorial": 3,
+                        "Bienestar individual": 3
+                    },
+                    eliminado: false // Nueva propiedad
+                });
+            }
+
+            // Opcional: Mostrar los nombres de los grupos en la consola
+            console.log("Grupos:", grupos);
+
+            // Crear la tabla de puntuaciones inicial
+            crearTablaPuntuaciones();
+
+            // Mostrar la explicación de puntuaciones después de crear los grupos
+            explicacionPuntuaciones.style.display = "block";
+
+            // Ocultar la configuración de grupos y mostrar el contenido principal
+            document.getElementById("grupoSetup").style.display = "none";
+            document.getElementById("contenidoPrincipal").style.display = "block";
+        }
+
+        function crearTablaPuntuaciones() {
+            tablaCuerpo.innerHTML = ""; // Limpiar tabla previa
+            grupos.forEach(grupo => {
+                const fila = document.createElement("tr");
+                const celdaNombre = document.createElement("td");
+                celdaNombre.textContent = grupo.nombre;
+                // Añadir clase si el grupo está eliminado
+                if (grupo.eliminado) {
+                    celdaNombre.classList.add("grupo-eliminado");
+                }
+                fila.appendChild(celdaNombre);
+
+                for (const [clave, valor] of Object.entries(grupo.valores)) {
+                    const celdaValor = document.createElement("td");
+                    celdaValor.textContent = valor;
+                    fila.appendChild(celdaValor);
+                }
+
+                tablaCuerpo.appendChild(fila);
+            });
+        }
+
+        function mostrarDilema() {
+            // Limpiar contenido previo
+            imagenDilema.style.display = "none";
+            textoDilema.style.display = "none";
+            textoDilema.innerHTML = "";
+            opcionesDilema.style.display = "none";
+            opcionesDilema.innerHTML = "";
+            puntuacionesDiv.style.display = "none";
+            puntuacionesDiv.innerHTML = "";
+            temporizadorYBotonDiv.style.display = "none";
+            resumenPuntosDiv.style.display = "none"; // Ocultar resumen de puntos
+
+            // Ocultar la explicación de puntuaciones al comenzar los dilemas
+            explicacionPuntuaciones.style.display = "none";
+
+            if (turnoActual < 56) {
+                const numero = numerosAleatorios[turnoActual];
+                const dilemma = dilemas[numero];
+                dilemaActual = dilemma; // Guardar el dilema actual
+
+                // Mostrar la imagen
+                const imagenPath = `imagenes/dilema${numero + 1}.png`; // Asumiendo que los archivos comienzan en 1
+
+                // Verificar si la imagen existe
+                const img = new Image();
+                img.onload = function() {
+                    imagenDilema.src = imagenPath;
+                    imagenDilema.alt = `Imagen del Dilema ${numero + 1}`;
+                    imagenDilema.style.display = "block";
+                }
+                img.onerror = function() {
+                    imagenDilema.src = 'imagenes/imagen_por_defecto.png'; // Asegúrate de tener esta imagen
+                    imagenDilema.alt = "Imagen no disponible";
+                    imagenDilema.style.display = "block";
+                }
+                img.src = imagenPath;
+
+                // **Modificar el título para que no incluya los valores en tensión**
+                // Combinar "Dilema X" con la descripción
+                const tituloLimpio = `${dilemaActual.titulo.split(':')[0]}: ${dilemaActual.descripcion}`;
+                textoDilema.innerHTML = `${tituloLimpio}`;
+                textoDilema.style.display = "block";
+
+                // Actualizar el progreso
+                turnoActual++;
+                progresoDiv.textContent = `Has visto ${turnoActual} de 56 dilemas.`;
+
+                // Almacenar el dilema actual para usarlo en 'Enviar Decisiones'
+                resultadoDiv.dataset.dilemaActual = numero;
+
+                // Iniciar el temporizador y mostrar el botón adicional
+                iniciarTemporizador(tituloLimpio, dilemaActual.opcion1, dilemaActual.opcion2);
+            } else {
+                resultadoDiv.innerHTML = "<p class='error'>Ya se han mostrado todos los dilemas.</p>";
+                imagenDilema.src = ""; // Eliminar imagen al finalizar
+                imagenDilema.alt = "Sin imagen";
+                siguienteBtn.disabled = true;
+                progresoDiv.textContent = `Has visto ${turnoActual} de 56 dilemas.`;
+            }
+        }
+
+        function iniciarTemporizador(titulo, opcion1, opcion2) {
+            let tiempoRestante = TIEMPO_LIMIT;
+            progresoTiempoP.textContent = `Tiempo restante: ${tiempoRestante} segundos`;
+            temporizadorYBotonDiv.style.display = "flex";
+            pasarPuntuacionesBtn.style.display = "block";
+
+            temporizador = setInterval(() => {
+                tiempoRestante--;
+                progresoTiempoP.textContent = `Tiempo restante: ${tiempoRestante} segundos`;
+                if (tiempoRestante <= 0) {
+                    clearInterval(temporizador);
+                    temporizadorYBotonDiv.style.display = "none";
+                    alert("El tiempo se ha agotado. Los grupos que no seleccionen una opción perderán un punto en ambos valores.");
+                    mostrarOpciones(titulo, opcion1, opcion2);
+                }
+            }, 1000);
+        }
+
+        function pasarAPuntuaciones() {
+            // Confirmar si se desea proceder antes de tiempo
+            const confirmar = confirm("¿Estás seguro de que deseas proceder a las puntuaciones antes de que finalice el tiempo?");
+            if (confirmar) {
+                clearInterval(temporizador);
+                temporizadorYBotonDiv.style.display = "none";
+                mostrarOpciones(dilemaActual.titulo.split(':')[0] + ": " + dilemaActual.descripcion, dilemaActual.opcion1, dilemaActual.opcion2);
+            }
+        }
+
+        function mostrarOpciones(titulo, opcion1, opcion2) {
+            imagenDilema.style.display = "none"; // Eliminar imagen
+            textoDilema.style.display = "none"; // Ocultar descripción
+
+            opcionesDilema.style.display = "block";
+            opcionesDilema.innerHTML = `<h2 class="titulo-dilema">${titulo}</h2>`; // Aplicar clase CSS
+
+            // Crear contenedores para cada opción
+            const opcion1Div = document.createElement("div");
+            opcion1Div.classList.add("opcion");
+            opcion1Div.innerHTML = `<strong>Opción 1:</strong> ${opcion1}`;
+
+            const opcion2Div = document.createElement("div");
+            opcion2Div.classList.add("opcion");
+            opcion2Div.innerHTML = `<strong>Opción 2:</strong> ${opcion2}`;
+
+            opcionesDilema.appendChild(opcion1Div);
+            opcionesDilema.appendChild(opcion2Div);
+
+            // Crear una sección para que cada grupo seleccione una opción
+            const seleccionGruposDiv = document.createElement("div");
+            seleccionGruposDiv.classList.add("seleccion-grupos");
+
+            grupos.forEach((grupo, index) => {
+                if (grupo.eliminado) return; // Omitir grupos eliminados
+
+                const grupoDiv = document.createElement("div");
+                grupoDiv.classList.add("grupo-seleccion");
+
+                const grupoLabel = document.createElement("label");
+                grupoLabel.textContent = `Grupo ${grupo.nombre}: `; // Añadido "Grupo "
+
+                const opcion1Radio = document.createElement("input");
+                opcion1Radio.type = "radio";
+                opcion1Radio.name = `grupo${index}_opcion`;
+                opcion1Radio.value = "opcion1";
+
+                const opcion2Radio = document.createElement("input");
+                opcion2Radio.type = "radio";
+                opcion2Radio.name = `grupo${index}_opcion`;
+                opcion2Radio.value = "opcion2";
+
+                grupoDiv.appendChild(grupoLabel);
+                grupoDiv.appendChild(opcion1Radio);
+                grupoDiv.appendChild(document.createTextNode(" Opción 1 "));
+                grupoDiv.appendChild(opcion2Radio);
+                grupoDiv.appendChild(document.createTextNode(" Opción 2 "));
+
+                seleccionGruposDiv.appendChild(grupoDiv);
+            });
+
+            opcionesDilema.appendChild(seleccionGruposDiv);
+
+            // Añadir botón para enviar decisiones
+            const enviarDecisionesBtn = document.createElement("button");
+            enviarDecisionesBtn.textContent = "Enviar Decisiones";
+            enviarDecisionesBtn.id = "enviarDecisionesBtn";
+            enviarDecisionesBtn.onclick = enviarDecisiones;
+            opcionesDilema.appendChild(enviarDecisionesBtn);
+        }
+
+        function enviarDecisiones() {
+            // Verificar que todos los grupos activos hayan seleccionado una opción
+            if (!todosGruposSeleccionaron()) {
+                const confirmar = confirm("No todos los grupos han seleccionado una opción. ¿Deseas continuar y dejar que los que no seleccionaron opten por ninguna opción?");
+                if (!confirmar) {
+                    return;
+                }
+            }
+
+            // Actualizar las puntuaciones según las selecciones realizadas
+            actualizarPuntuaciones();
+
+            // Generar y mostrar el resumen de puntos perdidos
+            generarResumenPuntos();
+
+            // Mostrar la tabla de puntuaciones
+            tablaPuntuaciones.style.display = "block";
+            crearTablaPuntuaciones();
+
+            // Limpiar las opciones del dilema
+            opcionesDilema.style.display = "none";
+            opcionesDilema.innerHTML = "";
+
+            // Verificar si solo queda un grupo
+            const gruposActivos = grupos.filter(grupo => !grupo.eliminado);
+            if (gruposActivos.length === 1) {
+                // Declarar al ganador
+                alert(`¡Felicidades! El grupo "${gruposActivos[0].nombre}" ha ganado el juego.`);
+                siguienteBtn.disabled = true;
+                progresoDiv.textContent = `El grupo "${gruposActivos[0].nombre}" ha ganado el juego.`;
+            } else if (turnoActual >= 56) {
+                // Si se completaron todos los dilemas y hay más de un grupo, declarar empate o manejarlo según preferencia
+                if (gruposActivos.length > 1) {
+                    alert("El juego ha terminado. Hay varios grupos activos. Puedes revisar las puntuaciones finales.");
+                }
+                siguienteBtn.disabled = true;
+            }
+        }
+
+        function todosGruposSeleccionaron() {
+            for (let i = 0; i < grupos.length; i++) {
+                if (grupos[i].eliminado) continue; // Omitir grupos eliminados
+                const seleccion = document.querySelector(`input[name="grupo${i}_opcion"]:checked`);
+                if (!seleccion) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function actualizarPuntuaciones() {
+            // Iterar sobre cada grupo y sus selecciones
+            grupos.forEach((grupo, index) => {
+                if (grupo.eliminado) return; // Omitir grupos eliminados
+
+                const seleccion = document.querySelector(`input[name="grupo${index}_opcion"]:checked`);
+                if (seleccion) {
+                    const valorRestar = obtenerValorRestar(seleccion.value);
+                    if (valorRestar && grupo.valores[valorRestar] > 0) {
+                        grupo.valores[valorRestar]--;
+                        // Verificar si el valor llegó a cero
+                        if (grupo.valores[valorRestar] <= 0) {
+                            grupo.eliminado = true;
+                            alert(`El grupo "${grupo.nombre}" ha sido eliminado por alcanzar cero en "${valorRestar}".`);
+                        }
+                    }
+                } else {
+                    // Si no seleccionó, restar un punto en ambos valores
+                    const valor1 = dilemaActual.valor1;
+                    const valor2 = dilemaActual.valor2;
+                    if (grupo.valores[valor1] > 0) {
+                        grupo.valores[valor1]--;
+                        if (grupo.valores[valor1] <= 0) {
+                            grupo.eliminado = true;
+                            alert(`El grupo "${grupo.nombre}" ha sido eliminado por alcanzar cero en "${valor1}".`);
+                        }
+                    }
+                    if (grupo.valores[valor2] > 0) {
+                        grupo.valores[valor2]--;
+                        if (grupo.valores[valor2] <= 0) {
+                            grupo.eliminado = true;
+                            alert(`El grupo "${grupo.nombre}" ha sido eliminado por alcanzar cero en "${valor2}".`);
+                        }
+                    }
+                }
+            });
+        }
+
+        function obtenerValorRestar(opcionSeleccionada) {
+            if (opcionSeleccionada === "opcion1") {
+                return dilemaActual.valor1;
+            } else if (opcionSeleccionada === "opcion2") {
+                return dilemaActual.valor2;
+            }
+            return null;
+        }
+
+        function crearTablaPuntuaciones() {
+            tablaCuerpo.innerHTML = ""; // Limpiar tabla previa
+            grupos.forEach(grupo => {
+                const fila = document.createElement("tr");
+                const celdaNombre = document.createElement("td");
+                celdaNombre.textContent = grupo.nombre;
+                // Añadir clase si el grupo está eliminado
+                if (grupo.eliminado) {
+                    celdaNombre.classList.add("grupo-eliminado");
+                }
+                fila.appendChild(celdaNombre);
+
+                for (const [clave, valor] of Object.entries(grupo.valores)) {
+                    const celdaValor = document.createElement("td");
+                    celdaValor.textContent = valor;
+                    fila.appendChild(celdaValor);
+                }
+
+                tablaCuerpo.appendChild(fila);
+            });
+        }
+
+        function generarResumenPuntos() {
+            let resumenHTML = "<h3>Resumen de Puntos Perdidos:</h3><ul>";
+
+            grupos.forEach((grupo, index) => {
+                if (grupo.eliminado && grupo.eliminadoJustificado) return; // Opcional: no mostrar resumen para eliminados
+
+                const seleccion = document.querySelector(`input[name="grupo${index}_opcion"]:checked`);
+                if (seleccion) {
+                    const valorPerdido = obtenerValorRestar(seleccion.value);
+                    resumenHTML += `<li>Grupo <strong>${grupo.nombre}</strong> ha perdido 1 punto en <strong>${valorPerdido}</strong>.</li>`;
+                } else {
+                    const valor1 = dilemaActual.valor1;
+                    const valor2 = dilemaActual.valor2;
+                    resumenHTML += `<li>Grupo <strong>${grupo.nombre}</strong> ha perdido 1 punto en <strong>${valor1}</strong> y 1 punto en <strong>${valor2}</strong>.</li>`;
+                }
+            });
+
+            resumenHTML += "</ul>";
+            resumenPuntosDiv.innerHTML = resumenHTML;
+            resumenPuntosDiv.style.display = "block";
+        }
+
+        // Inicializar las puntuaciones de los grupos al cargar la página
+        window.onload = function() {
+            // Inicialmente, no se muestra nada hasta que se configuren los grupos
+        }
+    </script>
+
+</body>
+</html>
