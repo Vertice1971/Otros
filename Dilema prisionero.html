@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulación del Dilema del Prisionero</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        h1, h2, h3 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .content {
+            max-width: 1200px;
+            margin: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #3498db;
+            color: #ffffff;
+        }
+        .form-section, .explanation-section {
+            background-color: #ffffff;
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-top: 20px;
+        }
+        .form-section label, .explanation-section label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .form-section input[type="number"], .form-section select {
+            width: 60px;
+            padding: 8px;
+            margin-left: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-section select {
+            width: 250px;
+        }
+        .form-section button {
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #27ae60;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .form-section button:hover {
+            background-color: #219150;
+        }
+        .error {
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+        .simulation {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .status {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #2980b9;
+        }
+        .final-result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #dff0d8;
+            border: 1px solid #3c763d;
+            color: #3c763d;
+            border-radius: 5px;
+            font-size: 1.2em;
+            display: inline-block;
+        }
+        .breakdown {
+            margin-top: 20px;
+            text-align: left;
+            display: inline-block;
+            width: 100%;
+        }
+        .breakdown table {
+            width: 50%;
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        @media (max-width: 768px) {
+            .breakdown table {
+                width: 90%;
+            }
+            .form-section select, .form-section input[type="number"] {
+                width: 100%;
+                margin: 5px 0;
+            }
+            .form-section label {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Simulación del Dilema del Prisionero</h1>
+
+        <!-- Matriz de Pagos -->
+        <div class="explanation-section">
+            <h2>Matriz de Pagos</h2>
+            <p>
+                En el Dilema del Prisionero, dos jugadores deben decidir entre cooperar o traicionar sin conocer la decisión del otro. Las recompensas dependen de las elecciones de ambos:
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Cooperar</th>
+                        <th>Traicionar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Cooperar</th>
+                        <td>R = 3, R = 3</td>
+                        <td>S = 0, T = 5</td>
+                    </tr>
+                    <tr>
+                        <th>Traicionar</th>
+                        <td>T = 5, S = 0</td>
+                        <td>P = 1, P = 1</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                <strong>Donde:</strong>
+                <ul>
+                    <li><strong>T (Tentación):</strong> 5 puntos si traicionas y el otro coopera.</li>
+                    <li><strong>R (Recompensa):</strong> 3 puntos si ambos cooperan.</li>
+                    <li><strong>P (Castigo):</strong> 1 punto si ambos traicionan.</li>
+                    <li><strong>S (Sucker's Payoff):</strong> 0 puntos si cooperas y el otro traiciona.</li>
+                </ul>
+            </p>
+        </div>
+
+        <!-- Formulario de Estrategias -->
+        <div class="form-section">
+            <h2>Configura las Estrategias</h2>
+
+            <!-- Explicación de Estrategias -->
+            <div class="explanation">
+                <h3>Opciones de Estrategias para IA 1 e IA 2</h3>
+                <p>Selecciona las estrategias que seguirán ambas IA. Estas son las opciones disponibles:</p>
+                <ul>
+                    <li><strong>Siempre Cooperar:</strong> La IA coopera en todas las jugadas.</li>
+                    <li><strong>Siempre Traicionar:</strong> La IA traiciona en todas las jugadas.</li>
+                    <li><strong>Estrategia Aleatoria:</strong> La IA elige "Cooperar" o "Traicionar" al azar.</li>
+                    <li><strong>Tit-for-Tat (Ojo por Ojo):</strong> La IA copia la jugada anterior de su oponente. Comienza cooperando.</li>
+                    <li><strong>Tit-for-Tat Perdona:</strong> Similar a "Tit-for-Tat", pero ocasionalmente perdona una traición y coopera (10% de probabilidad).</li>
+                </ul>
+                <p>Ambas IA compartirán las mismas opciones de estrategias.</p>
+            </div>
+
+            <!-- Formulario -->
+            <form id="strategy-form">
+                <h3>IA 1: Configura los Porcentajes</h3>
+                <label>
+                    Siempre Cooperar (%):
+                    <input type="number" id="always-cooperate" name="always-cooperate" min="0" max="100" value="20" required>
+                </label>
+                <label>
+                    Siempre Traicionar (%):
+                    <input type="number" id="always-defect" name="always-defect" min="0" max="100" value="20" required>
+                </label>
+                <label>
+                    Estrategia Aleatoria (%):
+                    <input type="number" id="random" name="random" min="0" max="100" value="20" required>
+                </label>
+                <label>
+                    Tit-for-Tat (Ojo por Ojo) (%):
+                    <input type="number" id="tit-for-tat" name="tit-for-tat" min="0" max="100" value="20" required>
+                </label>
+                <label>
+                    Tit-for-Tat Perdona (%):
+                    <input type="number" id="tit-for-tat-forgive" name="tit-for-tat-forgive" min="0" max="100" value="20" required>
+                </label>
+
+                <h3>IA 2: Selecciona una Estrategia</h3>
+                <label>
+                    Estrategia de IA 2:
+                    <select id="ia2-strategy" name="ia2-strategy" required>
+                        <option value="always-cooperate">Siempre Cooperar</option>
+                        <option value="always-defect">Siempre Traicionar</option>
+                        <option value="random">Estrategia Aleatoria</option>
+                        <option value="tit-for-tat">Tit-for-Tat (Ojo por Ojo)</option>
+                        <option value="tit-for-tat-forgive">Tit-for-Tat Perdona</option>
+                    </select>
+                </label>
+
+                <div class="error" id="error-message"></div>
+                <button type="submit">Iniciar Simulación</button>
+            </form>
+        </div>
+
+        <!-- Sección de Simulación -->
+        <div class="simulation" id="simulation-section" style="display: none;">
+            <h2>Simulación de 100 Jugadas</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Jugada</th>
+                        <th>Estrategia IA 1</th>
+                        <th>Estrategia IA 2</th>
+                        <th>Pago IA 1</th>
+                        <th>Pago IA 2</th>
+                        <th>Total IA 1</th>
+                        <th>Total IA 2</th>
+                    </tr>
+                </thead>
+                <tbody id="simulation-table">
+                    <!-- Filas de la simulación se agregarán aquí -->
+                </tbody>
+            </table>
+            <div class="status" id="current-status">Iniciando simulación...</div>
+            <div class="final-result" id="final-result" style="display: none;">
+                <strong>Total IA 1:</strong> <span id="total-ia1">0</span> puntos<br>
+                <strong>Total IA 2:</strong> <span id="total-ia2">0</span> puntos
+                <div class="breakdown">
+                    <h3>Desglose de Puntos de IA 1 por Estrategia</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Estrategia</th>
+                                <th>Puntos</th>
+                            </tr>
+                        </thead>
+                        <tbody id="breakdown-table">
+                            <!-- Desglose de puntos se agregará aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Definir las estrategias para IA1 e IA2
+        const STRATEGIES = [
+            {
+                name: 'Siempre Cooperar',
+                value: 'always-cooperate',
+                choose: () => 'Cooperar'
+            },
+            {
+                name: 'Siempre Traicionar',
+                value: 'always-defect',
+                choose: () => 'Traicionar'
+            },
+            {
+                name: 'Estrategia Aleatoria',
+                value: 'random',
+                choose: () => (Math.random() < 0.5 ? 'Cooperar' : 'Traicionar')
+            },
+            {
+                name: 'Tit-for-Tat (Ojo por Ojo)',
+                value: 'tit-for-tat',
+                choose: function(historyOpponent) {
+                    if (historyOpponent.length === 0) {
+                        return 'Cooperar';
+                    }
+                    return historyOpponent[historyOpponent.length - 1];
+                }
+            },
+            {
+                name: 'Tit-for-Tat Perdona',
+                value: 'tit-for-tat-forgive',
+                choose: function(historyOpponent) {
+                    if (Math.random() < 0.1) { // 10% de probabilidad de perdonar
+                        return 'Cooperar';
+                    }
+                    if (historyOpponent.length === 0) {
+                        return 'Cooperar';
+                    }
+                    return historyOpponent[historyOpponent.length - 1];
+                }
+            }
+        ];
+
+        // Definir la matriz de pagos
+        const PAYOFF_MATRIX = {
+            'Cooperar': {
+                'Cooperar': { ia1: 3, ia2: 3 },
+                'Traicionar': { ia1: 0, ia2: 5 }
+            },
+            'Traicionar': {
+                'Cooperar': { ia1: 5, ia2: 0 },
+                'Traicionar': { ia1: 1, ia2: 1 }
+            }
+        };
+
+        // Variables para acumular los pagos
+        let totalIA1 = 0;
+        let totalIA2 = 0;
+        const totalGames = 100;
+
+        // Variables para el desglose de puntos por estrategia
+        let strategyPoints = {};
+
+        // Variables para estrategias
+        let strategiesListIA1 = [];
+        let ia2StrategyFunction = null;
+        let historyIA1 = [];
+        let historyIA2 = [];
+
+        // Referencias al DOM
+        const strategyForm = document.getElementById('strategy-form');
+        const errorMessage = document.getElementById('error-message');
+        const simulationSection = document.getElementById('simulation-section');
+        const simulationTable = document.getElementById('simulation-table');
+        const currentStatus = document.getElementById('current-status');
+        const finalResult = document.getElementById('final-result');
+        const totalIA1Span = document.getElementById('total-ia1');
+        const totalIA2Span = document.getElementById('total-ia2');
+        const breakdownTable = document.getElementById('breakdown-table');
+
+        // Función para validar y obtener las estrategias con sus pesos
+        function getStrategiesWithWeights(formData) {
+            const alwaysCooperate = parseInt(formData.get('always-cooperate')) || 0;
+            const alwaysDefect = parseInt(formData.get('always-defect')) || 0;
+            const random = parseInt(formData.get('random')) || 0;
+            const titForTat = parseInt(formData.get('tit-for-tat')) || 0;
+            const titForTatForgive = parseInt(formData.get('tit-for-tat-forgive')) || 0;
+
+            const total = alwaysCooperate + alwaysDefect + random + titForTat + titForTatForgive;
+
+            if (total !== 100) {
+                return { error: 'La suma de los porcentajes debe ser 100%.' };
+            }
+
+            return {
+                strategies: [
+                    { strategy: STRATEGIES[0], weight: alwaysCooperate },
+                    { strategy: STRATEGIES[1], weight: alwaysDefect },
+                    { strategy: STRATEGIES[2], weight: random },
+                    { strategy: STRATEGIES[3], weight: titForTat },
+                    { strategy: STRATEGIES[4], weight: titForTatForgive }
+                ]
+            };
+        }
+
+        // Función para crear una lista de estrategias según los pesos
+        function createWeightedStrategyList(strategiesWithWeights) {
+            let weightedList = [];
+            strategiesWithWeights.forEach(item => {
+                const count = Math.round((item.weight / 100) * totalGames);
+                for (let i = 0; i < count; i++) {
+                    weightedList.push(item.strategy);
+                }
+            });
+
+            // Ajustar el tamaño en caso de redondeos
+            while (weightedList.length < totalGames) {
+                const randomIndex = Math.floor(Math.random() * strategiesWithWeights.length);
+                weightedList.push(strategiesWithWeights[randomIndex].strategy);
+            }
+            while (weightedList.length > totalGames) {
+                weightedList.pop();
+            }
+
+            // Mezclar la lista para distribuir las estrategias al azar
+            for (let i = weightedList.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [weightedList[i], weightedList[j]] = [weightedList[j], weightedList[i]];
+            }
+
+            return weightedList;
+        }
+
+        // Función para ejecutar la simulación
+        async function ejecutarSimulacion(strategiesListIA1, ia2StrategySelected) {
+            // Resetear variables
+            totalIA1 = 0;
+            totalIA2 = 0;
+            historyIA1 = [];
+            historyIA2 = [];
+            strategyPoints = {};
+            STRATEGIES.forEach(strategy => {
+                strategyPoints[strategy.name] = 0;
+            });
+
+            // Limpiar tablas y resultados previos
+            simulationTable.innerHTML = '';
+            breakdownTable.innerHTML = '';
+            finalResult.style.display = 'none';
+            currentStatus.textContent = 'Iniciando simulación...';
+
+            // Asignar la función de estrategia para IA2
+            const selectedStrategy = STRATEGIES.find(s => s.value === ia2StrategySelected);
+            if (!selectedStrategy) {
+                errorMessage.textContent = 'Estrategia de IA 2 no válida.';
+                return;
+            }
+            ia2StrategyFunction = selectedStrategy.choose;
+
+            for (let i = 1; i <= totalGames; i++) {
+                // Actualizar estado
+                currentStatus.textContent = `Jugada ${i} de ${totalGames}...`;
+
+                // Obtener la estrategia actual de IA1
+                const estrategiaIA1Obj = strategiesListIA1[i - 1];
+                let estrategiaIA1;
+                if (estrategiaIA1Obj.value === 'tit-for-tat' || estrategiaIA1Obj.value === 'tit-for-tat-forgive') {
+                    estrategiaIA1 = estrategiaIA1Obj.choose(historyIA2);
+                } else {
+                    estrategiaIA1 = estrategiaIA1Obj.choose();
+                }
+
+                // Obtener la estrategia de IA2
+                let estrategiaIA2;
+                if (ia2StrategySelected === 'tit-for-tat' || ia2StrategySelected === 'tit-for-tat-forgive') {
+                    estrategiaIA2 = ia2StrategyFunction(historyIA1);
+                } else {
+                    estrategiaIA2 = ia2StrategyFunction();
+                }
+
+                // Obtener los pagos según la matriz
+                const pagos = PAYOFF_MATRIX[estrategiaIA1][estrategiaIA2];
+                totalIA1 += pagos.ia1;
+                totalIA2 += pagos.ia2;
+
+                // Acumular puntos por estrategia para IA1
+                strategyPoints[estrategiaIA1Obj.name] += pagos.ia1;
+
+                // Actualizar los historiales
+                historyIA1.push(estrategiaIA1);
+                historyIA2.push(estrategiaIA2);
+
+                // Crear una nueva fila en la tabla
+                const row = document.createElement('tr');
+
+                const cellGame = document.createElement('td');
+                cellGame.textContent = i;
+                row.appendChild(cellGame);
+
+                const cellEstrategiaIA1 = document.createElement('td');
+                cellEstrategiaIA1.textContent = estrategiaIA1Obj.name;
+                row.appendChild(cellEstrategiaIA1);
+
+                const cellEstrategiaIA2 = document.createElement('td');
+                cellEstrategiaIA2.textContent = estrategiaIA2;
+                row.appendChild(cellEstrategiaIA2);
+
+                const cellPagoIA1 = document.createElement('td');
+                cellPagoIA1.textContent = pagos.ia1;
+                row.appendChild(cellPagoIA1);
+
+                const cellPagoIA2 = document.createElement('td');
+                cellPagoIA2.textContent = pagos.ia2;
+                row.appendChild(cellPagoIA2);
+
+                const cellTotalIA1 = document.createElement('td');
+                cellTotalIA1.textContent = totalIA1;
+                row.appendChild(cellTotalIA1);
+
+                const cellTotalIA2 = document.createElement('td');
+                cellTotalIA2.textContent = totalIA2;
+                row.appendChild(cellTotalIA2);
+
+                simulationTable.appendChild(row);
+
+                // Scroll al final de la tabla para ver la última jugada
+                row.scrollIntoView({ behavior: 'smooth', block: 'end' });
+
+                // Esperar un breve intervalo para visualizar la actualización
+                await new Promise(resolve => setTimeout(resolve, 30));
+            }
+
+            // Actualizar el estado final
+            currentStatus.textContent = 'Simulación completada.';
+            finalResult.style.display = 'block';
+            totalIA1Span.textContent = totalIA1;
+            totalIA2Span.textContent = totalIA2;
+
+            // Agregar el desglose de puntos por estrategia
+            for (const [strategy, points] of Object.entries(strategyPoints)) {
+                const row = document.createElement('tr');
+
+                const cellStrategy = document.createElement('td');
+                cellStrategy.textContent = strategy;
+                row.appendChild(cellStrategy);
+
+                const cellPoints = document.createElement('td');
+                cellPoints.textContent = points;
+                row.appendChild(cellPoints);
+
+                breakdownTable.appendChild(row);
+            }
+        }
+
+        // Manejar el envío del formulario
+        strategyForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            errorMessage.textContent = '';
+
+            const formData = new FormData(strategyForm);
+            const result = getStrategiesWithWeights(formData);
+
+            if (result.error) {
+                errorMessage.textContent = result.error;
+                return;
+            }
+
+            const strategiesWithWeights = result.strategies;
+            const ia2StrategySelected = formData.get('ia2-strategy');
+
+            // Crear la lista de estrategias según los pesos
+            const strategiesList = createWeightedStrategyList(strategiesWithWeights);
+
+            // Mostrar la sección de simulación
+            simulationSection.style.display = 'block';
+
+            // Iniciar la simulación
+            ejecutarSimulacion(strategiesList, ia2StrategySelected);
+        });
+    </script>
+</body>
+</html>
