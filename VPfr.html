@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vies parallèles ⚽🏆</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffcc33, #ff6600);
+      margin: 0;
+    }
+    .quiz-container, .message-felicitations {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+      border: 4px double #ff6600;
+      position: relative;
+    }
+    /* Pseudo-elementos decorativos */
+    .quiz-container::before, .message-felicitations::before {
+      content: "⚽";
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      font-size: 30px;
+    }
+    .quiz-container::after, .message-felicitations::after {
+      content: "🏆";
+      position: absolute;
+      bottom: -15px;
+      right: -15px;
+      font-size: 30px;
+    }
+    h1 {
+      font-size: 26px;
+      margin-bottom: 15px;
+      color: #ff6600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+    .reponse-btn { }
+    #reponse1 { background-color: #007bff; }
+    #reponse2 { background-color: #ff9800; }
+    #reponse3 { background-color: #9c27b0; }
+    .btn:hover {
+      filter: brightness(85%);
+      transform: scale(1.05);
+    }
+    .btn.incorrect {
+      background-color: #ff4444;
+      animation: shake 0.5s;
+    }
+    .btn.correct {
+      background-color: #00cc66 !important;
+    }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      50% { transform: translateX(10px); }
+      75% { transform: translateX(-10px); }
+      100% { transform: translateX(0); }
+    }
+    .temporisateur {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff6600;
+      background: #fff3cd;
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+    .message-felicitations {
+      display: none;
+    }
+    .message-felicitations h2 {
+      font-size: 30px;
+      color: #00cc66;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .message-felicitations p {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .message-felicitations .temps-final {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .btn-rejouer {
+      background-color: #007bff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quizContainer">
+  <h1>⚽ Vies parallèles🏆</h1>
+  <div class="temporisateur" id="temporisateur">00:00</div>
+  <p id="question"></p>
+  <button id="reponse1" class="btn reponse-btn"></button>
+  <button id="reponse2" class="btn reponse-btn"></button>
+  <button id="reponse3" class="btn reponse-btn"></button>
+</div>
+
+<div class="message-felicitations" id="messageFelicitations">
+  <h2>🏆 Félicitations !!! ⚽</h2>
+  <p>C'est difficile de savoir plus de choses que toi...</p>
+  <p>Temps total : <span class="temps-final" id="tempsFinal"></span></p>
+  <button class="btn btn-rejouer" onclick="rejouer()">Rejouer</button>
+</div>
+
+<script>
+  // Fonction pour recharger la page
+  function rejouer() {
+    window.location.reload();
+  }
+
+  // Tableau complet de questions (en français) concernant Lionel Messi et Cristiano Ronaldo
+  // (25 questions Messi + 25 questions Ronaldo + 20 questions "nouvelles faciles" + 30 questions supplémentaires)
+  const questionsCompletes = [
+    // --- 25 QUESTIONS ORIGINALES SUR LIONEL MESSI ---
+    {
+      question: "Dans quelle ville Lionel Messi est-il né ?",
+      correcte: "Rosario",
+      options: ["Buenos Aires", "Rosario", "Córdoba"]
+    },
+    {
+      question: "Quelle est la date de naissance de Lionel Messi ?",
+      correcte: "24 juin 1987",
+      options: ["24 juin 1987", "12 juillet 1987", "15 août 1987"]
+    },
+    {
+      question: "À quel club Messi a-t-il adhéré à l'âge de 6 ans ?",
+      correcte: "Newell’s Old Boys",
+      options: ["Newell’s Old Boys", "Boca Juniors", "River Plate"]
+    },
+    {
+      question: 'Qui encourageait Messi en lui disant : "Tu seras le meilleur du monde" ?',
+      correcte: "Sa grand-mère",
+      options: ["Sa mère", "Sa grand-mère", "Son père"]
+    },
+    {
+      question: "Quel problème de santé Messi a-t-il eu durant son enfance ?",
+      correcte: "Déficience en hormone de croissance",
+      options: ["Asthme", "Déficience en hormone de croissance", "Problèmes cardiaques"]
+    },
+    {
+      question: "Quel club a payé le traitement de croissance de Messi ?",
+      correcte: "FC Barcelone",
+      options: ["FC Barcelone", "Real Madrid", "PSG"]
+    },
+    {
+      question: "À quel âge Messi a-t-il déménagé en Espagne ?",
+      correcte: "13 ans",
+      options: ["11 ans", "13 ans", "15 ans"]
+    },
+    {
+      question: "Quel surnom l'équipe junior de Messi avait-elle en raison de leur année de naissance ?",
+      correcte: "La Máquina del 87",
+      options: ["La Máquina del 87", "Los 87", "La Fuerza de 87"]
+    },
+    {
+      question: "Combien de buts Messi a-t-il marqués dans son équipe junior ?",
+      correcte: "Presque 500 buts",
+      options: ["Presque 300 buts", "Presque 400 buts", "Presque 500 buts"]
+    },
+    {
+      question: "Que faisait Messi pour rendre hommage à sa grand-mère lorsqu'il marquait ?",
+      correcte: "Il pointait le ciel",
+      options: ["Il pointait le ciel", "Il sautait de joie", "Il dansait"]
+    },
+    {
+      question: "Qui a fait la passe décisive à Messi lors de son premier but officiel ?",
+      correcte: "Ronaldinho",
+      options: ["Ronaldinho", "Xavi", "Iniesta"]
+    },
+    {
+      question: "En quelle année Messi a-t-il fait ses débuts en équipe première du FC Barcelone ?",
+      correcte: "2004",
+      options: ["2003", "2004", "2005"]
+    },
+    {
+      question: "Dans quelle Coupe du Monde Messi a-t-il fait ses débuts avec l'Argentine ?",
+      correcte: "2006",
+      options: ["2006", "2010", "2014"]
+    },
+    {
+      question: "Quel a été le premier titre professionnel de Messi ?",
+      correcte: "Championnat de LaLiga",
+      options: ["Coupe du Roi", "Ligue des Champions", "Championnat de LaLiga"]
+    },
+    {
+      question: "En quelle année Messi a-t-il remporté son premier Ballon d'Or ?",
+      correcte: "2009",
+      options: ["2008", "2009", "2010"]
+    },
+    {
+      question: "Quel record de buts Messi a-t-il établi en 2012 ?",
+      correcte: "91 buts en une année civile",
+      options: ["91 buts en une année civile", "85 buts en une année civile", "96 buts en une année civile"]
+    },
+    {
+      question: "Combien de Ballons d'Or Messi a-t-il remportés jusqu'en 2023 ?",
+      correcte: "8",
+      options: ["7", "8", "9"]
+    },
+    {
+      question: "Quel titre international Messi a-t-il gagné avec l'Argentine en 2022 ?",
+      correcte: "Coupe du Monde",
+      options: ["Copa América", "Coupe du Monde", "Coupe des Confédérations"]
+    },
+    {
+      question: "Quel club Messi a-t-il quitté après presque 20 ans au FC Barcelone ?",
+      correcte: "FC Barcelone",
+      options: ["FC Barcelone", "PSG", "Inter Miami"]
+    },
+    {
+      question: "À quel club Messi s'est-il joint après avoir quitté le FC Barcelone ?",
+      correcte: "PSG",
+      options: ["PSG", "Inter Miami", "Newell’s Old Boys"]
+    },
+    {
+      question: "Quel titre Messi a-t-il remporté avec l'Inter Miami ?",
+      correcte: "Leagues Cup",
+      options: ["Leagues Cup", "MLS Cup", "Supporters' Shield"]
+    },
+    {
+      question: "Quel est le nom de la fondation de Messi ?",
+      correcte: "Fundación Leo Messi",
+      options: ["Fundación Leo Messi", "Messi Solidario", "Leo Fundación"]
+    },
+    {
+      question: "Quelle caractéristique se démarque le plus dans le jeu de Messi ?",
+      correcte: "Un contrôle de balle incroyable",
+      options: ["La vitesse", "La force", "Un contrôle de balle incroyable"]
+    },
+    {
+      question: "Quel a été le premier grand défi de Messi dans sa carrière ?",
+      correcte: "Un problème de croissance",
+      options: ["Une blessure", "Un problème de croissance", "Un changement de club"]
+    },
+    {
+      question: "Quelle condition impliquait la signature de Messi par le FC Barcelone ?",
+      correcte: "Déménager en Espagne avec sa famille",
+      options: ["Abandonner sa famille", "Déménager en Espagne avec sa famille", "Changer de sport"]
+    },
+
+    // --- 25 QUESTIONS ORIGINALES SUR CRISTIANO RONALDO ---
+    {
+      question: "Sur quelle île Cristiano Ronaldo est-il né ?",
+      correcte: "Madère",
+      options: ["Madère", "Lisbonne", "Porto"]
+    },
+    {
+      question: "Quelle est la date de naissance de Cristiano Ronaldo ?",
+      correcte: "5 février 1985",
+      options: ["5 février 1985", "10 mars 1985", "15 avril 1985"]
+    },
+    {
+      question: "Dans quelle ville Cristiano Ronaldo est-il né ?",
+      correcte: "Funchal",
+      options: ["Funchal", "Lisbonne", "Porto"]
+    },
+    {
+      question: "Dans quel club Cristiano Ronaldo a-t-il commencé à jouer avec son père ?",
+      correcte: "Andorinha",
+      options: ["Andorinha", "Nacional", "Sporting Portugal"]
+    },
+    {
+      question: "À quel âge Cristiano Ronaldo s'est-il inscrit à l'Andorinha ?",
+      correcte: "7 ans",
+      options: ["7 ans", "9 ans", "10 ans"]
+    },
+    {
+      question: "À quel club Cristiano Ronaldo a-t-il adhéré à 10 ans ?",
+      correcte: "Nacional",
+      options: ["Andorinha", "Nacional", "Sporting Portugal"]
+    },
+    {
+      question: "À quel club Cristiano Ronaldo a-t-il été transféré à 12 ans ?",
+      correcte: "Sporting Portugal",
+      options: ["Sporting Portugal", "Real Madrid", "Manchester United"]
+    },
+    {
+      question: "Quel problème de santé Cristiano Ronaldo a-t-il eu à l'adolescence ?",
+      correcte: "Tachycardie",
+      options: ["Tachycardie", "Asthme", "Déficience hormonale"]
+    },
+    {
+      question: "Dans quel club Cristiano Ronaldo a-t-il fait ses débuts professionnels ?",
+      correcte: "Sporting Portugal",
+      options: ["Sporting Portugal", "Manchester United", "Real Madrid"]
+    },
+    {
+      question: "Contre quelle équipe Cristiano Ronaldo a-t-il joué en phase préliminaire de la Ligue des Champions avec le Sporting ?",
+      correcte: "Inter Milan",
+      options: ["Inter Milan", "Chelsea", "Juventus"]
+    },
+    {
+      question: "Quel titre Cristiano Ronaldo a-t-il remporté lors de sa première saison avec Manchester United ?",
+      correcte: "FA Cup",
+      options: ["FA Cup", "Premier League", "Ligue des Champions"]
+    },
+    {
+      question: "En quelle année Cristiano Ronaldo a-t-il remporté son premier Ballon d'Or ?",
+      correcte: "2008",
+      options: ["2007", "2008", "2009"]
+    },
+    {
+      question: "Avec quel club Cristiano Ronaldo a-t-il fait ses débuts en Premier League ?",
+      correcte: "Manchester United",
+      options: ["Manchester United", "Sporting Portugal", "Real Madrid"]
+    },
+    {
+      question: "À quel club Cristiano Ronaldo a-t-il signé en 2009 ?",
+      correcte: "Real Madrid",
+      options: ["Real Madrid", "Juventus", "Manchester United"]
+    },
+    {
+      question: "Combien de Ballons d'Or Ronaldo avait-il en 2017 ?",
+      correcte: "5",
+      options: ["4", "5", "6"]
+    },
+    {
+      question: "Combien de buts Ronaldo a-t-il marqués lors de sa première saison en Serie A avec la Juventus ?",
+      correcte: "21 buts",
+      options: ["18 buts", "21 buts", "25 buts"]
+    },
+    {
+      question: "En quelle année Ronaldo est-il retourné à Manchester United ?",
+      correcte: "2021",
+      options: ["2020", "2021", "2022"]
+    },
+    {
+      question: "À quelle ligue Ronaldo a-t-il été transféré en 2023 ?",
+      correcte: "Saudi Pro League",
+      options: ["Serie A", "Saudi Pro League", "MLS"]
+    },
+    {
+      question: "Quel titre international Ronaldo a-t-il remporté avec le Portugal en 2016 ?",
+      correcte: "Euro",
+      options: ["Euro", "Coupe du Monde", "Ligue des Nations"]
+    },
+    {
+      question: "Quel trophée Ronaldo a-t-il remporté avec le Portugal en 2019 ?",
+      correcte: "Ligue des Nations de l'UEFA",
+      options: ["Ligue des Nations de l'UEFA", "Euro", "Copa América"]
+    },
+    {
+      question: "Quel impact mondial Cristiano Ronaldo a-t-il ?",
+      correcte: "C'est une superstar mondiale",
+      options: [
+        "C'est une superstar mondiale",
+        "Il est peu connu",
+        "Il est célèbre seulement en Europe"
+      ]
+    },
+    {
+      question: "Quel club faisait partie des débuts de carrière de Ronaldo ?",
+      correcte: "Andorinha",
+      options: ["Andorinha", "Nacional", "Sporting Portugal"]
+    },
+    {
+      question: "En quelle année Cristiano Ronaldo a-t-il débuté professionnellement ?",
+      correcte: "2002",
+      options: ["2000", "2002", "2004"]
+    },
+    {
+      question: "Quel record Ronaldo a-t-il établi au Real Madrid ?",
+      correcte: "450 buts",
+      options: ["400 buts", "450 buts", "500 buts"]
+    },
+    {
+      question: "Qu'est-ce qui caractérise la discipline de Cristiano Ronaldo ?",
+      correcte: "Ses efforts constants et sa capacité de se réinventer",
+      options: [
+        "Ses efforts constants et sa capacité de se réinventer",
+        "Son tempérament",
+        "Son talent pour improviser"
+      ]
+    },
+
+    // --- 20 NOUVELLES QUESTIONS SIMPLES ---
+    // 10 sur Messi
+    {
+      question: "Quel était le métier du père de Messi ?",
+      correcte: "Ouvrier dans une aciérie",
+      options: ["Ouvrier dans une aciérie", "Enseignant", "Médecin"]
+    },
+    {
+      question: "Que faisait la mère de Messi ?",
+      correcte: "Elle faisait le ménage dans des maisons",
+      options: ["Elle faisait le ménage dans des maisons", "Elle cuisinait", "Elle travaillait dans un bureau"]
+    },
+    {
+      question: "À quoi jouait Messi quand il était enfant ?",
+      correcte: "Football dans la rue",
+      options: ["Football dans la rue", "Basket-ball", "Tennis"]
+    },
+    {
+      question: "Avec qui Messi jouait-il quand il était enfant ?",
+      correcte: "Avec ses frères et ses amis",
+      options: ["Avec ses frères et ses amis", "Avec ses professeurs", "Tout seul"]
+    },
+    {
+      question: "À quel âge sa grand-mère a-t-elle emmené Messi passer un test à Newell’s Old Boys ?",
+      correcte: "6 ans",
+      options: ["6 ans", "8 ans", "10 ans"]
+    },
+    {
+      question: "Qu'a dû faire Messi pour recevoir son traitement de croissance ?",
+      correcte: "S'installer en Espagne avec sa famille",
+      options: [
+        "S'installer en Espagne avec sa famille",
+        "Rester en Argentine",
+        "Changer de sport"
+      ]
+    },
+    {
+      question: "Comment Messi célébrait-il ses buts en hommage à sa grand-mère ?",
+      correcte: "Il pointait le ciel",
+      options: ["Il pointait le ciel", "Il dansait", "Il saluait"]
+    },
+    {
+      question: "Quel sport pratique Messi ?",
+      correcte: "Football",
+      options: ["Football", "Basket-ball", "Natation"]
+    },
+    {
+      question: "Que lui disait sa grand-mère avant chaque match ?",
+      correcte: "Tu seras le meilleur du monde",
+      options: [
+        "Tu seras le meilleur du monde",
+        "Joue bien",
+        "Cours vite"
+      ]
+    },
+    {
+      question: "Que représente l'histoire de Messi ?",
+      correcte: "Un exemple de dépassement de soi",
+      options: [
+        "Un exemple de dépassement de soi",
+        "Une tragédie",
+        "Un conte de fées"
+      ]
+    },
+
+    // 10 sur Cristiano Ronaldo
+    {
+      question: "Quel était le travail du père de Cristiano Ronaldo ?",
+      correcte: "Jardinier et concierge",
+      options: ["Jardinier et concierge", "Cuisinier", "Médecin"]
+    },
+    {
+      question: "Que faisait la mère de Cristiano Ronaldo ?",
+      correcte: "Elle travaillait comme cuisinière",
+      options: [
+        "Elle travaillait comme cuisinière",
+        "Elle était enseignante",
+        "Elle ne travaillait pas"
+      ]
+    },
+    {
+      question: "Avec quoi jouait Cristiano Ronaldo quand il n'avait pas de ballon ?",
+      correcte: "Des bouteilles en plastique",
+      options: [
+        "Des bouteilles en plastique",
+        "Des balles",
+        "Des boîtes"
+      ]
+    },
+    {
+      question: "À quel âge Cristiano Ronaldo s'est-il inscrit à l'Andorinha ?",
+      correcte: "7 ans",
+      options: ["7 ans", "9 ans", "10 ans"]
+    },
+    {
+      question: "Quel sport pratique Cristiano Ronaldo ?",
+      correcte: "Football",
+      options: ["Football", "Basket-ball", "Natation"]
+    },
+    {
+      question: "Quelle caractéristique ressortait le plus chez Cristiano Ronaldo dans son enfance ?",
+      correcte: "Sa vitesse et sa technique",
+      options: ["Sa vitesse et sa technique", "Sa force", "Sa taille"]
+    },
+    {
+      question: "Quel sacrifice Cristiano Ronaldo a-t-il fait pour poursuivre son rêve ?",
+      correcte: "Quitter sa maison et sa famille",
+      options: [
+        "Quitter sa maison et sa famille",
+        "Quitter les études",
+        "Changer de sport"
+      ]
+    },
+    {
+      question: "Que faisait Cristiano Ronaldo après les matchs ?",
+      correcte: "Il s'entraînait aux tirs et aux dribbles",
+      options: [
+        "Il s'entraînait aux tirs et aux dribbles",
+        "Il rentrait chez lui",
+        "Il jouait aux jeux vidéo"
+      ]
+    },
+    {
+      question: "Qu'a appris Cristiano Ronaldo de ses entraînements ?",
+      correcte: "L'importance de l'effort",
+      options: [
+        "L'importance de l'effort",
+        "La paresse",
+        "Le divertissement"
+      ]
+    },
+    {
+      question: "Que montrent les histoires de Messi et Ronaldo ?",
+      correcte: "L'effort et la détermination",
+      options: [
+        "L'effort et la détermination",
+        "La chance",
+        "Le talent sans travail"
+      ]
+    },
+
+    // --- 30 NOUVELLES QUESTIONS ISSUES DU TEXTE (15 sur Ronaldo et 15 sur Messi) ---
+    // --- RONALDO (15) ---
+    {
+      question: "En quelle année Cristiano Ronaldo a-t-il signé à Manchester United selon le texte ?",
+      correcte: "2003",
+      options: ["2003", "2004", "2005"]
+    },
+    {
+      question: "À quel âge Cristiano Ronaldo a-t-il signé à Manchester United ?",
+      correcte: "18 ans",
+      options: ["17 ans", "18 ans", "19 ans"]
+    },
+    {
+      question: "Qui était l'entraîneur de Manchester United qui a recruté Cristiano Ronaldo ?",
+      correcte: "Alex Ferguson",
+      options: ["Alex Ferguson", "Carlo Ancelotti", "Pep Guardiola"]
+    },
+    {
+      question: "Contre quelle équipe Cristiano Ronaldo a-t-il marqué son premier but en finale de la FA Cup 2004 ?",
+      correcte: "Millwall",
+      options: ["Millwall", "Arsenal", "Chelsea"]
+    },
+    {
+      question: "Combien de buts Cristiano Ronaldo a-t-il marqués en Premier League 2007 pour obtenir le Soulier d'Or d'Angleterre ?",
+      correcte: "31",
+      options: ["29", "31", "33"]
+    },
+    {
+      question: "Dans quelle finale de Ligue des Champions Cristiano Ronaldo a-t-il marqué de la tête contre Chelsea ?",
+      correcte: "La finale 2008",
+      options: ["La finale 2009", "La finale 2008", "La finale 2010"]
+    },
+    {
+      question: "De combien de millions d'euros était le transfert record de Cristiano Ronaldo au Real Madrid en 2009 ?",
+      correcte: "94 millions d'euros",
+      options: ["94 millions d'euros", "80 millions d'euros", "100 millions d'euros"]
+    },
+    {
+      question: "Combien de buts Cristiano Ronaldo a-t-il marqués en Ligue des Champions 2014, établissant un record sur une édition ?",
+      correcte: "17",
+      options: ["16", "17", "18"]
+    },
+    {
+      question: "Contre quel adversaire Cristiano Ronaldo a-t-il réussi un triplé déterminant pour que le Portugal se qualifie pour le Mondial 2014 ?",
+      correcte: "La Suède",
+      options: ["Le Danemark", "La Norvège", "La Suède"]
+    },
+    {
+      question: "À quel stade de la Ligue des Champions 2018 Cristiano Ronaldo a-t-il marqué un but mémorable en retourné acrobatique contre la Juventus ?",
+      correcte: "En quarts de finale",
+      options: ["En finale", "En quarts de finale", "En demi-finale"]
+    },
+    {
+      question: "Quel titre Cristiano Ronaldo a-t-il remporté lors de sa première saison avec la Juventus (2019) ?",
+      correcte: "La Serie A",
+      options: ["La Serie A", "La Coupe d'Italie", "La Supercoupe d'Italie"]
+    },
+    {
+      question: "Contre quelle équipe Cristiano Ronaldo a-t-il réussi un triplé en Ligue des Champions 2019 pour remonter un 0-2 avec la Juve ?",
+      correcte: "Atlético de Madrid",
+      options: ["Tottenham Hotspur", "PSG", "Atlético de Madrid"]
+    },
+    {
+      question: "Dans quel club saoudien Cristiano Ronaldo a-t-il signé en 2023 ?",
+      correcte: "Al-Nassr",
+      options: ["Al-Hilal", "Al-Nassr", "Al-Ahli"]
+    },
+    {
+      question: "Combien de buts Cristiano Ronaldo a-t-il marqués en 2024 pour devenir le meilleur buteur de l'année ?",
+      correcte: "54 buts",
+      options: ["54 buts", "50 buts", "60 buts"]
+    },
+    {
+      question: "À quel âge Cristiano Ronaldo est-il devenu le meilleur buteur de l'année en 2024 ?",
+      correcte: "39 ans",
+      options: ["38 ans", "39 ans", "40 ans"]
+    },
+
+    // --- MESSI (15) ---
+    {
+      question: "En quelle année Lionel Messi a-t-il disputé son premier match avec l'équipe première du Barça lors d'un amical contre Porto ?",
+      correcte: "2003",
+      options: ["2003", "2004", "2005"]
+    },
+    {
+      question: "Quel âge avait Lionel Messi lorsqu'il a fait ses débuts avec l'équipe première du Barça en 2003 ?",
+      correcte: "16 ans",
+      options: ["15 ans", "17 ans", "16 ans"]
+    },
+    {
+      question: "Quel fut l'adversaire de Messi lors de ses débuts officiels en Liga avec le Barça en 2004 ?",
+      correcte: "Espanyol",
+      options: ["Real Madrid", "Espanyol", "Atlético de Madrid"]
+    },
+    {
+      question: "Dans quel tournoi Messi a-t-il mené l'Argentine et marqué deux buts en finale contre le Nigeria en 2005 ?",
+      correcte: "Coupe du Monde U20",
+      options: ["Copa América", "Coupe du Monde U20", "Jeux Olympiques"]
+    },
+    {
+      question: "Combien de titres importants Messi a-t-il remportés avec le Barça en 2006 ?",
+      correcte: "Deux (LaLiga et Ligue des Champions)",
+      options: [
+        "Trois (LaLiga, Coupe du Roi et Ligue des Champions)",
+        "Deux (LaLiga et Ligue des Champions)",
+        "Quatre"
+      ]
+    },
+    {
+      question: "Dans quel tournoi Messi a-t-il disputé sa première grande finale avec l'Argentine en 2007 ?",
+      correcte: "Copa América 2007",
+      options: [
+        "Coupe du Monde 2006",
+        "Coupe des Confédérations 2007",
+        "Copa América 2007"
+      ]
+    },
+    {
+      question: "Contre quelle équipe Messi a-t-il marqué un superbe lob en quarts de finale de la Copa América 2007 ?",
+      correcte: "Le Mexique",
+      options: ["Le Mexique", "La Colombie", "Le Venezuela"]
+    },
+    {
+      question: "Quel trophée Messi a-t-il remporté aux Jeux Olympiques de 2008 avec l'Argentine ?",
+      correcte: "La médaille d'or",
+      options: ["La médaille d'or", "La médaille d'argent", "La Copa América"]
+    },
+    {
+      question: "Combien de titres le Barça de Messi a-t-il remportés en 2009 lors du sextuplé historique ?",
+      correcte: "6",
+      options: ["5", "6", "7"]
+    },
+    {
+      question: "Quelle distinction Messi a-t-il reçue à la Coupe du Monde 2014 au Brésil, malgré la défaite en finale ?",
+      correcte: "Le Ballon d'Or du Mondial (Meilleur Joueur)",
+      options: [
+        "Le Soulier d'Or du Mondial (meilleur buteur)",
+        "Le Ballon d'Or du Mondial (Meilleur Joueur)",
+        "Le Gant d'Or (Meilleur Gardien)"
+      ]
+    },
+    {
+      question: "Contre quelle équipe l'Argentine a-t-elle perdu en finale de la Coupe du Monde 2014 ?",
+      correcte: "Allemagne",
+      options: ["Brésil", "Pays-Bas", "Allemagne"]
+    },
+    {
+      question: "En quelle année Messi a-t-il annoncé temporairement sa retraite de la sélection argentine après la défaite en finale de la Copa América Centenario ?",
+      correcte: "2016",
+      options: ["2015", "2016", "2017"]
+    },
+    {
+      question: "Quel titre Lionel Messi a-t-il remporté avec l'Argentine en 2021, mettant fin à sa série de défaites en finale ?",
+      correcte: "La Copa América 2021",
+      options: [
+        "La Coupe du Monde 2021",
+        "La Copa América 2021",
+        "La Coupe des Confédérations 2021"
+      ]
+    },
+    {
+      question: "À quel club de MLS Lionel Messi a-t-il signé en 2023 ?",
+      correcte: "Inter Miami",
+      options: ["LA Galaxy", "New York City FC", "Inter Miami"]
+    },
+    {
+      question: "Contre quelle équipe Messi a-t-il remporté la finale de la Leagues Cup avec l'Inter Miami en 2023 ?",
+      correcte: "Nashville SC",
+      options: ["Philadelphia Union", "Atlanta United", "Nashville SC"]
+    }
+  ];
+
+  // Mélanger toutes les questions
+  questionsCompletes.sort(() => 0.5 - Math.random());
+
+  // Sélectionner 15 questions au hasard
+  const questionsSelectionnees = questionsCompletes.slice(0, 15);
+
+  // Mélanger les options de chaque question sélectionnée
+  questionsSelectionnees.forEach(q => {
+    q.options.sort(() => 0.5 - Math.random());
+  });
+
+  let indexQuestion = 0;
+  let debutTemps = Date.now();
+  let intervalle = setInterval(majTemporisateur, 1000);
+
+  // AudioContext pour les sons (correct / incorrect)
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playBeep(frequence, duree, type = 'sine') {
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.frequency.value = frequence;
+    osc.type = type;
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    osc.start();
+    setTimeout(() => osc.stop(), duree);
+  }
+
+  function beepIncorrect() {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(() => playBeep(1000, 200));
+    } else {
+      playBeep(1000, 200);
+    }
+  }
+
+  function beepCorrect() {
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(() => playBeep(600, 300, 'triangle'));
+    } else {
+      playBeep(600, 300, 'triangle');
+    }
+  }
+
+  function majTemporisateur() {
+    let tempsEcoule = Date.now() - debutTemps;
+    let minutes = Math.floor(tempsEcoule / 60000);
+    let secondes = Math.floor((tempsEcoule % 60000) / 1000);
+    document.getElementById("temporisateur").textContent =
+      `${String(minutes).padStart(2, "0")}:${String(secondes).padStart(2, "0")}`;
+  }
+
+  function afficherQuestion() {
+    if (indexQuestion >= questionsSelectionnees.length) {
+      clearInterval(intervalle);
+      document.getElementById("quizContainer").style.display = "none";
+      document.getElementById("messageFelicitations").style.display = "block";
+      document.getElementById("tempsFinal").textContent =
+        document.getElementById("temporisateur").textContent;
+      return;
+    }
+
+    let questionActuelle = questionsSelectionnees[indexQuestion];
+    document.getElementById("question").textContent = questionActuelle.question;
+
+    let reponsesMelangees = [...questionActuelle.options].sort(() => 0.5 - Math.random());
+    document.getElementById("reponse1").textContent = reponsesMelangees[0];
+    document.getElementById("reponse2").textContent = reponsesMelangees[1];
+    document.getElementById("reponse3").textContent = reponsesMelangees[2];
+
+    document.querySelectorAll(".reponse-btn").forEach(bouton => {
+      bouton.classList.remove("correct", "incorrect");
+      bouton.onclick = function () {
+        if (bouton.textContent === questionActuelle.correcte) {
+          bouton.classList.add("correct");
+          beepCorrect();
+          setTimeout(() => {
+            indexQuestion++;
+            afficherQuestion();
+          }, 500);
+        } else {
+          bouton.classList.add("incorrect");
+          beepIncorrect();
+          setTimeout(() => bouton.classList.remove("incorrect"), 500);
+        }
+      };
+    });
+  }
+
+  afficherQuestion();
+</script>
+
+</body>
+</html>
