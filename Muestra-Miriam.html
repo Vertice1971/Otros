@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miriam, la voz del desierto 📖✝️</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffcc33, #ff6600);
+      margin: 0;
+    }
+    .trivia-container, .mensaje-felicidades {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+      border: 4px double #ff6600;
+      position: relative;
+    }
+    /* Iconos para tema bíblico */
+    .trivia-container::before, .mensaje-felicidades::before {
+      content: "📖";
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      font-size: 30px;
+    }
+    .trivia-container::after, .mensaje-felicidades::after {
+      content: "✝️";
+      position: absolute;
+      bottom: -15px;
+      right: -15px;
+      font-size: 30px;
+    }
+    h1 {
+      font-size: 26px;
+      margin-bottom: 15px;
+      color: #ff6600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+    #respuesta1 { background-color: #007bff; }
+    #respuesta2 { background-color: #ff9800; }
+    #respuesta3 { background-color: #9c27b0; }
+    .btn:hover {
+      filter: brightness(85%);
+      transform: scale(1.05);
+    }
+    .btn.incorrect {
+      background-color: #ff4444;
+      animation: shake 0.5s;
+    }
+    .btn.correct {
+      background-color: #00cc66 !important;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+    .temporizador {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff6600;
+      background: #fff3cd;
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+    .mensaje-felicidades {
+      display: none;
+    }
+    .mensaje-felicidades h2 {
+      font-size: 30px;
+      color: #00cc66;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .mensaje-felicidades p {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .mensaje-felicidades .tiempo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .btn-restart {
+      background-color: #007bff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="trivia-container" id="triviaContainer">
+  <h1>📖 Miriam, la voz del desierto ✝️</h1>
+  <div class="temporizador" id="temporizador">00:00</div>
+  <p id="pregunta"></p>
+  <button id="respuesta1" class="btn respuesta-btn"></button>
+  <button id="respuesta2" class="btn respuesta-btn"></button>
+  <button id="respuesta3" class="btn respuesta-btn"></button>
+</div>
+
+<div class="mensaje-felicidades" id="mensajeFelicidades">
+  <h2>✝️ ¡¡¡Enhorabuena!!! 📖</h2>
+  <p>¡Has respondido todas las preguntas!</p>
+  <p>Tiempo total: <span class="tiempo" id="tiempoFinal"></span></p>
+  <button class="btn btn-restart" onclick="reloadGame()">Volver a jugar</button>
+</div>
+
+<script>
+  function reloadGame() {
+    window.location.reload();
+  }
+
+  // Array de 17 preguntas sobre "Miriam, la voz del desierto"
+  const preguntasCompletas = [
+    { 
+      pregunta: "¿Por qué los hebreos fueron convertidos en esclavos en Egipto?",
+      correcta: "Porque el nuevo Faraón temía su crecimiento.",
+      opciones: [
+        "Porque llegaron demasiados extranjeros a la tierra.",
+        "Porque el nuevo Faraón temía su crecimiento.",
+        "Porque los egipcios necesitaban más trabajadores."
+      ]
+    },
+    { 
+      pregunta: "¿Quién ordenó que los bebés varones hebreos fueran arrojados al Nilo?",
+      correcta: "El Faraón.",
+      opciones: [
+        "José.",
+        "Aarón.",
+        "El Faraón."
+      ]
+    },
+    { 
+      pregunta: "¿De qué tribu era Miriam y su familia?",
+      correcta: "De la tribu de Leví.",
+      opciones: [
+        "De la tribu de Judá.",
+        "De la tribu de Leví.",
+        "De la tribu de Benjamín."
+      ]
+    },
+    { 
+      pregunta: "¿Cómo se llamaba la madre de Miriam, Moisés y Aarón?",
+      correcta: "Jocabed.",
+      opciones: [
+        "Rebeca.",
+        "Jocabed.",
+        "Débora."
+      ]
+    },
+    { 
+      pregunta: "¿Cuánto tiempo logró Jocabed esconder a Moisés?",
+      correcta: "Tres meses.",
+      opciones: [
+        "Un año.",
+        "Seis meses.",
+        "Tres meses."
+      ]
+    },
+    { 
+      pregunta: "¿Cómo protegió Jocabed a Moisés cuando no pudo esconderlo más?",
+      correcta: "Lo puso en una canasta de papiro en el Nilo.",
+      opciones: [
+        "Lo dejó con otra familia hebrea.",
+        "Lo puso en una canasta de papiro en el Nilo.",
+        "Lo escondió en el templo de los egipcios."
+      ]
+    },
+    { 
+      pregunta: "¿Quién se quedó vigilando la canasta de Moisés?",
+      correcta: "Miriam.",
+      opciones: [
+        "Aarón.",
+        "Miriam.",
+        "Un sacerdote egipcio."
+      ]
+    },
+    { 
+      pregunta: "¿Quién encontró la canasta con Moisés dentro?",
+      correcta: "La hija del Faraón.",
+      opciones: [
+        "La madre del Faraón.",
+        "La hija del Faraón.",
+        "Un mercader egipcio."
+      ]
+    },
+    { 
+      pregunta: "¿Cómo reaccionó Moisés cuando la princesa lo tomó en brazos?",
+      correcta: "Lloró.",
+      opciones: [
+        "Sonrió.",
+        "Se quedó dormido.",
+        "Lloró."
+      ]
+    },
+    { 
+      pregunta: "¿Qué le ofreció Miriam a la hija del Faraón?",
+      correcta: "Buscar una nodriza hebrea para alimentar a Moisés.",
+      opciones: [
+        "Buscar una nodriza hebrea para alimentar a Moisés.",
+        "Criar a Moisés en secreto.",
+        "Llevar a Moisés de regreso con su familia."
+      ]
+    },
+    { 
+      pregunta: "¿Quién terminó cuidando a Moisés después de que la hija del Faraón lo adoptó?",
+      correcta: "Su madre, Jocabed.",
+      opciones: [
+        "Su madre, Jocabed.",
+        "Una sacerdotisa egipcia.",
+        "Miriam."
+      ]
+    },
+    { 
+      pregunta: "¿Cómo recompensó la hija del Faraón a Jocabed?",
+      correcta: "Le pagó por criar a Moisés.",
+      opciones: [
+        "Le dio un lugar en el palacio.",
+        "Le pagó por criar a Moisés.",
+        "Le permitió regresar a su tierra."
+      ]
+    },
+    { 
+      pregunta: "¿Dónde creció Moisés después de ser criado por su madre?",
+      correcta: "En el palacio del Faraón.",
+      opciones: [
+        "En la casa de su familia hebrea.",
+        "En el desierto.",
+        "En el palacio del Faraón."
+      ]
+    },
+    { 
+      pregunta: "¿Qué importancia tuvo el río Nilo en la historia de Moisés?",
+      correcta: "Fue donde su vida fue salvada y más tarde donde Dios mostró su poder.",
+      opciones: [
+        "Fue donde Moisés aprendió a nadar.",
+        "Fue donde su vida fue salvada y más tarde donde Dios mostró su poder.",
+        "Fue donde Moisés escondió a su pueblo de los egipcios."
+      ]
+    },
+    { 
+      pregunta: "¿Qué pasó con Miriam después de que Moisés fue llevado al palacio?",
+      correcta: "Regresó con su familia hebrea.",
+      opciones: [
+        "Regresó con su familia hebrea.",
+        "Se convirtió en la consejera del Faraón.",
+        "Fue llevada al palacio con su hermano."
+      ]
+    },
+    { 
+      pregunta: "¿Quién era Aarón en relación con Moisés?",
+      correcta: "Su hermano mayor.",
+      opciones: [
+        "Su primo.",
+        "Su hermano mayor.",
+        "Su tío."
+      ]
+    },
+    { 
+      pregunta: "¿Por qué Aarón no fue afectado por el edicto del Faraón?",
+      correcta: "Porque había nacido antes de la orden de matar a los bebés varones hebreos.",
+      opciones: [
+        "Porque había nacido antes de la orden de matar a los bebés varones hebreos.",
+        "Porque fue escondido en el templo egipcio.",
+        "Porque fue criado por una familia egipcia."
+      ]
+    }
+  ];
+
+  // Se mezclan todas las preguntas y se seleccionan 5 al azar
+  preguntasCompletas.sort(() => 0.5 - Math.random());
+  const preguntasSeleccionadas = preguntasCompletas.slice(0, 5);
+  preguntasSeleccionadas.forEach(p => p.opciones.sort(() => 0.5 - Math.random()));
+
+  let indicePregunta = 0;
+  let tiempoInicio = Date.now();
+  let intervalo = setInterval(actualizarTemporizador, 1000);
+
+  // Crear el contexto de audio
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // Función para generar sonido con fundido suave
+  function playBeep(frequency, duration, type = 'sine', fadeTime = 0.1) {
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.frequency.value = frequency;
+    osc.type = type;
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start();
+    setTimeout(() => osc.stop(), duration);
+  }
+
+  // Sonido de error (pitido suave)
+  function emitirPitido() {
+    if (audioCtx.state === 'suspended')
+      audioCtx.resume().then(() => playBeep(500, 300, 'sine', 0.2));
+    else 
+      playBeep(500, 300, 'sine', 0.2);
+  }
+
+  // Función para sonido de acierto: campanillas angelicales
+  function playChime(frequencies, duration, type = 'triangle', fadeTime = 0.2) {
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc1.frequency.value = frequencies[0];
+    osc2.frequency.value = frequencies[1];
+    osc1.type = type;
+    osc2.type = type;
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc1.connect(gainNode);
+    osc2.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc1.start();
+    osc2.start();
+    
+    setTimeout(() => {
+      osc1.stop();
+      osc2.stop();
+    }, duration);
+  }
+
+  // Sonido de acierto (campanillas angelicales)
+  function emitirPitidoDulce() {
+    if (audioCtx.state === 'suspended')
+      audioCtx.resume().then(() => playChime([800, 1200], 800, 'triangle', 0.3));
+    else 
+      playChime([800, 1200], 800, 'triangle', 0.3);
+  }
+
+  // Actualizar el temporizador
+  function actualizarTemporizador() {
+    let tiempoPasado = Date.now() - tiempoInicio;
+    let minutos = Math.floor(tiempoPasado / 60000);
+    let segundos = Math.floor((tiempoPasado % 60000) / 1000);
+    document.getElementById("temporizador").textContent =
+      `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
+  }
+
+  // Mostrar la pregunta actual y configurar las respuestas
+  function mostrarPregunta() {
+    if (indicePregunta >= preguntasSeleccionadas.length) {
+      clearInterval(intervalo);
+      document.getElementById("triviaContainer").style.display = "none";
+      document.getElementById("mensajeFelicidades").style.display = "block";
+      document.getElementById("tiempoFinal").textContent = document.getElementById("temporizador").textContent;
+      return;
+    }
+  
+    let preguntaActual = preguntasSeleccionadas[indicePregunta];
+    document.getElementById("pregunta").textContent = preguntaActual.pregunta;
+    document.getElementById("respuesta1").textContent = preguntaActual.opciones[0];
+    document.getElementById("respuesta2").textContent = preguntaActual.opciones[1];
+    document.getElementById("respuesta3").textContent = preguntaActual.opciones[2];
+  
+    document.querySelectorAll(".respuesta-btn").forEach(boton => {
+      boton.classList.remove("correct", "incorrect");
+      boton.onclick = () => {
+        if (boton.textContent === preguntaActual.correcta) {
+          boton.classList.add("correct");
+          emitirPitidoDulce();
+          setTimeout(() => {
+            indicePregunta++;
+            mostrarPregunta();
+          }, 500);
+        } else {
+          boton.classList.add("incorrect");
+          emitirPitido();
+          setTimeout(() => boton.classList.remove("incorrect"), 500);
+        }
+      };
+    });
+  }
+  
+  mostrarPregunta();
+</script>
+
+</body>
+</html>
