@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vidas Paralelas ⚽🏆</title>
+  <title>José, el hijo de Jacob 📖✝️</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -25,16 +25,16 @@
       border: 4px double #ff6600;
       position: relative;
     }
-    /* Añadido marco decorativo */
+    /* Iconos actualizados para tema bíblico */
     .trivia-container::before, .mensaje-felicidades::before {
-      content: "⚽";
+      content: "📖";
       position: absolute;
       top: -15px;
       left: -15px;
       font-size: 30px;
     }
     .trivia-container::after, .mensaje-felicidades::after {
-      content: "🏆";
+      content: "✝️";
       position: absolute;
       bottom: -15px;
       right: -15px;
@@ -127,7 +127,7 @@
 <body>
 
 <div class="trivia-container" id="triviaContainer">
-  <h1>⚽ Vidas Paralelas 🏆</h1>
+  <h1>📖 José, el hijo de Jacob ✝️</h1>
   <div class="temporizador" id="temporizador">00:00</div>
   <p id="pregunta"></p>
   <button id="respuesta1" class="btn respuesta-btn"></button>
@@ -136,7 +136,7 @@
 </div>
 
 <div class="mensaje-felicidades" id="mensajeFelicidades">
-  <h2>🏆 ¡¡¡Enhorabuena!!! ⚽</h2>
+  <h2>✝️ ¡¡¡Enhorabuena!!! 📖</h2>
   <p>Es difícil saber más cosas que tú...</p>
   <p>Tiempo total: <span class="tiempo" id="tiempoFinal"></span></p>
   <button class="btn btn-restart" onclick="reloadGame()">Volver a jugar</button>
@@ -147,137 +147,307 @@
     window.location.reload();
   }
 
+  // Array completo de preguntas basadas en eventos bíblicos
   const preguntasCompletas = [
-  { pregunta: "¿En qué ciudad nació Lionel Messi?", correcta: "Rosario", opciones: ["Buenos Aires", "Rosario", "Córdoba"] },
-  { pregunta: "¿Cuál es la fecha de nacimiento de Lionel Messi?", correcta: "24 de junio de 1987", opciones: ["24 de junio de 1987", "12 de julio de 1987", "15 de agosto de 1987"] },
-  { pregunta: "¿A qué club se unió Messi a los seis años?", correcta: "Newell’s Old Boys", opciones: ["Newell’s Old Boys", "Boca Juniors", "River Plate"] },
-  { pregunta: "¿Quién animaba a Messi diciéndole \"Tú serás el mejor del mundo\"?", correcta: "Su abuela", opciones: ["Su madre", "Su abuela", "Su padre"] },
-  { pregunta: "¿Qué problema de salud tuvo Messi en su infancia?", correcta: "Deficiencia de hormona del crecimiento", opciones: ["Asma", "Deficiencia de hormona del crecimiento", "Problemas cardíacos"] },
-  { pregunta: "¿Qué club pagó el tratamiento de crecimiento de Messi?", correcta: "FC Barcelona", opciones: ["FC Barcelona", "Real Madrid", "PSG"] },
-  { pregunta: "¿A qué edad se mudó Messi a España?", correcta: "13 años", opciones: ["11 años", "13 años", "15 años"] },
-  { pregunta: "¿Qué apodo recibía el equipo infantil de Messi debido a su año de nacimiento?", correcta: "La Máquina del 87", opciones: ["La Máquina del 87", "Los 87", "La Fuerza de 87"] },
-  { pregunta: "¿Cuántos goles anotó Messi en su equipo infantil?", correcta: "Casi 500 goles", opciones: ["Casi 300 goles", "Casi 400 goles", "Casi 500 goles"] },
-  { pregunta: "¿Qué hacía Messi en homenaje a su abuela al marcar un gol?", correcta: "Señalaba al cielo", opciones: ["Señalaba al cielo", "Saltaba", "Bailaba"] },
-  { pregunta: "¿Quién le dio el pase de gol a Messi en su primer gol oficial?", correcta: "Ronaldinho", opciones: ["Ronaldinho", "Xavi", "Iniesta"] },
-  { pregunta: "¿En qué año debutó Messi en el primer equipo del Barcelona?", correcta: "2004", opciones: ["2003", "2004", "2005"] },
-  { pregunta: "¿En qué Mundial debutó Messi con la selección de Argentina?", correcta: "2006", opciones: ["2006", "2010", "2014"] },
-  { pregunta: "¿Cuál fue el primer título profesional de Messi?", correcta: "Campeonato de LaLiga", opciones: ["Copa del Rey", "Champions League", "Campeonato de LaLiga"] },
-  { pregunta: "¿En qué año ganó Messi su primer Balón de Oro?", correcta: "2009", opciones: ["2008", "2009", "2010"] },
-  { pregunta: "¿Qué récord de goles estableció Messi en 2012?", correcta: "91 goles en un año calendario", opciones: ["91 goles en un año calendario", "85 goles en un año calendario", "96 goles en un año calendario"] },
-  { pregunta: "¿Cuántos Balones de Oro ha ganado Messi hasta 2023?", correcta: "8", opciones: ["7", "8", "9"] },
-  { pregunta: "¿Qué título internacional ganó Messi con Argentina en 2022?", correcta: "Copa del Mundo", opciones: ["Copa América", "Copa del Mundo", "Confederaciones"] },
-  { pregunta: "¿Qué club dejó Messi después de casi 20 años en el FC Barcelona?", correcta: "FC Barcelona", opciones: ["FC Barcelona", "PSG", "Inter Miami"] },
-  { pregunta: "¿A qué club se unió Messi después de dejar el Barcelona?", correcta: "PSG", opciones: ["PSG", "Inter Miami", "Newell’s Old Boys"] },
-  { pregunta: "¿Qué título ganó Messi con el Inter Miami?", correcta: "Leagues Cup", opciones: ["Leagues Cup", "MLS Cup", "Supporters' Shield"] },
-  { pregunta: "¿Cuál es el nombre de la fundación de Messi?", correcta: "Fundación Leo Messi", opciones: ["Fundación Leo Messi", "Messi Solidario", "Leo Fundación"] },
-  { pregunta: "¿Qué característica resalta más del juego de Messi?", correcta: "Control de balón increíble", opciones: ["Velocidad", "Fuerza", "Control de balón increíble"] },
-  { pregunta: "¿Cuál fue el primer gran desafío de Messi en su carrera?", correcta: "Problema de crecimiento", opciones: ["Lesión", "Problema de crecimiento", "Cambio de club"] },
-  { pregunta: "¿Qué condición implicaba el fichaje de Messi por el FC Barcelona?", correcta: "Mudarse a España con su familia", opciones: ["Renunciar a su familia", "Mudarse a España con su familia", "Cambiar de deporte"] },
-  { pregunta: "¿En qué isla nació Cristiano Ronaldo?", correcta: "Madeira", opciones: ["Madeira", "Lisboa", "Oporto"] },
-  { pregunta: "¿Cuál es la fecha de nacimiento de Cristiano Ronaldo?", correcta: "5 de febrero de 1985", opciones: ["5 de febrero de 1985", "10 de marzo de 1985", "15 de abril de 1985"] },
-  { pregunta: "¿En qué ciudad nació Cristiano Ronaldo?", correcta: "Funchal", opciones: ["Funchal", "Lisboa", "Porto"] },
-  { pregunta: "¿En qué club comenzó a jugar Cristiano Ronaldo con su padre?", correcta: "El Andorinha", opciones: ["El Andorinha", "Nacional", "Sporting de Lisboa"] },
-  { pregunta: "¿A qué edad se inscribió Cristiano Ronaldo en el Andorinha?", correcta: "7 años", opciones: ["7 años", "9 años", "10 años"] },
-  { pregunta: "¿A qué club se unió Cristiano Ronaldo a los 10 años?", correcta: "Nacional", opciones: ["El Andorinha", "Nacional", "Sporting de Lisboa"] },
-  { pregunta: "¿A qué club se trasladó Cristiano Ronaldo a los 12 años?", correcta: "Sporting de Lisboa", opciones: ["Sporting de Lisboa", "Real Madrid", "Manchester United"] },
-  { pregunta: "¿Qué problema de salud tuvo Cristiano Ronaldo en su adolescencia?", correcta: "Taquicardia", opciones: ["Taquicardia", "Asma", "Deficiencia hormonal"] },
-  { pregunta: "¿Qué club debutó profesionalmente Cristiano Ronaldo?", correcta: "Sporting de Lisboa", opciones: ["Sporting de Lisboa", "Manchester United", "Real Madrid"] },
-  { pregunta: "¿Contra qué equipo jugó Cristiano Ronaldo en la fase previa de la Champions League con el Sporting?", correcta: "Inter de Milán", opciones: ["Inter de Milán", "Chelsea", "Juventus"] },
-  { pregunta: "¿Qué título ganó Ronaldo en su primera temporada con el Manchester United?", correcta: "FA Cup", opciones: ["FA Cup", "Premier League", "Champions League"] },
-  { pregunta: "¿En qué año ganó Cristiano Ronaldo su primer Balón de Oro?", correcta: "2008", opciones: ["2007", "2008", "2009"] },
-  { pregunta: "¿Con qué club debutó Cristiano Ronaldo en la Premier League?", correcta: "Manchester United", opciones: ["Manchester United", "Sporting de Lisboa", "Real Madrid"] },
-  { pregunta: "¿A qué club se unió Ronaldo en 2009?", correcta: "Real Madrid", opciones: ["Real Madrid", "Juventus", "Manchester United"] },
-  { pregunta: "¿Cuántos Balones de Oro tenía Ronaldo en 2017?", correcta: "5", opciones: ["4", "5", "6"] },
-  { pregunta: "¿Cuántos goles anotó Ronaldo en su primera temporada en la Serie A con la Juventus?", correcta: "21 goles", opciones: ["18 goles", "21 goles", "25 goles"] },
-  { pregunta: "¿En qué año regresó Ronaldo al Manchester United?", correcta: "2021", opciones: ["2020", "2021", "2022"] },
-  { pregunta: "¿A qué liga se trasladó Ronaldo en 2023?", correcta: "Saudi Pro League", opciones: ["Serie A", "Saudi Pro League", "MLS"] },
-  { pregunta: "¿Qué título internacional ganó Ronaldo con Portugal en 2016?", correcta: "Eurocopa", opciones: ["Eurocopa", "Copa del Mundo", "Liga de Naciones"] },
-  { pregunta: "¿Qué trofeo ganó Ronaldo con Portugal en 2019?", correcta: "Liga de Naciones de la UEFA", opciones: ["Liga de Naciones de la UEFA", "Eurocopa", "Copa América"] },
-  { pregunta: "¿Qué impacto global tiene Cristiano Ronaldo?", correcta: "Es una superestrella mundial", opciones: ["Es una superestrella mundial", "Es poco conocido", "Solo es famoso en Europa"] },
-  { pregunta: "¿Qué club formó parte de los inicios de la carrera de Ronaldo?", correcta: "El Andorinha", opciones: ["El Andorinha", "Nacional", "Sporting de Lisboa"] },
-  { pregunta: "¿En qué año debutó profesionalmente Cristiano Ronaldo?", correcta: "2002", opciones: ["2000", "2002", "2004"] },
-  { pregunta: "¿Qué récord estableció Ronaldo en el Real Madrid?", correcta: "450 goles", opciones: ["400 goles", "450 goles", "500 goles"] },
-  { pregunta: "¿Qué destaca sobre la disciplina de Cristiano Ronaldo?", correcta: "Su esfuerzo constante y capacidad de reinvención", opciones: ["Su esfuerzo constante y capacidad de reinvención", "Su temperamento", "Su habilidad de improvisar"] },
-  { pregunta: "¿Qué trabajo tenía el padre de Messi?", correcta: "Obrero en una fábrica de acero", opciones: ["Obrero en una fábrica de acero", "Profesor", "Médico"] },
-  { pregunta: "¿En qué trabajaba la madre de Messi?", correcta: "Limpiaba casas", opciones: ["Limpiaba casas", "Cocinaba", "Trabajaba en una oficina"] },
-  { pregunta: "¿A qué jugaba Messi cuando era pequeño?", correcta: "Fútbol en la calle", opciones: ["Fútbol en la calle", "Baloncesto", "Tenis"] },
-  { pregunta: "¿Con quién jugaba Messi de niño?", correcta: "Con sus hermanos y amigos", opciones: ["Con sus hermanos y amigos", "Con sus maestros", "Solo"] },
-  { pregunta: "¿A qué edad llevó su abuela a Messi a probar en Newell’s Old Boys?", correcta: "6 años", opciones: ["6 años", "8 años", "10 años"] },
-  { pregunta: "¿Qué tuvo que hacer Messi para recibir su tratamiento de crecimiento?", correcta: "Mudarse a España con su familia", opciones: ["Mudarse a España con su familia", "Quedarse en Argentina", "Cambiar de deporte"] },
-  { pregunta: "¿Cómo celebraba Messi sus goles en honor a su abuela?", correcta: "Señalaba al cielo", opciones: ["Señalaba al cielo", "Bailaba", "Saludaba"] },
-  { pregunta: "¿Qué deporte juega Messi?", correcta: "Fútbol", opciones: ["Fútbol", "Baloncesto", "Natación"] },
-  { pregunta: "¿Qué le decía su abuela a Messi antes de cada partido?", correcta: "Tú serás el mejor del mundo", opciones: ["Tú serás el mejor del mundo", "Juega bien", "Corre rápido"] },
-  { pregunta: "¿Qué representa la historia de Messi?", correcta: "Un ejemplo de superación", opciones: ["Un ejemplo de superación", "Una tragedia", "Un cuento de hadas"] },
-  { pregunta: "¿Qué trabajo tenía el padre de Cristiano Ronaldo?", correcta: "Jardinero y conserje", opciones: ["Jardinero y conserje", "Cocinero", "Médico"] },
-  { pregunta: "¿Qué hacía la madre de Cristiano Ronaldo?", correcta: "Trabajaba como cocinera", opciones: ["Trabajaba como cocinera", "Era maestra", "No trabajaba"] },
-  { pregunta: "¿Con qué jugaba Cristiano Ronaldo cuando no tenía balón?", correcta: "Botellas de plástico", opciones: ["Botellas de plástico", "Pelotas", "Cajas"] },
-  { pregunta: "¿A qué edad se inscribió Cristiano Ronaldo en el Andorinha?", correcta: "7 años", opciones: ["7 años", "9 años", "10 años"] },
-  { pregunta: "¿Qué deporte juega Cristiano Ronaldo?", correcta: "Fútbol", opciones: ["Fútbol", "Baloncesto", "Natación"] },
-  { pregunta: "¿Qué característica destacaba de Cristiano Ronaldo en su niñez?", correcta: "Su velocidad y habilidad", opciones: ["Su velocidad y habilidad", "Su fuerza", "Su altura"] },
-  { pregunta: "¿Qué sacrificio tuvo que hacer Cristiano Ronaldo para seguir su sueño?", correcta: "Dejar su hogar y su familia", opciones: ["Dejar su hogar y su familia", "Dejar de estudiar", "Cambiar de deporte"] },
-  { pregunta: "¿Qué hacía Cristiano Ronaldo después de los partidos?", correcta: "Practicaba tiros y regates", opciones: ["Practicaba tiros y regates", "Se iba a casa", "Jugaba videojuegos"] },
-  { pregunta: "¿Qué le enseñó su entrenamiento a Cristiano Ronaldo?", correcta: "La importancia del esfuerzo", opciones: ["La importancia del esfuerzo", "La pereza", "La diversión"] },
-  { pregunta: "¿Qué muestran las historias de Messi y Ronaldo?", correcta: "El esfuerzo y la determinación", opciones: ["El esfuerzo y la determinación", "La suerte", "El talento sin trabajo"] },
-  { pregunta: "¿En qué año fichó Cristiano Ronaldo por el Manchester United según el texto?", correcta: "2003", opciones: ["2003", "2004", "2005"] },
-  { pregunta: "¿Con cuántos años fichó Cristiano Ronaldo por el Manchester United?", correcta: "18 años", opciones: ["17 años", "18 años", "19 años"] },
-  { pregunta: "¿Quién era el entrenador del Manchester United que fichó a Cristiano Ronaldo?", correcta: "Alex Ferguson", opciones: ["Alex Ferguson", "Carlo Ancelotti", "Pep Guardiola"] },
-  { pregunta: "¿Contra qué equipo marcó Cristiano Ronaldo el primer gol en la final de la FA Cup 2004?", correcta: "Millwall", opciones: ["Millwall", "Arsenal", "Chelsea"] },
-  { pregunta: "¿Cuántos goles marcó Cristiano Ronaldo en la Premier League 2007 para ganar la Bota de Oro de Inglaterra?", correcta: "31", opciones: ["29", "31", "33"] },
-  { pregunta: "¿En qué final de Champions League Cristiano Ronaldo marcó de cabeza contra el Chelsea?", correcta: "La final de 2008", opciones: ["La final de 2009", "La final de 2008", "La final de 2010"] },
-  { pregunta: "¿De cuántos millones de euros fue el fichaje récord de Cristiano Ronaldo por el Real Madrid en 2009?", correcta: "94 millones de euros", opciones: ["94 millones de euros", "80 millones de euros", "100 millones de euros"] },
-  { pregunta: "¿Cuántos goles anotó Cristiano Ronaldo en la Champions League 2014, estableciendo un récord en una sola edición?", correcta: "17", opciones: ["16", "17", "18"] },
-  { pregunta: "¿Contra qué rival marcó Cristiano Ronaldo un hat-trick clave para que Portugal se clasificara al Mundial de 2014?", correcta: "Suecia", opciones: ["Dinamarca", "Noruega", "Suecia"] },
-  { pregunta: "¿En qué ronda de la Champions League 2018 Cristiano Ronaldo marcó un memorable gol de chilena contra la Juventus?", correcta: "En cuartos de final", opciones: ["En la final", "En cuartos de final", "En semifinales"] },
-  { pregunta: "¿Qué título ganó Cristiano Ronaldo en su primera temporada con la Juventus (2019)?", correcta: "La Serie A", opciones: ["La Serie A", "La Copa de Italia", "La Supercopa de Italia"] },
-  { pregunta: "¿Contra qué equipo hizo Cristiano Ronaldo un hat-trick en la Champions 2019 para remontar un 0-2 con la Juventus?", correcta: "Atlético de Madrid", opciones: ["Tottenham Hotspur", "PSG", "Atlético de Madrid"] },
-  { pregunta: "¿A qué club de Arabia Saudita se unió Cristiano Ronaldo en 2023?", correcta: "Al-Nassr", opciones: ["Al-Hilal", "Al-Nassr", "Al-Ahli"] },
-  { pregunta: "¿Cuántos goles anotó Cristiano Ronaldo en 2024, siendo el máximo goleador del año?", correcta: "54 goles", opciones: ["54 goles", "50 goles", "60 goles"] },
-  { pregunta: "¿A qué edad logró Cristiano Ronaldo ser el máximo goleador del año en 2024?", correcta: "39 años", opciones: ["38 años", "39 años", "40 años"] },
-  { pregunta: "¿En qué año debutó Lionel Messi con el primer equipo del Barcelona en un partido amistoso contra el Oporto?", correcta: "2003", opciones: ["2003", "2004", "2005"] },
-  { pregunta: "¿Cuántos años tenía Lionel Messi cuando debutó con el primer equipo del Barcelona en 2003?", correcta: "16 años", opciones: ["15 años", "17 años", "16 años"] },
-  { pregunta: "¿Cuál fue el rival de Lionel Messi en su debut oficial con el Barcelona en LaLiga en 2004?", correcta: "Espanyol", opciones: ["Real Madrid", "Espanyol", "Atlético de Madrid"] },
-  { pregunta: "¿En qué torneo lideró Messi a Argentina y marcó dos goles en la final contra Nigeria en 2005?", correcta: "Mundial Sub-20", opciones: ["Copa América", "Mundial Sub-20", "Juegos Olímpicos"] },
-  { pregunta: "¿Cuántos títulos importantes ganó Lionel Messi con el Barcelona en 2006?", correcta: "Dos (LaLiga y la Champions League)", opciones: ["Tres (LaLiga, Copa del Rey y Champions League)", "Dos (LaLiga y la Champions League)", "Cuatro"] },
-  { pregunta: "¿En qué torneo tuvo Messi su primera gran final con la selección absoluta de Argentina, en 2007?", correcta: "Copa América 2007", opciones: ["Mundial 2006", "Copa Confederaciones 2007", "Copa América 2007"] },
-  { pregunta: "¿Contra qué selección marcó Messi un golazo de vaselina en cuartos de final de la Copa América 2007?", correcta: "México", opciones: ["México", "Colombia", "Venezuela"] },
-  { pregunta: "¿Qué trofeo ganó Messi en los Juegos Olímpicos de 2008 con Argentina?", correcta: "La medalla de oro", opciones: ["La medalla de oro", "La medalla de plata", "La Copa América"] },
-  { pregunta: "¿Cuántos títulos logró el Barcelona de Messi en 2009, consiguiendo el histórico sextete?", correcta: "6", opciones: ["5", "6", "7"] },
-  { pregunta: "¿Qué reconocimiento recibió Messi en el Mundial de Brasil 2014, a pesar de perder la final?", correcta: "El Balón de Oro del Mundial (Mejor Jugador)", opciones: ["La Bota de Oro del Mundial (máximo goleador)", "El Balón de Oro del Mundial (Mejor Jugador)", "El Guante de Oro (Mejor portero)"] },
-  { pregunta: "¿Contra qué selección perdió Argentina en la final del Mundial de Brasil 2014?", correcta: "Alemania", opciones: ["Brasil", "Países Bajos", "Alemania"] },
-  { pregunta: "¿En qué año anunció Messi temporalmente su retiro de la selección argentina tras perder la final de la Copa América Centenario?", correcta: "2016", opciones: ["2015", "2016", "2017"] },
-  { pregunta: "¿Qué título ganó Lionel Messi con la selección argentina en 2021, rompiendo su mala racha en finales?", correcta: "La Copa América 2021", opciones: ["La Copa del Mundo 2021", "La Copa América 2021", "La Copa Confederaciones 2021"] },
-  { pregunta: "¿A qué equipo de la MLS se unió Lionel Messi en 2023?", correcta: "Inter Miami", opciones: ["LA Galaxy", "New York City FC", "Inter Miami"] },
-  { pregunta: "¿Contra qué equipo ganó Messi la final de la Leagues Cup con el Inter Miami en 2023?", correcta: "Nashville SC", opciones: ["Philadelphia Union", "Atlanta United", "Nashville SC"] }
-];
+    { 
+      pregunta: "¿Qué mostró José mientras trabajaba en Egipto?", 
+      correcta: "Integridad y sabiduría", 
+      opciones: ["Ambición y orgullo", "Integridad y sabiduría", "Fuerza y valor"] 
+    },
+    { 
+      pregunta: "¿Cómo salvó Egipto de la hambruna José?", 
+      correcta: "Administrando sabiamente los recursos", 
+      opciones: ["Construyendo barcos", "Organizando fiestas", "Administrando sabiamente los recursos"] 
+    },
+    { 
+      pregunta: "¿Por qué llegaron los hermanos de José a Egipto?", 
+      correcta: "Para buscar alimento por la hambruna", 
+      opciones: ["Para visitar a José", "Para buscar alimento por la hambruna", "Por turismo"] 
+    },
+    { 
+      pregunta: "¿Qué hizo José con sus hermanos en lugar de vengarse?", 
+      correcta: "Los perdonó y les dio alimento", 
+      opciones: ["Los castigó", "Los ignoró", "Los perdonó y les dio alimento"] 
+    },
+    { 
+      pregunta: "¿Qué permitió el Faraón a Jacob y su familia en Egipto?", 
+      correcta: "Que se establecieran en Egipto", 
+      opciones: ["Que viajaran por el desierto", "Que se establecieran en Egipto", "Que se mudaran a otra tierra"] 
+    },
+    { 
+      pregunta: "¿Dónde prosperó la familia de Jacob en Egipto?", 
+      correcta: "En la región de Gosén", 
+      opciones: ["En el Nilo", "En la región de Gosén", "En el palacio del Faraón"] 
+    },
+    { 
+      pregunta: "¿Qué habilidad mostró José en la prisión?", 
+      correcta: "Interpretar sueños", 
+      opciones: ["Cantar canciones", "Cocinar pan", "Interpretar sueños"] 
+    },
+    { 
+      pregunta: "Según la predicción de José, ¿qué pasó con el copero y el panadero?", 
+      correcta: "El copero fue restaurado y el panadero fue ejecutado", 
+      opciones: ["Ambos fueron liberados", "Ambos fueron ejecutados", "El copero fue restaurado y el panadero fue ejecutado"] 
+    },
+    { 
+      pregunta: "¿Quién recordó a José al Faraón al tener sueños inquietantes?", 
+      correcta: "El copero", 
+      opciones: ["El panadero", "El copero", "Un esclavo"] 
+    },
+    { 
+      pregunta: "¿Qué interpretó José en el sueño del Faraón sobre vacas gordas y flacas?", 
+      correcta: "Años de abundancia y años de hambre", 
+      opciones: ["El fin del mundo", "Una invasión", "Años de abundancia y años de hambre"] 
+    },
+    { 
+      pregunta: "¿Qué cargo recibió José por su sabiduría?", 
+      correcta: "Gobernador de Egipto", 
+      opciones: ["Consejero", "General del ejército", "Gobernador de Egipto"] 
+    },
+    { 
+      pregunta: "¿Qué sentía Jacob en Canaán por su hijo José?", 
+      correcta: "Lamentaba su pérdida", 
+      opciones: ["Lo celebraba", "Lamentaba su pérdida", "Lo había olvidado"] 
+    },
+    { 
+      pregunta: "¿Qué hicieron los hermanos de José al viajar a Egipto?", 
+      correcta: "Compraron trigo sin reconocer a José", 
+      opciones: ["Compraron trigo sin reconocer a José", "Lo buscaron para abrazarlo", "Se quedaron en Canaán"] 
+    },
+    { 
+      pregunta: "¿Cómo comprobó José si sus hermanos habían cambiado?", 
+      correcta: "Los puso a prueba", 
+      opciones: ["Los ignoró", "Los puso a prueba", "Les regaló dinero"] 
+    },
+    { 
+      pregunta: "¿Qué pidió José como parte de la prueba a sus hermanos?", 
+      correcta: "Traer a Benjamín", 
+      opciones: ["Traer a Rubén", "Traer a Benjamín", "Traer a un esclavo"] 
+    },
+    { 
+      pregunta: "¿Qué hicieron los hermanos de José respecto a Benjamín?", 
+      correcta: "Convencieron a Jacob de llevar a Benjamín", 
+      opciones: ["Lo dejaron en Egipto", "Ignoraron a Benjamín", "Convencieron a Jacob de llevar a Benjamín"] 
+    },
+    { 
+      pregunta: "¿Qué hizo José con su copa en el saco de Benjamín?", 
+      correcta: "La escondió y acusó de robo", 
+      opciones: ["La regaló", "La escondió y acusó de robo", "La perdió"] 
+    },
+    { 
+      pregunta: "¿Qué hizo Judá para proteger a su padre Jacob?", 
+      correcta: "Se ofreció como esclavo en lugar de Benjamín", 
+      opciones: ["Huyó del país", "No hizo nada", "Se ofreció como esclavo en lugar de Benjamín"] 
+    },
+    { 
+      pregunta: "¿Qué reveló José a sus hermanos al final de la prueba?", 
+      correcta: "Que Dios había usado todo para bien", 
+      opciones: ["Que era un espía", "Que estaban en problemas", "Que Dios había usado todo para bien"] 
+    },
+    { 
+      pregunta: "¿Qué ordenó José a sus hermanos respecto a Jacob?", 
+      correcta: "Que trajeran a Jacob y su familia a Egipto", 
+      opciones: ["Que dejaran a Jacob en Canaán", "Que olvidaran a Jacob", "Que trajeran a Jacob y su familia a Egipto"] 
+    },
+    { 
+      pregunta: "¿Cómo se sintieron Jacob y José al reencontrarse en Egipto?", 
+      correcta: "Con emoción", 
+      opciones: ["Con enfado", "Con indiferencia", "Con emoción"] 
+    },
+    { 
+      pregunta: "¿Qué hizo Jacob antes de morir?", 
+      correcta: "Bendijo a sus hijos y predijo su futuro", 
+      opciones: ["Olvidó a su familia", "Les regaló tierras", "Bendijo a sus hijos y predijo su futuro"] 
+    },
+    { 
+      pregunta: "¿Qué juró José a su familia antes de morir?", 
+      correcta: "Llevar sus huesos a la Tierra Prometida", 
+      opciones: ["Quedarse en Egipto", "Olvidar sus orígenes", "Llevar sus huesos a la Tierra Prometida"] 
+    },
+    { 
+      pregunta: "¿Qué ocurrió con José al final de su vida?", 
+      correcta: "Murió en Egipto y su historia continuó con el pueblo hebreo", 
+      opciones: ["Su historia terminó", "Se olvidó de él", "Murió en Egipto y su historia continuó con el pueblo hebreo"] 
+    },
+    { 
+      pregunta: "¿Qué hizo el nuevo Faraón que no recordaba a José?", 
+      correcta: "Esclavizó a los hebreos", 
+      opciones: ["Los liberó", "Los ayudó", "Esclavizó a los hebreos"] 
+    },
+    { 
+      pregunta: "¿Cómo vivían los hebreos en Egipto cuando se recordaba a José?", 
+      correcta: "En paz", 
+      opciones: ["En guerra", "Con miedo", "En paz"] 
+    },
+    { 
+      pregunta: "¿Qué caracterizaba al nuevo Faraón que subió al poder?", 
+      correcta: "No conocía la historia de José", 
+      opciones: ["Era muy sabio", "Era amigo de los hebreos", "No conocía la historia de José"] 
+    },
+    { 
+      pregunta: "¿Cómo veía el nuevo Faraón a los hebreos?", 
+      correcta: "Como extranjeros con creencias distintas", 
+      opciones: ["Como ciudadanos", "Como hermanos", "Como extranjeros con creencias distintas"] 
+    },
+    { 
+      pregunta: "¿Qué hicieron los egipcios con los hebreos?", 
+      correcta: "Los convirtieron en esclavos y les obligaron a construir ciudades", 
+      opciones: ["Los hicieron reyes", "Los liberaron", "Los convirtieron en esclavos y les obligaron a construir ciudades"] 
+    },
+    { 
+      pregunta: "¿Qué ordenó el Faraón respecto a los varones hebreos recién nacidos?", 
+      correcta: "Que fueran arrojados al Nilo", 
+      opciones: ["Que fueran protegidos", "Que fueran educados", "Que fueran arrojados al Nilo"] 
+    },
+    { 
+      pregunta: "¿Qué hizo Jocabed con Moisés cuando era bebé?", 
+      correcta: "Lo escondió y lo puso en una canasta en el Nilo", 
+      opciones: ["Lo regaló", "Lo escondió y lo puso en una canasta en el Nilo", "Lo dejó en la puerta del palacio"] 
+    },
+    { 
+      pregunta: "¿Qué hizo la hija del Faraón al encontrar la canasta con Moisés?", 
+      correcta: "Adoptó a Moisés", 
+      opciones: ["La rompió", "La ignoró", "Adoptó a Moisés"] 
+    },
+    { 
+      pregunta: "¿Qué hizo Moisés cuando la princesa lo tomó en brazos?", 
+      correcta: "Comenzó a llorar", 
+      opciones: ["Se rió", "Sonrió", "Comenzó a llorar"] 
+    },
+    { 
+      pregunta: "¿Qué hizo Miriam con la canasta en la que estaba Moisés?", 
+      correcta: "La vigiló y habló con la princesa", 
+      opciones: ["La escondió", "La tiró al Nilo", "La vigiló y habló con la princesa"] 
+    },
+    { 
+      pregunta: "¿Qué sugirió Miriam para cuidar a Moisés?", 
+      correcta: "Que una nodriza hebrea lo criara", 
+      opciones: ["Que se mudara al palacio", "Que Moisés fuera enviado a la escuela", "Que una nodriza hebrea lo criara"] 
+    },
+    { 
+      pregunta: "¿Quién fue elegida para cuidar a Moisés y recibió un pago por ello?", 
+      correcta: "Jocabed, su madre", 
+      opciones: ["Miriam", "La hija del Faraón", "Jocabed, su madre"] 
+    },
+    { 
+      pregunta: "¿Qué papel tuvo el Nilo en la historia de Moisés?", 
+      correcta: "Fue clave para su rescate y en las plagas de Egipto", 
+      opciones: ["Fue un río tranquilo", "Fue olvidado", "Fue clave para su rescate y en las plagas de Egipto"] 
+    },
+    { 
+      pregunta: "¿Qué se dice de Aarón, el hermano de Moisés?", 
+      correcta: "Nació antes del edicto y no fue afectado", 
+      opciones: ["Nació después y fue afectado", "No se menciona su nacimiento", "Nació antes del edicto y no fue afectado"] 
+    },
+    { 
+      pregunta: "¿Qué ordenó Dios a Abraham en Génesis 12:1-9?", 
+      correcta: "Salir de Ur y dirigirse a Canaán", 
+      opciones: ["Quedarse en Ur", "Construir un templo", "Salir de Ur y dirigirse a Canaán"] 
+    },
+    { 
+      pregunta: "¿Qué prometió Dios a Abraham acerca de su descendencia en Génesis 15:5?", 
+      correcta: "Que sería tan numerosa como las estrellas del cielo", 
+      opciones: ["Que sería pequeña", "Que sería famosa", "Que sería tan numerosa como las estrellas del cielo"] 
+    },
+    { 
+      pregunta: "¿Qué acontecimiento cumplió la promesa de Dios a Abraham y Sara?", 
+      correcta: "El nacimiento de Isaac", 
+      opciones: ["El nacimiento de Jacob", "El nacimiento de Isaac", "El viaje a Canaán"] 
+    },
+    { 
+      pregunta: "¿Qué soñó Jacob en Génesis 28?", 
+      correcta: "Una escalera que llega al cielo", 
+      opciones: ["Una gran torre", "Un valle profundo", "Una escalera que llega al cielo"] 
+    },
+    { 
+      pregunta: "¿Qué cambio hizo Dios en Jacob después de luchar con un ángel?", 
+      correcta: "Lo llamó Israel", 
+      opciones: ["Lo llamó José", "Lo llamó Moisés", "Lo llamó Israel"] 
+    },
+    { 
+      pregunta: "¿Qué hicieron los hermanos de José en Génesis 37 antes de venderlo?", 
+      correcta: "Lo arrojaron a un pozo", 
+      opciones: ["Lo abrazaron", "Lo invitaron a cenar", "Lo arrojaron a un pozo"] 
+    }
+  ];
 
+  // Mezclar todas las preguntas y seleccionar 7 al azar
   preguntasCompletas.sort(() => 0.5 - Math.random());
-  const preguntasSeleccionadas = preguntasCompletas.slice(0, 15);
+  const preguntasSeleccionadas = preguntasCompletas.slice(0, 7);
   preguntasSeleccionadas.forEach(p => p.opciones.sort(() => 0.5 - Math.random()));
 
   let indicePregunta = 0;
   let tiempoInicio = Date.now();
   let intervalo = setInterval(actualizarTemporizador, 1000);
 
+  // Crear el contexto de audio
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  function playBeep(frequency, duration, type = 'sine') {
+
+  // Función para generar un sonido con fundido suave
+  function playBeep(frequency, duration, type = 'sine', fadeTime = 0.1) {
     const osc = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
+    
     osc.frequency.value = frequency;
     osc.type = type;
+    
+    // Comienza con volumen 0 y aumenta gradualmente
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
     osc.connect(gainNode);
     gainNode.connect(audioCtx.destination);
+    
     osc.start();
     setTimeout(() => osc.stop(), duration);
   }
+
+  // Función para generar pitido de error (más suave, con frecuencia reducida)
   function emitirPitido() {
-    if (audioCtx.state === 'suspended') audioCtx.resume().then(() => playBeep(1000, 200));
-    else playBeep(1000, 200);
-  }
-  function emitirPitidoDulce() {
-    if (audioCtx.state === 'suspended') audioCtx.resume().then(() => playBeep(600, 300, 'triangle'));
-    else playBeep(600, 300, 'triangle');
+    if (audioCtx.state === 'suspended') 
+      audioCtx.resume().then(() => playBeep(500, 300, 'sine', 0.2));
+    else 
+      playBeep(500, 300, 'sine', 0.2);
   }
 
+  // Función para generar el sonido de campanillas angelicales
+  function playChime(frequencies, duration, type = 'triangle', fadeTime = 0.2) {
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc1.frequency.value = frequencies[0];
+    osc2.frequency.value = frequencies[1];
+    osc1.type = type;
+    osc2.type = type;
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc1.connect(gainNode);
+    osc2.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc1.start();
+    osc2.start();
+    
+    setTimeout(() => {
+      osc1.stop();
+      osc2.stop();
+    }, duration);
+  }
+  
+  // Función para el pitido de acierto con campanillas angelicales
+  function emitirPitidoDulce() {
+    if (audioCtx.state === 'suspended') 
+      audioCtx.resume().then(() => playChime([800, 1200], 800, 'triangle', 0.3));
+    else 
+      playChime([800, 1200], 800, 'triangle', 0.3);
+  }
+  
+  // Actualizar temporizador
   function actualizarTemporizador() {
     let tiempoPasado = Date.now() - tiempoInicio;
     let minutos = Math.floor(tiempoPasado / 60000);
@@ -285,7 +455,8 @@
     document.getElementById("temporizador").textContent =
       `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
   }
-
+  
+  // Mostrar la pregunta actual y asignar eventos a los botones
   function mostrarPregunta() {
     if (indicePregunta >= preguntasSeleccionadas.length) {
       clearInterval(intervalo);
@@ -294,20 +465,23 @@
       document.getElementById("tiempoFinal").textContent = document.getElementById("temporizador").textContent;
       return;
     }
-
+  
     let preguntaActual = preguntasSeleccionadas[indicePregunta];
     document.getElementById("pregunta").textContent = preguntaActual.pregunta;
     document.getElementById("respuesta1").textContent = preguntaActual.opciones[0];
     document.getElementById("respuesta2").textContent = preguntaActual.opciones[1];
     document.getElementById("respuesta3").textContent = preguntaActual.opciones[2];
-
+  
     document.querySelectorAll(".respuesta-btn").forEach(boton => {
       boton.classList.remove("correct", "incorrect");
       boton.onclick = () => {
         if (boton.textContent === preguntaActual.correcta) {
           boton.classList.add("correct");
           emitirPitidoDulce();
-          setTimeout(() => { indicePregunta++; mostrarPregunta(); }, 500);
+          setTimeout(() => { 
+            indicePregunta++; 
+            mostrarPregunta(); 
+          }, 500);
         } else {
           boton.classList.add("incorrect");
           emitirPitido();
@@ -316,7 +490,7 @@
       };
     });
   }
-
+  
   mostrarPregunta();
 </script>
 
