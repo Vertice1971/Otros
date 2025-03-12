@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joseph, Son of Jacob (Sample) 📖✝️</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffcc33, #ff6600);
+      margin: 0;
+    }
+    .trivia-container, .mensaje-felicidades {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+      border: 4px double #ff6600;
+      position: relative;
+    }
+    /* Icons for biblical theme */
+    .trivia-container::before, .mensaje-felicidades::before {
+      content: "📖";
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      font-size: 30px;
+    }
+    .trivia-container::after, .mensaje-felicidades::after {
+      content: "✝️";
+      position: absolute;
+      bottom: -15px;
+      right: -15px;
+      font-size: 30px;
+    }
+    h1 {
+      font-size: 26px;
+      margin-bottom: 15px;
+      color: #ff6600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+    #respuesta1 { background-color: #007bff; }
+    #respuesta2 { background-color: #ff9800; }
+    #respuesta3 { background-color: #9c27b0; }
+    .btn:hover {
+      filter: brightness(85%);
+      transform: scale(1.05);
+    }
+    .btn.incorrect {
+      background-color: #ff4444;
+      animation: shake 0.5s;
+    }
+    .btn.correct {
+      background-color: #00cc66 !important;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+    .temporizador {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff6600;
+      background: #fff3cd;
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+    .mensaje-felicidades {
+      display: none;
+    }
+    .mensaje-felicidades h2 {
+      font-size: 30px;
+      color: #00cc66;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .mensaje-felicidades p {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .mensaje-felicidades .tiempo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .btn-restart {
+      background-color: #007bff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="trivia-container" id="triviaContainer">
+  <h1>📖 Joseph, Son of Jacob (Sample) ✝️</h1>
+  <div class="temporizador" id="temporizador">00:00</div>
+  <p id="pregunta"></p>
+  <button id="respuesta1" class="btn respuesta-btn"></button>
+  <button id="respuesta2" class="btn respuesta-btn"></button>
+  <button id="respuesta3" class="btn respuesta-btn"></button>
+</div>
+
+<div class="mensaje-felicidades" id="mensajeFelicidades">
+  <h2>✝️ Congratulations!!! 📖</h2>
+  <p>You have answered all the questions!</p>
+  <p>Total time: <span class="tiempo" id="tiempoFinal"></span></p>
+  <button class="btn btn-restart" onclick="reloadGame()">Play Again</button>
+</div>
+
+<script>
+  function reloadGame() {
+    window.location.reload();
+  }
+
+  // Array of 17 questions based on the given theme
+  const preguntasCompletas = [
+    { 
+      pregunta: "What did God ask Abraham to do?",
+      correcta: "To leave his land.",
+      opciones: ["To build a ship.", "To leave his land.", "To become king of Egypt."]
+    },
+    { 
+      pregunta: "What land did God promise to Abraham and his descendants?",
+      correcta: "Canaan.",
+      opciones: ["Egypt.", "Canaan.", "Babylon."]
+    },
+    { 
+      pregunta: "Who did Abraham travel with when he left his land?",
+      correcta: "His wife Sarah and his nephew Lot.",
+      opciones: ["His wife Sarah and his nephew Lot.", "His friends and soldiers.", "Moses and Aaron."]
+    },
+    { 
+      pregunta: "What did Abraham do when he arrived in Canaan to thank God?",
+      correcta: "He built an altar.",
+      opciones: ["He built an altar.", "He threw a party.", "He wrote a book."]
+    },
+    { 
+      pregunta: "What did God promise Abraham about his descendants?",
+      correcta: "They would be as numerous as the stars.",
+      opciones: ["They would be few but very strong.", "They would be as numerous as the stars.", "They would rule the entire world."]
+    },
+    { 
+      pregunta: "What was the name of the son Abraham had in his old age?",
+      correcta: "Isaac.",
+      opciones: ["Moses.", "Isaac.", "David."]
+    },
+    { 
+      pregunta: "What were the names of Isaac and Rebekah's twin sons?",
+      correcta: "Esau and Jacob.",
+      opciones: ["Joseph and Benjamin.", "Moses and Aaron.", "Esau and Jacob."]
+    },
+    { 
+      pregunta: "What did Esau give Jacob in exchange for a bowl of lentils?",
+      correcta: "His birthright.",
+      opciones: ["His birthright.", "His flock of sheep.", "His sword."]
+    },
+    { 
+      pregunta: "How did Jacob obtain his father Isaac's blessing?",
+      correcta: "With his mother's help, by deceiving him.",
+      opciones: ["By winning a battle.", "With his mother's help, by deceiving him.", "By making a sacrifice on an altar."]
+    },
+    { 
+      pregunta: "Why did Jacob have to flee from his home?",
+      correcta: "Because Esau wanted to harm him.",
+      opciones: ["Because Esau wanted to harm him.", "Because he stole a treasure.", "Because he got lost in the forest."]
+    },
+    { 
+      pregunta: "What did God say to Jacob in a dream?",
+      correcta: "\"Do not fear, Jacob. I will be with you.\"",
+      opciones: ["\"Do not fear, Jacob. I will be with you.\"", "\"Build a temple in my honor.\"", "\"Go to Egypt and be its king.\""]
+    },
+    { 
+      pregunta: "What new name did God give to Jacob?",
+      correcta: "Israel.",
+      opciones: ["Moses.", "Israel.", "Solomon."]
+    },
+    { 
+      pregunta: "How many sons did Jacob have, who would become the ancestors of the tribes of Israel?",
+      correcta: "Twelve.",
+      opciones: ["Twelve.", "Seven.", "Twenty."]
+    },
+    { 
+      pregunta: "What did Jacob give to his son Joseph to show he was his favorite?",
+      correcta: "A coat of many colors.",
+      opciones: ["A golden sword.", "A coat of many colors.", "A crown."]
+    },
+    { 
+      pregunta: "What did Joseph dream about his brothers?",
+      correcta: "That their sheaves of wheat bowed down to his.",
+      opciones: ["That their sheaves of wheat bowed down to his.", "That he flew over Egypt.", "That a river swallowed his house."]
+    },
+    { 
+      pregunta: "What did Joseph's second dream mean?",
+      correcta: "That the sun, moon, and eleven stars bowed down to him.",
+      opciones: ["That the sun, moon, and eleven stars bowed down to him.", "That he would find a chest full of gold.", "That he would live in the desert."]
+    },
+    { 
+      pregunta: "Where did Jacob send Joseph to look for his brothers?",
+      correcta: "To Shechem.",
+      opciones: ["To Shechem.", "To Egypt.", "To Babylon."]
+    }
+  ];
+
+  // Shuffle all questions and select 5 at random
+  preguntasCompletas.sort(() => 0.5 - Math.random());
+  const preguntasSeleccionadas = preguntasCompletas.slice(0, 5);
+  preguntasSeleccionadas.forEach(p => p.opciones.sort(() => 0.5 - Math.random()));
+
+  let indicePregunta = 0;
+  let tiempoInicio = Date.now();
+  let intervalo = setInterval(actualizarTemporizador, 1000);
+
+  // Create audio context
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // Function to generate sound with smooth fade
+  function playBeep(frequency, duration, type = 'sine', fadeTime = 0.1) {
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.frequency.value = frequency;
+    osc.type = type;
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start();
+    setTimeout(() => osc.stop(), duration);
+  }
+
+  // Error sound (soft beep)
+  function emitirPitido() {
+    if (audioCtx.state === 'suspended')
+      audioCtx.resume().then(() => playBeep(500, 300, 'sine', 0.2));
+    else 
+      playBeep(500, 300, 'sine', 0.2);
+  }
+
+  // Correct answer sound: angelic chimes
+  function playChime(frequencies, duration, type = 'triangle', fadeTime = 0.2) {
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc1.frequency.value = frequencies[0];
+    osc2.frequency.value = frequencies[1];
+    osc1.type = type;
+    osc2.type = type;
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc1.connect(gainNode);
+    osc2.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc1.start();
+    osc2.start();
+    
+    setTimeout(() => {
+      osc1.stop();
+      osc2.stop();
+    }, duration);
+  }
+
+  // Correct answer sound with angelic chimes
+  function emitirPitidoDulce() {
+    if (audioCtx.state === 'suspended')
+      audioCtx.resume().then(() => playChime([800, 1200], 800, 'triangle', 0.3));
+    else 
+      playChime([800, 1200], 800, 'triangle', 0.3);
+  }
+
+  // Update the timer
+  function actualizarTemporizador() {
+    let tiempoPasado = Date.now() - tiempoInicio;
+    let minutos = Math.floor(tiempoPasado / 60000);
+    let segundos = Math.floor((tiempoPasado % 60000) / 1000);
+    document.getElementById("temporizador").textContent =
+      `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
+  }
+
+  // Show the current question and set up the answers
+  function mostrarPregunta() {
+    if (indicePregunta >= preguntasSeleccionadas.length) {
+      clearInterval(intervalo);
+      document.getElementById("triviaContainer").style.display = "none";
+      document.getElementById("mensajeFelicidades").style.display = "block";
+      document.getElementById("tiempoFinal").textContent = document.getElementById("temporizador").textContent;
+      return;
+    }
+  
+    let preguntaActual = preguntasSeleccionadas[indicePregunta];
+    document.getElementById("pregunta").textContent = preguntaActual.pregunta;
+    document.getElementById("respuesta1").textContent = preguntaActual.opciones[0];
+    document.getElementById("respuesta2").textContent = preguntaActual.opciones[1];
+    document.getElementById("respuesta3").textContent = preguntaActual.opciones[2];
+  
+    document.querySelectorAll(".respuesta-btn").forEach(boton => {
+      boton.classList.remove("correct", "incorrect");
+      boton.onclick = () => {
+        if (boton.textContent === preguntaActual.correcta) {
+          boton.classList.add("correct");
+          emitirPitidoDulce();
+          setTimeout(() => {
+            indicePregunta++;
+            mostrarPregunta();
+          }, 500);
+        } else {
+          boton.classList.add("incorrect");
+          emitirPitido();
+          setTimeout(() => boton.classList.remove("incorrect"), 500);
+        }
+      };
+    });
+  }
+  
+  mostrarPregunta();
+</script>
+
+</body>
+</html>
