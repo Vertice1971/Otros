@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joseph, Son of Jacob 📖✝️</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffcc33, #ff6600);
+      margin: 0;
+    }
+    .trivia-container, .mensaje-felicidades {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+      border: 4px double #ff6600;
+      position: relative;
+    }
+    /* Updated icons for biblical theme */
+    .trivia-container::before, .mensaje-felicidades::before {
+      content: "📖";
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      font-size: 30px;
+    }
+    .trivia-container::after, .mensaje-felicidades::after {
+      content: "✝️";
+      position: absolute;
+      bottom: -15px;
+      right: -15px;
+      font-size: 30px;
+    }
+    h1 {
+      font-size: 26px;
+      margin-bottom: 15px;
+      color: #ff6600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+    #respuesta1 { background-color: #007bff; }
+    #respuesta2 { background-color: #ff9800; }
+    #respuesta3 { background-color: #9c27b0; }
+    .btn:hover {
+      filter: brightness(85%);
+      transform: scale(1.05);
+    }
+    .btn.incorrect {
+      background-color: #ff4444;
+      animation: shake 0.5s;
+    }
+    .btn.correct {
+      background-color: #00cc66 !important;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+    .temporizador {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff6600;
+      background: #fff3cd;
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+    .mensaje-felicidades {
+      display: none;
+    }
+    .mensaje-felicidades h2 {
+      font-size: 30px;
+      color: #00cc66;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .mensaje-felicidades p {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .mensaje-felicidades .tiempo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .btn-restart {
+      background-color: #007bff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="trivia-container" id="triviaContainer">
+  <h1>📖 Joseph, Son of Jacob ✝️</h1>
+  <div class="temporizador" id="temporizador">00:00</div>
+  <p id="pregunta"></p>
+  <button id="respuesta1" class="btn respuesta-btn"></button>
+  <button id="respuesta2" class="btn respuesta-btn"></button>
+  <button id="respuesta3" class="btn respuesta-btn"></button>
+</div>
+
+<div class="mensaje-felicidades" id="mensajeFelicidades">
+  <h2>✝️ Congratulations!!! 📖</h2>
+  <p>It's hard to know more than you...</p>
+  <p>Total time: <span class="tiempo" id="tiempoFinal"></span></p>
+  <button class="btn btn-restart" onclick="reloadGame()">Play Again</button>
+</div>
+
+<script>
+  function reloadGame() {
+    window.location.reload();
+  }
+
+  // Complete array of questions based on biblical events
+  const preguntasCompletas = [
+    { 
+      pregunta: "What did Joseph show while working in Egypt?", 
+      correcta: "Integrity and wisdom", 
+      opciones: ["Ambition and pride", "Integrity and wisdom", "Strength and courage"] 
+    },
+    { 
+      pregunta: "How did Joseph save Egypt from famine?", 
+      correcta: "By wisely managing resources", 
+      opciones: ["By building ships", "By organizing parties", "By wisely managing resources"] 
+    },
+    { 
+      pregunta: "Why did Joseph's brothers come to Egypt?", 
+      correcta: "To seek food due to the famine", 
+      opciones: ["To visit Joseph", "To seek food due to the famine", "For tourism"] 
+    },
+    { 
+      pregunta: "What did Joseph do with his brothers instead of taking revenge?", 
+      correcta: "He forgave them and gave them food", 
+      opciones: ["He punished them", "He ignored them", "He forgave them and gave them food"] 
+    },
+    { 
+      pregunta: "What did Pharaoh allow Jacob and his family to do in Egypt?", 
+      correcta: "To settle in Egypt", 
+      opciones: ["To travel through the desert", "To settle in Egypt", "To move to another land"] 
+    },
+    { 
+      pregunta: "Where did Jacob's family prosper in Egypt?", 
+      correcta: "In the region of Goshen", 
+      opciones: ["By the Nile", "In the region of Goshen", "In Pharaoh's palace"] 
+    },
+    { 
+      pregunta: "What skill did Joseph show in prison?", 
+      correcta: "Interpreting dreams", 
+      opciones: ["Singing songs", "Baking bread", "Interpreting dreams"] 
+    },
+    { 
+      pregunta: "According to Joseph's prediction, what happened to the cupbearer and the baker?", 
+      correcta: "The cupbearer was restored, and the baker was executed", 
+      opciones: ["Both were freed", "Both were executed", "The cupbearer was restored, and the baker was executed"] 
+    },
+    { 
+      pregunta: "Who reminded Pharaoh of Joseph when he had troubling dreams?", 
+      correcta: "The cupbearer", 
+      opciones: ["The baker", "The cupbearer", "A slave"] 
+    },
+    { 
+      pregunta: "What did Joseph interpret in Pharaoh's dream about fat and thin cows?", 
+      correcta: "Years of abundance and years of famine", 
+      opciones: ["The end of the world", "An invasion", "Years of abundance and years of famine"] 
+    },
+    { 
+      pregunta: "What position did Joseph receive for his wisdom?", 
+      correcta: "Governor of Egypt", 
+      opciones: ["Advisor", "General of the army", "Governor of Egypt"] 
+    },
+    { 
+      pregunta: "How did Jacob feel in Canaan about his son Joseph?", 
+      correcta: "He mourned his loss", 
+      opciones: ["He celebrated him", "He mourned his loss", "He had forgotten him"] 
+    },
+    { 
+      pregunta: "What did Joseph's brothers do when they traveled to Egypt?", 
+      correcta: "They bought grain without recognizing Joseph", 
+      opciones: ["They bought grain without recognizing Joseph", "They sought him out to embrace him", "They stayed in Canaan"] 
+    },
+    { 
+      pregunta: "How did Joseph test if his brothers had changed?", 
+      correcta: "He put them to the test", 
+      opciones: ["He ignored them", "He put them to the test", "He gave them money"] 
+    },
+    { 
+      pregunta: "What did Joseph ask for as part of the test for his brothers?", 
+      correcta: "To bring Benjamin", 
+      opciones: ["To bring Reuben", "To bring Benjamin", "To bring a slave"] 
+    },
+    { 
+      pregunta: "What did Joseph's brothers do regarding Benjamin?", 
+      correcta: "They convinced Jacob to bring Benjamin", 
+      opciones: ["They left him in Egypt", "They ignored Benjamin", "They convinced Jacob to bring Benjamin"] 
+    },
+    { 
+      pregunta: "What did Joseph do with his cup in Benjamin's sack?", 
+      correcta: "He hid it and accused them of theft", 
+      opciones: ["He gave it as a gift", "He hid it and accused them of theft", "He lost it"] 
+    },
+    { 
+      pregunta: "What did Judah do to protect his father Jacob?", 
+      correcta: "He offered himself as a slave instead of Benjamin", 
+      opciones: ["He fled the country", "He did nothing", "He offered himself as a slave instead of Benjamin"] 
+    },
+    { 
+      pregunta: "What did Joseph reveal to his brothers at the end of the test?", 
+      correcta: "That God had used everything for good", 
+      opciones: ["That he was a spy", "That they were in trouble", "That God had used everything for good"] 
+    },
+    { 
+      pregunta: "What did Joseph order his brothers regarding Jacob?", 
+      correcta: "To bring Jacob and his family to Egypt", 
+      opciones: ["To leave Jacob in Canaan", "To forget Jacob", "To bring Jacob and his family to Egypt"] 
+    },
+    { 
+      pregunta: "How did Jacob and Joseph feel when they reunited in Egypt?", 
+      correcta: "With emotion", 
+      opciones: ["With anger", "With indifference", "With emotion"] 
+    },
+    { 
+      pregunta: "What did Jacob do before he died?", 
+      correcta: "He blessed his sons and predicted their future", 
+      opciones: ["He forgot his family", "He gave them lands", "He blessed his sons and predicted their future"] 
+    },
+    { 
+      pregunta: "What did Joseph swear to his family before he died?", 
+      correcta: "To carry their bones to the Promised Land", 
+      opciones: ["To stay in Egypt", "To forget their origins", "To carry their bones to the Promised Land"] 
+    },
+    { 
+      pregunta: "What happened to Joseph at the end of his life?", 
+      correcta: "He died in Egypt, and his story continued with the Hebrew people", 
+      opciones: ["His story ended", "He was forgotten", "He died in Egypt, and his story continued with the Hebrew people"] 
+    },
+    { 
+      pregunta: "What did the new Pharaoh, who did not remember Joseph, do?", 
+      correcta: "He enslaved the Hebrews", 
+      opciones: ["He freed them", "He helped them", "He enslaved the Hebrews"] 
+    },
+    { 
+      pregunta: "How did the Hebrews live in Egypt when Joseph was remembered?", 
+      correcta: "In peace", 
+      opciones: ["In war", "In fear", "In peace"] 
+    },
+    { 
+      pregunta: "What characterized the new Pharaoh who came to power?", 
+      correcta: "He did not know Joseph's story", 
+      opciones: ["He was very wise", "He was a friend of the Hebrews", "He did not know Joseph's story"] 
+    },
+    { 
+      pregunta: "How did the new Pharaoh view the Hebrews?", 
+      correcta: "As foreigners with different beliefs", 
+      opciones: ["As citizens", "As brothers", "As foreigners with different beliefs"] 
+    },
+    { 
+      pregunta: "What did the Egyptians do to the Hebrews?", 
+      correcta: "They enslaved them and forced them to build cities", 
+      opciones: ["They made them kings", "They freed them", "They enslaved them and forced them to build cities"] 
+    },
+    { 
+      pregunta: "What did Pharaoh order regarding newborn Hebrew boys?", 
+      correcta: "That they be thrown into the Nile", 
+      opciones: ["That they be protected", "That they be educated", "That they be thrown into the Nile"] 
+    },
+    { 
+      pregunta: "What did Jochebed do with baby Moses?", 
+      correcta: "She hid him and placed him in a basket in the Nile", 
+      opciones: ["She gave him away", "She hid him and placed him in a basket in the Nile", "She left him at the palace gate"] 
+    },
+    { 
+      pregunta: "What did Pharaoh's daughter do when she found the basket with Moses?", 
+      correcta: "She adopted Moses", 
+      opciones: ["She destroyed it", "She ignored it", "She adopted Moses"] 
+    },
+    { 
+      pregunta: "What did Moses do when the princess took him in her arms?", 
+      correcta: "He began to cry", 
+      opciones: ["He laughed", "He smiled", "He began to cry"] 
+    },
+    { 
+      pregunta: "What did Miriam do with the basket containing Moses?", 
+      correcta: "She watched over it and spoke to the princess", 
+      opciones: ["She hid it", "She threw it into the Nile", "She watched over it and spoke to the princess"] 
+    },
+    { 
+      pregunta: "What did Miriam suggest to care for Moses?", 
+      correcta: "That a Hebrew nurse raise him", 
+      opciones: ["That he move to the palace", "That Moses be sent to school", "That a Hebrew nurse raise him"] 
+    },
+    { 
+      pregunta: "Who was chosen to care for Moses and was paid for it?", 
+      correcta: "Jochebed, his mother", 
+      opciones: ["Miriam", "Pharaoh's daughter", "Jochebed, his mother"] 
+    },
+    { 
+      pregunta: "What role did the Nile play in Moses' story?", 
+      correcta: "It was key to his rescue and in the plagues of Egypt", 
+      opciones: ["It was a calm river", "It was forgotten", "It was key to his rescue and in the plagues of Egypt"] 
+    },
+    { 
+      pregunta: "What is said about Aaron, Moses' brother?", 
+      correcta: "He was born before the decree and was unaffected", 
+      opciones: ["He was born after and was affected", "His birth is not mentioned", "He was born before the decree and was unaffected"] 
+    },
+    { 
+      pregunta: "What did God command Abraham in Genesis 12:1-9?", 
+      correcta: "To leave Ur and go to Canaan", 
+      opciones: ["To stay in Ur", "To build a temple", "To leave Ur and go to Canaan"] 
+    },
+    { 
+      pregunta: "What did God promise Abraham about his descendants in Genesis 15:5?", 
+      correcta: "That they would be as numerous as the stars in the sky", 
+      opciones: ["That they would be few", "That they would be famous", "That they would be as numerous as the stars in the sky"] 
+    },
+    { 
+      pregunta: "What event fulfilled God's promise to Abraham and Sarah?", 
+      correcta: "The birth of Isaac", 
+      opciones: ["The birth of Jacob", "The birth of Isaac", "The journey to Canaan"] 
+    },
+    { 
+      pregunta: "What did Jacob dream in Genesis 28?", 
+      correcta: "A ladder reaching to heaven", 
+      opciones: ["A great tower", "A deep valley", "A ladder reaching to heaven"] 
+    },
+    { 
+      pregunta: "What change did God make in Jacob after he wrestled with an angel?", 
+      correcta: "He named him Israel", 
+      opciones: ["He named him Joseph", "He named him Moses", "He named him Israel"] 
+    },
+    { 
+      pregunta: "What did Joseph's brothers do in Genesis 37 before selling him?", 
+      correcta: "They threw him into a pit", 
+      opciones: ["They embraced him", "They invited him to dinner", "They threw him into a pit"] 
+    }
+  ];
+
+  // Shuffle all questions and select 7 at random
+  preguntasCompletas.sort(() => 0.5 - Math.random());
+  const preguntasSeleccionadas = preguntasCompletas.slice(0, 7);
+  preguntasSeleccionadas.forEach(p => p.opciones.sort(() => 0.5 - Math.random()));
+
+  let indicePregunta = 0;
+  let tiempoInicio = Date.now();
+  let intervalo = setInterval(actualizarTemporizador, 1000);
+
+  // Create audio context
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // Function to generate sound with smooth fade
+  function playBeep(frequency, duration, type = 'sine', fadeTime = 0.1) {
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.frequency.value = frequency;
+    osc.type = type;
+    
+    // Start with volume 0 and gradually increase
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start();
+    setTimeout(() => osc.stop(), duration);
+  }
+
+  // Function to generate error beep (softer, with reduced frequency)
+  function emitirPitido() {
+    if (audioCtx.state === 'suspended') 
+      audioCtx.resume().then(() => playBeep(500, 300, 'sine', 0.2));
+    else 
+      playBeep(500, 300, 'sine', 0.2);
+  }
+
+  // Function to generate angelic chime sound
+  function playChime(frequencies, duration, type = 'triangle', fadeTime = 0.2) {
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc1.frequency.value = frequencies[0];
+    osc2.frequency.value = frequencies[1];
+    osc1.type = type;
+    osc2.type = type;
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc1.connect(gainNode);
+    osc2.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc1.start();
+    osc2.start();
+    
+    setTimeout(() => {
+      osc1.stop();
+      osc2.stop();
+    }, duration);
+  }
+  
+  // Function for success beep with angelic chimes
+  function emitirPitidoDulce() {
+    if (audioCtx.state === 'suspended') 
+      audioCtx.resume().then(() => playChime([800, 1200], 800, 'triangle', 0.3));
+    else 
+      playChime([800, 1200], 800, 'triangle', 0.3);
+  }
+  
+  // Update timer
+  function actualizarTemporizador() {
+    let tiempoPasado = Date.now() - tiempoInicio;
+    let minutos = Math.floor(tiempoPasado / 60000);
+    let segundos = Math.floor((tiempoPasado % 60000) / 1000);
+    document.getElementById("temporizador").textContent =
+      `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
+  }
+  
+  // Show the current question and assign events to the buttons
+  function mostrarPregunta() {
+    if (indicePregunta >= preguntasSeleccionadas.length) {
+      clearInterval(intervalo);
+      document.getElementById("triviaContainer").style.display = "none";
+      document.getElementById("mensajeFelicidades").style.display = "block";
+      document.getElementById("tiempoFinal").textContent = document.getElementById("temporizador").textContent;
+      return;
+    }
+  
+    let preguntaActual = preguntasSeleccionadas[indicePregunta];
+    document.getElementById("pregunta").textContent = preguntaActual.pregunta;
+    document.getElementById("respuesta1").textContent = preguntaActual.opciones[0];
+    document.getElementById("respuesta2").textContent = preguntaActual.opciones[1];
+    document.getElementById("respuesta3").textContent = preguntaActual.opciones[2];
+  
+    document.querySelectorAll(".respuesta-btn").forEach(boton => {
+      boton.classList.remove("correct", "incorrect");
+      boton.onclick = () => {
+        if (boton.textContent === preguntaActual.correcta) {
+          boton.classList.add("correct");
+          emitirPitidoDulce();
+          setTimeout(() => { 
+            indicePregunta++; 
+            mostrarPregunta(); 
+          }, 500);
+        } else {
+          boton.classList.add("incorrect");
+          emitirPitido();
+          setTimeout(() => boton.classList.remove("incorrect"), 500);
+        }
+      };
+    });
+  }
+  
+  mostrarPregunta();
+</script>
+
+</body>
+</html>
