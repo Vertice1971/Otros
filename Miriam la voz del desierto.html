@@ -13,6 +13,37 @@
       height: 100vh;
       background: linear-gradient(135deg, #ffcc33, #ff6600);
       margin: 0;
+      position: relative;
+    }
+    /* Fondo semitransparente con la imagen que se queda durante la partida */
+    #bgOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url("MiriamGit.JPG") no-repeat center center;
+      background-size: contain;
+      opacity: 0.5;
+      z-index: 1;
+      pointer-events: none;
+    }
+    /* Portada inicial que se muestra completa durante 3 segundos */
+    #cover {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #cover img {
+      max-height: 100%;
+      max-width: 100%;
     }
     .trivia-container, .mensaje-felicidades {
       background-color: #fff;
@@ -24,6 +55,7 @@
       max-width: 450px;
       border: 4px double #ff6600;
       position: relative;
+      z-index: 2; /* Por encima del bgOverlay */
     }
     /* Iconos para tema bíblico */
     .trivia-container::before, .mensaje-felicidades::before {
@@ -126,6 +158,14 @@
 </head>
 <body>
 
+<!-- Portada inicial -->
+<div id="cover">
+  <img src="MiriamGit.JPG" alt="Portada">
+</div>
+
+<!-- Fondo semitransparente con la imagen, se sitúa detrás del contenido -->
+<div id="bgOverlay"></div>
+
 <div class="trivia-container" id="triviaContainer">
   <h1>📖 Miriam, la voz del desierto ✝️</h1>
   <div class="temporizador" id="temporizador">00:00</div>
@@ -147,170 +187,168 @@
     window.location.reload();
   }
 
-  
   const preguntasCompletas = [
-  { 
-    pregunta: "¿Cómo eran tratados los hebreos en Egipto?", 
-    correcta: "Como esclavos trabajando en la construcción", 
-    opciones: ["Como nobles", "Como comerciantes", "Como esclavos trabajando en la construcción"]
-  },
-  { 
-    pregunta: "¿Qué orden dio el Faraón sobre los bebés hebreos?", 
-    correcta: "Arrojar los recién nacidos al Nilo", 
-    opciones: ["Arrojar los recién nacidos al Nilo", "Criarlos en palacio", "Protegérselos"]
-  },
-  { 
-    pregunta: "¿Qué hizo Jocabed con Moisés para salvarlo?", 
-    correcta: "Lo ocultó por tres meses", 
-    opciones: ["Lo ocultó por tres meses", "Lo regaló", "Lo dejó en el palacio"]
-  },
-  { 
-    pregunta: "¿Dónde colocó Jocabed a Moisés para protegerlo?", 
-    correcta: "En una canasta en el Nilo", 
-    opciones: ["En una canasta en el Nilo", "En un cofre en el desierto", "En una cuna en la casa"]
-  },
-  { 
-    pregunta: "¿Quién vigiló a Moisés desde la orilla del Nilo?", 
-    correcta: "Miriam", 
-    opciones: ["Miriam", "Jocabed", "La hija del Faraón"]
-  },
-  { 
-    pregunta: "¿Quién encontró a Moisés en el Nilo?", 
-    correcta: "La hija del Faraón", 
-    opciones: ["La hija del Faraón", "Una sirvienta egipcia", "Miriam"]
-  },
-  { 
-    pregunta: "¿Qué hizo Miriam para ayudar a Moisés después de ser encontrado?", 
-    correcta: "Sugirió que Jocabed fuera su nodriza", 
-    opciones: ["Sugirió que Jocabed fuera su nodriza", "Lo llamó para jugar", "Se lo llevó al palacio"]
-  },
-  { 
-    pregunta: "¿Dónde creció Moisés después de ser adoptado?", 
-    correcta: "En la corte egipcia", 
-    opciones: ["En la corte egipcia", "En el desierto", "En un pueblo hebreo"]
-  },
-  { 
-    pregunta: "¿Qué hizo Moisés cuando vio a un egipcio golpeando a un hebreo?", 
-    correcta: "Mató al egipcio", 
-    opciones: ["Mató al egipcio", "Llamó a un guardia", "Huyó sin hacer nada"]
-  },
-  { 
-    pregunta: "¿Dónde llamó Dios a Moisés para darle una misión especial?", 
-    correcta: "En la zarza ardiente", 
-    opciones: ["En la zarza ardiente", "En el desierto", "En el palacio"]
-  },
-  { 
-    pregunta: "¿Qué pidieron Moisés y Aarón al Faraón?", 
-    correcta: "Que dejara ir a los hebreos", 
-    opciones: ["Que dejara ir a los hebreos", "Que aumentara los impuestos", "Que construyera más templos"]
-  },
-  { 
-    pregunta: "¿Qué envió Dios sobre Egipto para persuadir al Faraón?", 
-    correcta: "Diez plagas", 
-    opciones: ["Diez plagas", "Diez regalos", "Diez fiestas"]
-  },
-  { 
-    pregunta: "¿Qué hicieron los hebreos para protegerse de la última plaga?", 
-    correcta: "Marcaron sus puertas con sangre de cordero", 
-    opciones: ["Marcaron sus puertas con sangre de cordero", "Encendieron velas", "Construyeron barreras"]
-  },
-  { 
-    pregunta: "¿Qué hizo el Faraón tras la última plaga?", 
-    correcta: "Dejó ir a los hebreos", 
-    opciones: ["Dejó ir a los hebreos", "Aumentó el trabajo", "Construyó más pirámides"]
-  },
-  { 
-    pregunta: "¿Cómo cruzaron los hebreos el Mar Rojo?", 
-    correcta: "Con un camino seco, cuando se abrieron las aguas", 
-    opciones: ["Con un camino seco, cuando se abrieron las aguas", "Nadando sin ayuda", "Usando barcos"]
-  },
-  { 
-    pregunta: "¿Qué hizo Miriam para celebrar la victoria en el Mar Rojo?", 
-    correcta: "Cantó y bailó con pandereta", 
-    opciones: ["Cantó y bailó con pandereta", "Gritó de miedo", "Se escondió"]
-  },
-  { 
-    pregunta: "¿Qué alimento especial envió Dios a los hebreos en el desierto?", 
-    correcta: "Maná del cielo", 
-    opciones: ["Maná del cielo", "Pan normal", "Frutas del desierto"]
-  },
-  { 
-    pregunta: "¿Qué hizo Dios con el agua amarga de Mara?", 
-    correcta: "La hizo dulce y bebible", 
-    opciones: ["La hizo dulce y bebible", "La congeló", "La convirtió en arena"]
-  },
-  { 
-    pregunta: "¿Qué recibió Moisés en el monte Sinaí?", 
-    correcta: "Los Diez Mandamientos", 
-    opciones: ["Los Diez Mandamientos", "Un cetro de poder", "Una corona"]
-  },
-  { 
-    pregunta: "¿Qué hicieron Miriam y Aarón que llevó al castigo de Miriam?", 
-    correcta: "Criticaron el liderazgo de Moisés", 
-    opciones: ["Criticaron el liderazgo de Moisés", "Celebraron demasiado", "No comieron maná"]
-  },
-  { 
-    pregunta: "¿Qué sucedió con Miriam en Cades?", 
-    correcta: "Murió antes de entrar a la Tierra Prometida", 
-    opciones: ["Murió antes de entrar a la Tierra Prometida", "Se casó", "Se convirtió en reina"]
-  },
-  { 
-    pregunta: "¿Qué plaga hizo que los egipcios sufrieran por piojos?", 
-    correcta: "La plaga de los piojos", 
-    opciones: ["La plaga de los piojos", "La plaga de las ranas", "La plaga del granizo"]
-  },
-  { 
-    pregunta: "¿Qué plaga causó que Egipto se llenara de moscas?", 
-    correcta: "La plaga de las moscas", 
-    opciones: ["La plaga de las moscas", "La plaga del agua", "La plaga del fuego"]
-  },
-  { 
-    pregunta: "¿Qué plaga afectó principalmente al ganado egipcio?", 
-    correcta: "La plaga sobre el ganado", 
-    opciones: ["La plaga sobre el ganado", "La plaga de los piojos", "La plaga de las langostas"]
-  },
-  { 
-    pregunta: "¿Qué causó Moisés al arrojar ceniza que afectó la piel de los egipcios?", 
-    correcta: "La plaga de las úlceras", 
-    opciones: ["La plaga de las úlceras", "La plaga del maná", "La plaga de la oscuridad"]
-  },
-  { 
-    pregunta: "¿Qué plaga destruyó cultivos y causó daño con granizo en Egipto?", 
-    correcta: "La plaga del granizo", 
-    opciones: ["La plaga del granizo", "La plaga de las ranas", "La plaga de los piojos"]
-  },
-  { 
-    pregunta: "¿Qué hizo Dios para ayudar a Moisés a dirigir al pueblo?", 
-    correcta: "Designó setenta ancianos", 
-    opciones: ["Designó setenta ancianos", "Construyó un templo", "Enviaba profetas"]
-  },
-  { 
-    pregunta: "¿Quiénes tuvieron prohibido entrar a la Tierra Prometida?", 
-    correcta: "La antigua generación, incluyendo a Moisés, Aarón y Miriam", 
-    opciones: ["La antigua generación, incluyendo a Moisés, Aarón y Miriam", "Solo los extranjeros", "Los sacerdotes únicamente"]
-  },
-  { 
-    pregunta: "¿Qué vio Moisés antes de morir en el monte Nebo?", 
-    correcta: "La Tierra Prometida", 
-    opciones: ["La Tierra Prometida", "El Mar Rojo", "El monte Sinaí"]
-  },
-  { 
-    pregunta: "¿Quién fue elegido para guiar al pueblo después de Moisés?", 
-    correcta: "Josué", 
-    opciones: ["Josué", "Aarón", "Miriam"]
-  },
-  { 
-    pregunta: "¿Cómo cruzaron los israelitas el río Jordán?", 
-    correcta: "Milagrosamente, con el agua deteniéndose", 
-    opciones: ["Milagrosamente, con el agua deteniéndose", "Nadando en barcos", "Cruzando por un puente"]
-  },
-  { 
-    pregunta: "¿Qué sucedió cuando los israelitas marcharon alrededor de Jericó durante siete días?", 
-    correcta: "Los muros se derrumbaron", 
-    opciones: ["Los muros se derrumbaron", "Jericó se iluminó", "El pueblo celebró sin razón"]
-  }
-];
-
+    { 
+      pregunta: "¿Cómo eran tratados los hebreos en Egipto?", 
+      correcta: "Como esclavos trabajando en la construcción", 
+      opciones: ["Como nobles", "Como comerciantes", "Como esclavos trabajando en la construcción"]
+    },
+    { 
+      pregunta: "¿Qué orden dio el Faraón sobre los bebés hebreos?", 
+      correcta: "Arrojar los recién nacidos al Nilo", 
+      opciones: ["Arrojar los recién nacidos al Nilo", "Criarlos en palacio", "Protegérselos"]
+    },
+    { 
+      pregunta: "¿Qué hizo Jocabed con Moisés para salvarlo?", 
+      correcta: "Lo ocultó por tres meses", 
+      opciones: ["Lo ocultó por tres meses", "Lo regaló", "Lo dejó en el palacio"]
+    },
+    { 
+      pregunta: "¿Dónde colocó Jocabed a Moisés para protegerlo?", 
+      correcta: "En una canasta en el Nilo", 
+      opciones: ["En una canasta en el Nilo", "En un cofre en el desierto", "En una cuna en la casa"]
+    },
+    { 
+      pregunta: "¿Quién vigiló a Moisés desde la orilla del Nilo?", 
+      correcta: "Miriam", 
+      opciones: ["Miriam", "Jocabed", "La hija del Faraón"]
+    },
+    { 
+      pregunta: "¿Quién encontró a Moisés en el Nilo?", 
+      correcta: "La hija del Faraón", 
+      opciones: ["La hija del Faraón", "Una sirvienta egipcia", "Miriam"]
+    },
+    { 
+      pregunta: "¿Qué hizo Miriam para ayudar a Moisés después de ser encontrado?", 
+      correcta: "Sugirió que Jocabed fuera su nodriza", 
+      opciones: ["Sugirió que Jocabed fuera su nodriza", "Lo llamó para jugar", "Se lo llevó al palacio"]
+    },
+    { 
+      pregunta: "¿Dónde creció Moisés después de ser adoptado?", 
+      correcta: "En la corte egipcia", 
+      opciones: ["En la corte egipcia", "En el desierto", "En un pueblo hebreo"]
+    },
+    { 
+      pregunta: "¿Qué hizo Moisés cuando vio a un egipcio golpeando a un hebreo?", 
+      correcta: "Mató al egipcio", 
+      opciones: ["Mató al egipcio", "Llamó a un guardia", "Huyó sin hacer nada"]
+    },
+    { 
+      pregunta: "¿Dónde llamó Dios a Moisés para darle una misión especial?", 
+      correcta: "En la zarza ardiente", 
+      opciones: ["En la zarza ardiente", "En el desierto", "En el palacio"]
+    },
+    { 
+      pregunta: "¿Qué pidieron Moisés y Aarón al Faraón?", 
+      correcta: "Que dejara ir a los hebreos", 
+      opciones: ["Que dejara ir a los hebreos", "Que aumentara los impuestos", "Que construyera más templos"]
+    },
+    { 
+      pregunta: "¿Qué envió Dios sobre Egipto para persuadir al Faraón?", 
+      correcta: "Diez plagas", 
+      opciones: ["Diez plagas", "Diez regalos", "Diez fiestas"]
+    },
+    { 
+      pregunta: "¿Qué hicieron los hebreos para protegerse de la última plaga?", 
+      correcta: "Marcaron sus puertas con sangre de cordero", 
+      opciones: ["Marcaron sus puertas con sangre de cordero", "Encendieron velas", "Construyeron barreras"]
+    },
+    { 
+      pregunta: "¿Qué hizo el Faraón tras la última plaga?", 
+      correcta: "Dejó ir a los hebreos", 
+      opciones: ["Dejó ir a los hebreos", "Aumentó el trabajo", "Construyó más pirámides"]
+    },
+    { 
+      pregunta: "¿Cómo cruzaron los hebreos el Mar Rojo?", 
+      correcta: "Con un camino seco, cuando se abrieron las aguas", 
+      opciones: ["Con un camino seco, cuando se abrieron las aguas", "Nadando sin ayuda", "Usando barcos"]
+    },
+    { 
+      pregunta: "¿Qué hizo Miriam para celebrar la victoria en el Mar Rojo?", 
+      correcta: "Cantó y bailó con pandereta", 
+      opciones: ["Cantó y bailó con pandereta", "Gritó de miedo", "Se escondió"]
+    },
+    { 
+      pregunta: "¿Qué alimento especial envió Dios a los hebreos en el desierto?", 
+      correcta: "Maná del cielo", 
+      opciones: ["Maná del cielo", "Pan normal", "Frutas del desierto"]
+    },
+    { 
+      pregunta: "¿Qué hizo Dios con el agua amarga de Mara?", 
+      correcta: "La hizo dulce y bebible", 
+      opciones: ["La hizo dulce y bebible", "La congeló", "La convirtió en arena"]
+    },
+    { 
+      pregunta: "¿Qué recibió Moisés en el monte Sinaí?", 
+      correcta: "Los Diez Mandamientos", 
+      opciones: ["Los Diez Mandamientos", "Un cetro de poder", "Una corona"]
+    },
+    { 
+      pregunta: "¿Qué hicieron Miriam y Aarón que llevó al castigo de Miriam?", 
+      correcta: "Criticaron el liderazgo de Moisés", 
+      opciones: ["Criticaron el liderazgo de Moisés", "Celebraron demasiado", "No comieron maná"]
+    },
+    { 
+      pregunta: "¿Qué sucedió con Miriam en Cades?", 
+      correcta: "Murió antes de entrar a la Tierra Prometida", 
+      opciones: ["Murió antes de entrar a la Tierra Prometida", "Se casó", "Se convirtió en reina"]
+    },
+    { 
+      pregunta: "¿Qué plaga hizo que los egipcios sufrieran por piojos?", 
+      correcta: "La plaga de los piojos", 
+      opciones: ["La plaga de los piojos", "La plaga de las ranas", "La plaga del granizo"]
+    },
+    { 
+      pregunta: "¿Qué plaga causó que Egipto se llenara de moscas?", 
+      correcta: "La plaga de las moscas", 
+      opciones: ["La plaga de las moscas", "La plaga del agua", "La plaga del fuego"]
+    },
+    { 
+      pregunta: "¿Qué plaga afectó principalmente al ganado egipcio?", 
+      correcta: "La plaga sobre el ganado", 
+      opciones: ["La plaga sobre el ganado", "La plaga de los piojos", "La plaga de las langostas"]
+    },
+    { 
+      pregunta: "¿Qué causó Moisés al arrojar ceniza que afectó la piel de los egipcios?", 
+      correcta: "La plaga de las úlceras", 
+      opciones: ["La plaga de las úlceras", "La plaga del maná", "La plaga de la oscuridad"]
+    },
+    { 
+      pregunta: "¿Qué plaga destruyó cultivos y causó daño con granizo en Egipto?", 
+      correcta: "La plaga del granizo", 
+      opciones: ["La plaga del granizo", "La plaga de las ranas", "La plaga de los piojos"]
+    },
+    { 
+      pregunta: "¿Qué hizo Dios para ayudar a Moisés a dirigir al pueblo?", 
+      correcta: "Designó setenta ancianos", 
+      opciones: ["Designó setenta ancianos", "Construyó un templo", "Enviaba profetas"]
+    },
+    { 
+      pregunta: "¿Quiénes tuvieron prohibido entrar a la Tierra Prometida?", 
+      correcta: "La antigua generación, incluyendo a Moisés, Aarón y Miriam", 
+      opciones: ["La antigua generación, incluyendo a Moisés, Aarón y Miriam", "Solo los extranjeros", "Los sacerdotes únicamente"]
+    },
+    { 
+      pregunta: "¿Qué vio Moisés antes de morir en el monte Nebo?", 
+      correcta: "La Tierra Prometida", 
+      opciones: ["La Tierra Prometida", "El Mar Rojo", "El monte Sinaí"]
+    },
+    { 
+      pregunta: "¿Quién fue elegido para guiar al pueblo después de Moisés?", 
+      correcta: "Josué", 
+      opciones: ["Josué", "Aarón", "Miriam"]
+    },
+    { 
+      pregunta: "¿Cómo cruzaron los israelitas el río Jordán?", 
+      correcta: "Milagrosamente, con el agua deteniéndose", 
+      opciones: ["Milagrosamente, con el agua deteniéndose", "Nadando en barcos", "Cruzando por un puente"]
+    },
+    { 
+      pregunta: "¿Qué sucedió cuando los israelitas marcharon alrededor de Jericó durante siete días?", 
+      correcta: "Los muros se derrumbaron", 
+      opciones: ["Los muros se derrumbaron", "Jericó se iluminó", "El pueblo celebró sin razón"]
+    }
+  ];
 
   // Se mezclan todas las preguntas y se seleccionan 7 al azar
   preguntasCompletas.sort(() => 0.5 - Math.random());
@@ -430,6 +468,11 @@
       };
     });
   }
+  
+  // Mostrar la portada inicial durante 3 segundos y luego iniciar el juego
+  setTimeout(function() {
+    document.getElementById("cover").style.display = "none";
+  }, 3000);
   
   mostrarPregunta();
 </script>
