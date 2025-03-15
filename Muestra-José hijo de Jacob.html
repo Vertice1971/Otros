@@ -13,6 +13,37 @@
       height: 100vh;
       background: linear-gradient(135deg, #ffcc33, #ff6600);
       margin: 0;
+      position: relative;
+    }
+    /* Fondo semitransparente con la imagen de José */
+    #bgOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url("JoséGit.png") no-repeat center center;
+      background-size: contain;
+      opacity: 0.5;
+      z-index: 1;
+      pointer-events: none;
+    }
+    /* Portada inicial que se muestra durante 3 segundos */
+    #cover {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #cover img {
+      max-height: 100%;
+      max-width: 100%;
     }
     .trivia-container, .mensaje-felicidades {
       background-color: #fff;
@@ -24,6 +55,7 @@
       max-width: 450px;
       border: 4px double #ff6600;
       position: relative;
+      z-index: 2; /* Por encima del fondo semitransparente */
     }
     /* Iconos para tema bíblico */
     .trivia-container::before, .mensaje-felicidades::before {
@@ -125,6 +157,14 @@
   </style>
 </head>
 <body>
+
+<!-- Portada inicial -->
+<div id="cover">
+  <img src="JoséGit.png" alt="Portada">
+</div>
+
+<!-- Fondo semitransparente que se muestra durante la partida -->
+<div id="bgOverlay"></div>
 
 <div class="trivia-container" id="triviaContainer">
   <h1>📖 José, hijo de Jacob (Muestra) ✝️</h1>
@@ -303,7 +343,7 @@
     }, duration);
   }
 
-  // Sonido de acierto con campanillas angelicales
+  // Sonido de acierto (campanillas angelicales)
   function emitirPitidoDulce() {
     if (audioCtx.state === 'suspended')
       audioCtx.resume().then(() => playChime([800, 1200], 800, 'triangle', 0.3));
@@ -354,6 +394,11 @@
       };
     });
   }
+  
+  // Mostrar la portada inicial durante 3 segundos y luego iniciar el juego
+  setTimeout(function() {
+    document.getElementById("cover").style.display = "none";
+  }, 3000);
   
   mostrarPregunta();
 </script>
