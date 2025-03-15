@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Miriam, la voz del desierto (Muestra) 📖✝️</title>
+  <title>José, hijo de Jacob (Muestra) 📖✝️</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -15,14 +15,14 @@
       margin: 0;
       position: relative;
     }
-    /* Capa de fondo semitransparente con la imagen */
+    /* Fondo semitransparente con la imagen de José */
     #bgOverlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: url("MiriamGit.JPG") no-repeat center center;
+      background: url("JoséGit.png") no-repeat center center;
       background-size: contain;
       opacity: 0.5;
       z-index: 1;
@@ -160,14 +160,14 @@
 
 <!-- Portada inicial -->
 <div id="cover">
-  <img src="MiriamGit.JPG" alt="Portada">
+  <img src="JoséGit.png" alt="Portada">
 </div>
 
-<!-- Fondo semitransparente con la imagen -->
+<!-- Fondo semitransparente que se muestra durante la partida -->
 <div id="bgOverlay"></div>
 
 <div class="trivia-container" id="triviaContainer">
-  <h1>📖 Miriam, la voz del desierto (Muestra) ✝️</h1>
+  <h1>📖 José, hijo de Jacob (Muestra) ✝️</h1>
   <div class="temporizador" id="temporizador">00:00</div>
   <p id="pregunta"></p>
   <button id="respuesta1" class="btn respuesta-btn"></button>
@@ -187,133 +187,92 @@
     window.location.reload();
   }
 
-  // Array de 14 preguntas sobre "Miriam, la voz del desierto"
+  // Array de 17 preguntas basadas en la temática dada
   const preguntasCompletas = [
     { 
-      pregunta: "¿Por qué los hebreos fueron convertidos en esclavos en Egipto?",
-      correcta: "Porque el nuevo Faraón temía su crecimiento.",
-      opciones: [
-        "Porque llegaron demasiados extranjeros a la tierra.",
-        "Porque el nuevo Faraón temía su crecimiento.",
-        "Porque los egipcios necesitaban más trabajadores."
-      ]
+      pregunta: "¿Qué le pidió Dios a Abraham?",
+      correcta: "Que saliera de su tierra.",
+      opciones: ["Que construyera un barco.", "Que saliera de su tierra.", "Que se hiciera rey de Egipto."]
     },
     { 
-      pregunta: "¿Quién ordenó que los bebés varones hebreos fueran arrojados al Nilo?",
-      correcta: "El Faraón.",
-      opciones: [
-        "José.",
-        "Aarón.",
-        "El Faraón."
-      ]
+      pregunta: "¿Qué tierra prometió Dios a Abraham y su descendencia?",
+      correcta: "Canaán.",
+      opciones: ["Egipto.", "Canaán.", "Babilonia."]
     },
     { 
-      pregunta: "¿Cómo se llamaba la madre de Miriam, Moisés y Aarón?",
-      correcta: "Jocabed.",
-      opciones: [
-        "Rebeca.",
-        "Jocabed.",
-        "Débora."
-      ]
+      pregunta: "¿Con quién viajó Abraham cuando salió de su tierra?",
+      correcta: "Con su esposa Sara y su sobrino Lot.",
+      opciones: ["Con su esposa Sara y su sobrino Lot.", "Con sus amigos y soldados.", "Con Moisés y Aarón."]
     },
     { 
-      pregunta: "¿Cuánto tiempo logró Jocabed esconder a Moisés?",
-      correcta: "Tres meses.",
-      opciones: [
-        "Un año.",
-        "Seis meses.",
-        "Tres meses."
-      ]
+      pregunta: "¿Qué hizo Abraham al llegar a Canaán para agradecer a Dios?",
+      correcta: "Construyó un altar.",
+      opciones: ["Construyó un altar.", "Hizo una fiesta.", "Escribió un libro."]
     },
     { 
-      pregunta: "¿Cómo protegió Jocabed a Moisés cuando no pudo esconderlo más?",
-      correcta: "Lo puso en una canasta de papiro en el Nilo.",
-      opciones: [
-        "Lo dejó con otra familia hebrea.",
-        "Lo puso en una canasta de papiro en el Nilo.",
-        "Lo escondió en el templo de los egipcios."
-      ]
+      pregunta: "¿Qué le prometió Dios a Abraham sobre su descendencia?",
+      correcta: "Que serían tan numerosos como las estrellas.",
+      opciones: ["Que serían pocos, pero muy fuertes.", "Que serían tan numerosos como las estrellas.", "Que gobernarían el mundo entero."]
     },
     { 
-      pregunta: "¿Quién se quedó vigilando la canasta de Moisés?",
-      correcta: "Miriam.",
-      opciones: [
-        "Aarón.",
-        "Miriam.",
-        "Un sacerdote egipcio."
-      ]
+      pregunta: "¿Cómo se llamaba el hijo que Abraham tuvo en su vejez?",
+      correcta: "Isaac.",
+      opciones: ["Moisés.", "Isaac.", "David."]
     },
     { 
-      pregunta: "¿Cómo reaccionó Moisés cuando la princesa lo tomó en brazos?",
-      correcta: "Lloró.",
-      opciones: [
-        "Sonrió.",
-        "Se quedó dormido.",
-        "Lloró."
-      ]
+      pregunta: "¿Cómo se llamaban los dos hijos gemelos de Isaac y Rebeca?",
+      correcta: "Esaú y Jacob.",
+      opciones: ["José y Benjamín.", "Moisés y Aarón.", "Esaú y Jacob."]
     },
     { 
-      pregunta: "¿Quién terminó cuidando a Moisés después de que la hija del Faraón lo adoptó?",
-      correcta: "Su madre, Jocabed.",
-      opciones: [
-        "Su madre, Jocabed.",
-        "Una sacerdotisa egipcia.",
-        "Miriam."
-      ]
+      pregunta: "¿Qué le dio Esaú a Jacob a cambio de un plato de lentejas?",
+      correcta: "Su primogenitura.",
+      opciones: ["Su primogenitura.", "Su rebaño de ovejas.", "Su espada."]
     },
     { 
-      pregunta: "¿Cómo recompensó la hija del Faraón a Jocabed?",
-      correcta: "Le pagó por criar a Moisés.",
-      opciones: [
-        "Le dio un lugar en el palacio.",
-        "Le pagó por criar a Moisés.",
-        "Le permitió regresar a su tierra."
-      ]
+      pregunta: "¿Cómo consiguió Jacob la bendición de su padre Isaac?",
+      correcta: "Con la ayuda de su madre, engañándolo.",
+      opciones: ["Ganando una batalla.", "Con la ayuda de su madre, engañándolo.", "Haciendo un sacrificio en un altar."]
     },
     { 
-      pregunta: "¿Dónde creció Moisés después de ser criado por su madre?",
-      correcta: "En el palacio del Faraón.",
-      opciones: [
-        "En la casa de su familia hebrea.",
-        "En el desierto.",
-        "En el palacio del Faraón."
-      ]
+      pregunta: "¿Por qué tuvo que huir Jacob de su casa?",
+      correcta: "Porque Esaú quería hacerle daño.",
+      opciones: ["Porque Esaú quería hacerle daño.", "Porque robó un tesoro.", "Porque se perdió en el bosque."]
     },
     { 
-      pregunta: "¿Qué importancia tuvo el río Nilo en la historia de Moisés?",
-      correcta: "Fue donde su vida fue salvada y más tarde donde Dios mostró su poder.",
-      opciones: [
-        "Fue donde Moisés aprendió a nadar.",
-        "Fue donde su vida fue salvada y más tarde donde Dios mostró su poder.",
-        "Fue donde Moisés escondió a su pueblo de los egipcios."
-      ]
+      pregunta: "¿Qué le dijo Dios a Jacob en un sueño?",
+      correcta: "\"No temas, Jacob. Yo estaré contigo.\"",
+      opciones: ["\"No temas, Jacob. Yo estaré contigo.\"", "\"Construye un templo en mi honor.\"", "\"Ve a Egipto y sé su rey.\""]
     },
     { 
-      pregunta: "¿Qué pasó con Miriam después de que Moisés fue llevado al palacio?",
-      correcta: "Regresó con su familia hebrea.",
-      opciones: [
-        "Regresó con su familia hebrea.",
-        "Se convirtió en la consejera del Faraón.",
-        "Fue llevada al palacio con su hermano."
-      ]
+      pregunta: "¿Qué nuevo nombre le dio Dios a Jacob?",
+      correcta: "Israel.",
+      opciones: ["Moisés.", "Israel.", "Salomón."]
     },
     { 
-      pregunta: "¿Quién era Aarón en relación con Moisés?",
-      correcta: "Su hermano mayor.",
-      opciones: [
-        "Su primo.",
-        "Su hermano mayor.",
-        "Su tío."
-      ]
+      pregunta: "¿Cuántos hijos tuvo Jacob, que serían los antepasados de las tribus de Israel?",
+      correcta: "Doce.",
+      opciones: ["Doce.", "Siete.", "Veinte."]
     },
     { 
-      pregunta: "¿Por qué Aarón no fue afectado por el edicto del Faraón?",
-      correcta: "Porque había nacido antes de la orden de matar a los bebés varones hebreos.",
-      opciones: [
-        "Porque había nacido antes de la orden de matar a los bebés varones hebreos.",
-        "Porque fue escondido en el templo egipcio.",
-        "Porque fue criado por una familia egipcia."
-      ]
+      pregunta: "¿Qué le regaló Jacob a su hijo José para demostrar que era su favorito?",
+      correcta: "Una túnica de muchos colores.",
+      opciones: ["Una espada dorada.", "Una túnica de muchos colores.", "Una corona."]
+    },
+    { 
+      pregunta: "¿Qué soñó José sobre sus hermanos?",
+      correcta: "Que sus manojos de trigo se inclinaban ante el suyo.",
+      opciones: ["Que sus manojos de trigo se inclinaban ante el suyo.", "Que volaba sobre Egipto.", "Que un río se tragaba su casa."]
+    },
+    { 
+      pregunta: "¿Qué significaba el segundo sueño de José?",
+      correcta: "Que el sol, la luna y once estrellas se inclinaban ante él.",
+      opciones: ["Que el sol, la luna y once estrellas se inclinaban ante él.", "Que encontraría un cofre lleno de oro.", "Que viviría en el desierto."]
+    },
+    { 
+      pregunta: "¿A dónde envió Jacob a José a buscar a sus hermanos?",
+      correcta: "A Siquén.",
+      opciones: ["A Siquén.", "A Egipto.", "A Babilonia."]
     }
   ];
 
@@ -436,7 +395,7 @@
     });
   }
   
-  // Mostrar la portada inicial durante 3 segundos y luego continuar con el juego
+  // Mostrar la portada inicial durante 3 segundos y luego iniciar el juego
   setTimeout(function() {
     document.getElementById("cover").style.display = "none";
   }, 3000);
