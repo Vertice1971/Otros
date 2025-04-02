@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>José, el hijo de Jacob 📖✝️</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffcc33, #ff6600);
+      margin: 0;
+      position: relative;
+    }
+    /* Capa de imagen semitransparente permanente */
+    #bgOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url("JoséGit.png") no-repeat center center;
+      background-size: contain;
+      opacity: 0.5;
+      z-index: 1;
+      pointer-events: none;
+    }
+    /* Portada inicial que se muestra completa durante 3 segundos */
+    #cover {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #cover img {
+      max-height: 100%;
+      max-width: 100%;
+    }
+    .trivia-container, .mensaje-felicidades {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+      border: 4px double #ff6600;
+      position: relative;
+      z-index: 2; /* Por encima del bgOverlay */
+    }
+    /* Iconos actualizados para tema bíblico */
+    .trivia-container::before, .mensaje-felicidades::before {
+      content: "📖";
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      font-size: 30px;
+    }
+    .trivia-container::after, .mensaje-felicidades::after {
+      content: "✝️";
+      position: absolute;
+      bottom: -15px;
+      right: -15px;
+      font-size: 30px;
+    }
+    h1 {
+      font-size: 26px;
+      margin-bottom: 15px;
+      color: #ff6600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+    #respuesta1 { background-color: #007bff; }
+    #respuesta2 { background-color: #ff9800; }
+    #respuesta3 { background-color: #9c27b0; }
+    .btn:hover {
+      filter: brightness(85%);
+      transform: scale(1.05);
+    }
+    .btn.incorrect {
+      background-color: #ff4444;
+      animation: shake 0.5s;
+    }
+    .btn.correct {
+      background-color: #00cc66 !important;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+    .temporizador {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff6600;
+      background: #fff3cd;
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+    .mensaje-felicidades {
+      display: none;
+    }
+    .mensaje-felicidades h2 {
+      font-size: 30px;
+      color: #00cc66;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .mensaje-felicidades p {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .mensaje-felicidades .tiempo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .btn-restart {
+      background-color: #007bff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Portada inicial -->
+<div id="cover">
+  <img src="JoséGit.png" alt="Portada">
+</div>
+
+<!-- Fondo semitransparente con la imagen, por encima del fondo naranja -->
+<div id="bgOverlay"></div>
+
+<div class="trivia-container" id="triviaContainer">
+  <h1>📖 José, el hijo de Jacob ✝️</h1>
+  <div class="temporizador" id="temporizador">00:00</div>
+  <p id="pregunta"></p>
+  <button id="respuesta1" class="btn respuesta-btn"></button>
+  <button id="respuesta2" class="btn respuesta-btn"></button>
+  <button id="respuesta3" class="btn respuesta-btn"></button>
+</div>
+
+<div class="mensaje-felicidades" id="mensajeFelicidades">
+  <h2>✝️ ¡¡¡Enhorabuena!!! 📖</h2>
+  <p>Es difícil saber más cosas que tú...</p>
+  <p>Tiempo total: <span class="tiempo" id="tiempoFinal"></span></p>
+  <button class="btn btn-restart" onclick="reloadGame()">Volver a jugar</button>
+</div>
+
+<script>
+  function reloadGame() {
+    window.location.reload();
+  }
+
+  // Array completo de preguntas basadas en eventos bíblicos
+  const preguntasCompletas = [
+    { 
+      pregunta: "¿Qué mostró José mientras trabajaba en Egipto?", 
+      correcta: "Integridad y sabiduría", 
+      opciones: ["Ambición y orgullo", "Integridad y sabiduría", "Fuerza y valor"] 
+    },
+    { 
+      pregunta: "¿Cómo salvó Egipto de la hambruna José?", 
+      correcta: "Administrando sabiamente los recursos", 
+      opciones: ["Construyendo barcos", "Organizando fiestas", "Administrando sabiamente los recursos"] 
+    },
+    { 
+      pregunta: "¿Por qué llegaron los hermanos de José a Egipto?", 
+      correcta: "Para buscar alimento por la hambruna", 
+      opciones: ["Para visitar a José", "Para buscar alimento por la hambruna", "Por turismo"] 
+    },
+    { 
+      pregunta: "¿Qué hizo José con sus hermanos en lugar de vengarse?", 
+      correcta: "Los perdonó y les dio alimento", 
+      opciones: ["Los castigó", "Los ignoró", "Los perdonó y les dio alimento"] 
+    },
+    { 
+      pregunta: "¿Qué permitió el Faraón a Jacob y su familia en Egipto?", 
+      correcta: "Que se establecieran en Egipto", 
+      opciones: ["Que viajaran por el desierto", "Que se establecieran en Egipto", "Que se mudaran a otra tierra"] 
+    },
+    { 
+      pregunta: "¿Dónde prosperó la familia de Jacob en Egipto?", 
+      correcta: "En la región de Gosén", 
+      opciones: ["En el Nilo", "En la región de Gosén", "En el palacio del Faraón"] 
+    },
+    { 
+      pregunta: "¿Qué habilidad mostró José en la prisión?", 
+      correcta: "Interpretar sueños", 
+      opciones: ["Cantar canciones", "Cocinar pan", "Interpretar sueños"] 
+    },
+    { 
+      pregunta: "Según la predicción de José, ¿qué pasó con el copero y el panadero?", 
+      correcta: "El copero fue restaurado y el panadero fue ejecutado", 
+      opciones: ["Ambos fueron liberados", "Ambos fueron ejecutados", "El copero fue restaurado y el panadero fue ejecutado"] 
+    },
+    { 
+      pregunta: "¿Quién recordó a José al Faraón al tener sueños inquietantes?", 
+      correcta: "El copero", 
+      opciones: ["El panadero", "El copero", "Un esclavo"] 
+    },
+    { 
+      pregunta: "¿Qué interpretó José en el sueño del Faraón sobre vacas gordas y flacas?", 
+      correcta: "Años de abundancia y años de hambre", 
+      opciones: ["El fin del mundo", "Una invasión", "Años de abundancia y años de hambre"] 
+    },
+    { 
+      pregunta: "¿Qué cargo recibió José por su sabiduría?", 
+      correcta: "Gobernador de Egipto", 
+      opciones: ["Consejero", "General del ejército", "Gobernador de Egipto"] 
+    },
+    { 
+      pregunta: "¿Qué sentía Jacob en Canaán por su hijo José?", 
+      correcta: "Lamentaba su pérdida", 
+      opciones: ["Lo celebraba", "Lamentaba su pérdida", "Lo había olvidado"] 
+    },
+    { 
+      pregunta: "¿Qué hicieron los hermanos de José al viajar a Egipto?", 
+      correcta: "Compraron trigo sin reconocer a José", 
+      opciones: ["Compraron trigo sin reconocer a José", "Lo buscaron para abrazarlo", "Se quedaron en Canaán"] 
+    },
+    { 
+      pregunta: "¿Cómo comprobó José si sus hermanos habían cambiado?", 
+      correcta: "Los puso a prueba", 
+      opciones: ["Los ignoró", "Los puso a prueba", "Les regaló dinero"] 
+    },
+    { 
+      pregunta: "¿Qué pidió José como parte de la prueba a sus hermanos?", 
+      correcta: "Traer a Benjamín", 
+      opciones: ["Traer a Rubén", "Traer a Benjamín", "Traer a un esclavo"] 
+    },
+    { 
+      pregunta: "¿Qué hicieron los hermanos de José respecto a Benjamín?", 
+      correcta: "Convencieron a Jacob de llevar a Benjamín", 
+      opciones: ["Lo dejaron en Egipto", "Ignoraron a Benjamín", "Convencieron a Jacob de llevar a Benjamín"] 
+    },
+    { 
+      pregunta: "¿Qué hizo José con su copa en el saco de Benjamín?", 
+      correcta: "La escondió y acusó de robo", 
+      opciones: ["La regaló", "La escondió y acusó de robo", "La perdió"] 
+    },
+    { 
+      pregunta: "¿Qué hizo Judá para proteger a su padre Jacob?", 
+      correcta: "Se ofreció como esclavo en lugar de Benjamín", 
+      opciones: ["Huyó del país", "No hizo nada", "Se ofreció como esclavo en lugar de Benjamín"] 
+    },
+    { 
+      pregunta: "¿Qué reveló José a sus hermanos al final de la prueba?", 
+      correcta: "Que Dios había usado todo para bien", 
+      opciones: ["Que era un espía", "Que estaban en problemas", "Que Dios había usado todo para bien"] 
+    },
+    { 
+      pregunta: "¿Qué ordenó José a sus hermanos respecto a Jacob?", 
+      correcta: "Que trajeran a Jacob y su familia a Egipto", 
+      opciones: ["Que dejaran a Jacob en Canaán", "Que olvidaran a Jacob", "Que trajeran a Jacob y su familia a Egipto"] 
+    },
+    { 
+      pregunta: "¿Cómo se sintieron Jacob y José al reencontrarse en Egipto?", 
+      correcta: "Con emoción", 
+      opciones: ["Con enfado", "Con indiferencia", "Con emoción"] 
+    },
+    { 
+      pregunta: "¿Qué hizo Jacob antes de morir?", 
+      correcta: "Bendijo a sus hijos y predijo su futuro", 
+      opciones: ["Olvidó a su familia", "Les regaló tierras", "Bendijo a sus hijos y predijo su futuro"] 
+    },
+    { 
+      pregunta: "¿Qué juró José a su familia antes de morir?", 
+      correcta: "Llevar sus huesos a la Tierra Prometida", 
+      opciones: ["Quedarse en Egipto", "Olvidar sus orígenes", "Llevar sus huesos a la Tierra Prometida"] 
+    },
+    { 
+      pregunta: "¿Qué ocurrió con José al final de su vida?", 
+      correcta: "Murió en Egipto y su historia continuó con el pueblo hebreo", 
+      opciones: ["Su historia terminó", "Se olvidó de él", "Murió en Egipto y su historia continuó con el pueblo hebreo"] 
+    },
+    { 
+      pregunta: "¿Qué hizo el nuevo Faraón que no recordaba a José?", 
+      correcta: "Esclavizó a los hebreos", 
+      opciones: ["Los liberó", "Los ayudó", "Esclavizó a los hebreos"] 
+    },
+    { 
+      pregunta: "¿Cómo vivían los hebreos en Egipto cuando se recordaba a José?", 
+      correcta: "En paz", 
+      opciones: ["En guerra", "Con miedo", "En paz"] 
+    },
+    { 
+      pregunta: "¿Qué caracterizaba al nuevo Faraón que subió al poder?", 
+      correcta: "No conocía la historia de José", 
+      opciones: ["Era muy sabio", "Era amigo de los hebreos", "No conocía la historia de José"] 
+    },
+    { 
+      pregunta: "¿Cómo veía el nuevo Faraón a los hebreos?", 
+      correcta: "Como extranjeros con creencias distintas", 
+      opciones: ["Como ciudadanos", "Como hermanos", "Como extranjeros con creencias distintas"] 
+    },
+    { 
+      pregunta: "¿Qué hicieron los egipcios con los hebreos?", 
+      correcta: "Los convirtieron en esclavos y les obligaron a construir ciudades", 
+      opciones: ["Los hicieron reyes", "Los liberaron", "Los convirtieron en esclavos y les obligaron a construir ciudades"] 
+    },
+    { 
+      pregunta: "¿Qué ordenó el Faraón respecto a los varones hebreos recién nacidos?", 
+      correcta: "Que fueran arrojados al Nilo", 
+      opciones: ["Que fueran protegidos", "Que fueran educados", "Que fueran arrojados al Nilo"] 
+    },
+    { 
+      pregunta: "¿Qué hizo Jocabed con Moisés cuando era bebé?", 
+      correcta: "Lo escondió y lo puso en una canasta en el Nilo", 
+      opciones: ["Lo regaló", "Lo escondió y lo puso en una canasta en el Nilo", "Lo dejó en la puerta del palacio"] 
+    },
+    { 
+      pregunta: "¿Qué hizo la hija del Faraón al encontrar la canasta con Moisés?", 
+      correcta: "Adoptó a Moisés", 
+      opciones: ["La rompió", "La ignoró", "Adoptó a Moisés"] 
+    },
+    { 
+      pregunta: "¿Qué hizo Moisés cuando la princesa lo tomó en brazos?", 
+      correcta: "Comenzó a llorar", 
+      opciones: ["Se rió", "Sonrió", "Comenzó a llorar"] 
+    },
+    { 
+      pregunta: "¿Qué hizo Miriam con la canasta en la que estaba Moisés?", 
+      correcta: "La vigiló y habló con la princesa", 
+      opciones: ["La escondió", "La tiró al Nilo", "La vigiló y habló con la princesa"] 
+    },
+    { 
+      pregunta: "¿Qué sugirió Miriam para cuidar a Moisés?", 
+      correcta: "Que una nodriza hebrea lo criara", 
+      opciones: ["Que se mudara al palacio", "Que Moisés fuera enviado a la escuela", "Que una nodriza hebrea lo criara"] 
+    },
+    { 
+      pregunta: "¿Quién fue elegida para cuidar a Moisés y recibió un pago por ello?", 
+      correcta: "Jocabed, su madre", 
+      opciones: ["Miriam", "La hija del Faraón", "Jocabed, su madre"] 
+    },
+    { 
+      pregunta: "¿Qué papel tuvo el Nilo en la historia de Moisés?", 
+      correcta: "Fue clave para su rescate y en las plagas de Egipto", 
+      opciones: ["Fue un río tranquilo", "Fue olvidado", "Fue clave para su rescate y en las plagas de Egipto"] 
+    },
+    { 
+      pregunta: "¿Qué se dice de Aarón, el hermano de Moisés?", 
+      correcta: "Nació antes del edicto y no fue afectado", 
+      opciones: ["Nació después y fue afectado", "No se menciona su nacimiento", "Nació antes del edicto y no fue afectado"] 
+    },
+    { 
+      pregunta: "¿Qué ordenó Dios a Abraham en Génesis 12:1-9?", 
+      correcta: "Salir de Ur y dirigirse a Canaán", 
+      opciones: ["Quedarse en Ur", "Construir un templo", "Salir de Ur y dirigirse a Canaán"] 
+    },
+    { 
+      pregunta: "¿Qué prometió Dios a Abraham acerca de su descendencia en Génesis 15:5?", 
+      correcta: "Que sería tan numerosa como las estrellas del cielo", 
+      opciones: ["Que sería pequeña", "Que sería famosa", "Que sería tan numerosa como las estrellas del cielo"] 
+    },
+    { 
+      pregunta: "¿Qué acontecimiento cumplió la promesa de Dios a Abraham y Sara?", 
+      correcta: "El nacimiento de Isaac", 
+      opciones: ["El nacimiento de Jacob", "El nacimiento de Isaac", "El viaje a Canaán"] 
+    },
+    { 
+      pregunta: "¿Qué soñó Jacob en Génesis 28?", 
+      correcta: "Una escalera que llega al cielo", 
+      opciones: ["Una gran torre", "Un valle profundo", "Una escalera que llega al cielo"] 
+    },
+    { 
+      pregunta: "¿Qué cambio hizo Dios en Jacob después de luchar con un ángel?", 
+      correcta: "Lo llamó Israel", 
+      opciones: ["Lo llamó José", "Lo llamó Moisés", "Lo llamó Israel"] 
+    },
+    { 
+      pregunta: "¿Qué hicieron los hermanos de José en Génesis 37 antes de venderlo?", 
+      correcta: "Lo arrojaron a un pozo", 
+      opciones: ["Lo abrazaron", "Lo invitaron a cenar", "Lo arrojaron a un pozo"] 
+    }
+  ];
+
+  // Mezclar todas las preguntas y seleccionar 7 al azar
+  preguntasCompletas.sort(() => 0.5 - Math.random());
+  const preguntasSeleccionadas = preguntasCompletas.slice(0, 7);
+  preguntasSeleccionadas.forEach(p => p.opciones.sort(() => 0.5 - Math.random()));
+
+  let indicePregunta = 0;
+  let tiempoInicio;
+  let intervalo;
+
+  // Crear el contexto de audio
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // Función para generar un sonido con fundido suave
+  function playBeep(frequency, duration, type = 'sine', fadeTime = 0.1) {
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.frequency.value = frequency;
+    osc.type = type;
+    
+    // Comienza con volumen 0 y aumenta gradualmente
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start();
+    setTimeout(() => osc.stop(), duration);
+  }
+
+  // Función para generar pitido de error (más suave, con frecuencia reducida)
+  function emitirPitido() {
+    if (audioCtx.state === 'suspended') 
+      audioCtx.resume().then(() => playBeep(500, 300, 'sine', 0.2));
+    else 
+      playBeep(500, 300, 'sine', 0.2);
+  }
+
+  // Función para generar el sonido de campanillas angelicales
+  function playChime(frequencies, duration, type = 'triangle', fadeTime = 0.2) {
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc1.frequency.value = frequencies[0];
+    osc2.frequency.value = frequencies[1];
+    osc1.type = type;
+    osc2.type = type;
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc1.connect(gainNode);
+    osc2.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc1.start();
+    osc2.start();
+    
+    setTimeout(() => {
+      osc1.stop();
+      osc2.stop();
+    }, duration);
+  }
+  
+  // Función para el pitido de acierto con campanillas angelicales
+  function emitirPitidoDulce() {
+    if (audioCtx.state === 'suspended') 
+      audioCtx.resume().then(() => playChime([800, 1200], 800, 'triangle', 0.3));
+    else 
+      playChime([800, 1200], 800, 'triangle', 0.3);
+  }
+  
+  // Actualizar temporizador
+  function actualizarTemporizador() {
+    let tiempoPasado = Date.now() - tiempoInicio;
+    let minutos = Math.floor(tiempoPasado / 60000);
+    let segundos = Math.floor((tiempoPasado % 60000) / 1000);
+    document.getElementById("temporizador").textContent =
+      `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
+  }
+  
+  // Mostrar la pregunta actual y asignar eventos a los botones
+  function mostrarPregunta() {
+    if (indicePregunta >= preguntasSeleccionadas.length) {
+      clearInterval(intervalo);
+      document.getElementById("triviaContainer").style.display = "none";
+      document.getElementById("mensajeFelicidades").style.display = "block";
+      document.getElementById("tiempoFinal").textContent = document.getElementById("temporizador").textContent;
+      return;
+    }
+  
+    let preguntaActual = preguntasSeleccionadas[indicePregunta];
+    document.getElementById("pregunta").textContent = preguntaActual.pregunta;
+    document.getElementById("respuesta1").textContent = preguntaActual.opciones[0];
+    document.getElementById("respuesta2").textContent = preguntaActual.opciones[1];
+    document.getElementById("respuesta3").textContent = preguntaActual.opciones[2];
+  
+    document.querySelectorAll(".respuesta-btn").forEach(boton => {
+      boton.classList.remove("correct", "incorrect");
+      boton.onclick = () => {
+        if (boton.textContent === preguntaActual.correcta) {
+          boton.classList.add("correct");
+          emitirPitidoDulce();
+          setTimeout(() => { 
+            indicePregunta++; 
+            mostrarPregunta(); 
+          }, 500);
+        } else {
+          boton.classList.add("incorrect");
+          emitirPitido();
+          setTimeout(() => boton.classList.remove("incorrect"), 500);
+        }
+      };
+    });
+  }
+  
+  // Mostrar la portada por 3 segundos y luego iniciar el juego
+  setTimeout(function() {
+    document.getElementById("cover").style.display = "none";
+    // Iniciar el temporizador a partir de este momento
+    tiempoInicio = Date.now();
+    intervalo = setInterval(actualizarTemporizador, 1000);
+    mostrarPregunta();
+  }, 3000);
+</script>
+
+</body>
+</html>
