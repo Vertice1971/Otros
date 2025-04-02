@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="ca">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>José, el hijo de Jacob 📖✝️</title>
+  <title>Josep, fill de Jacob 📖✝️</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -15,20 +15,20 @@
       margin: 0;
       position: relative;
     }
-    /* Capa de imagen semitransparente permanente */
+    /* Capa d'imatge semitransparent permanent */
     #bgOverlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: url("JoséGit.png") no-repeat center center;
+      background: url("JosepGit.png") no-repeat center center;
       background-size: contain;
       opacity: 0.5;
       z-index: 1;
       pointer-events: none;
     }
-    /* Portada inicial que se muestra completa durante 3 segundos */
+    /* Portada inicial que es mostra completa durant 3 segons */
     #cover {
       position: fixed;
       top: 0;
@@ -55,9 +55,9 @@
       max-width: 450px;
       border: 4px double #ff6600;
       position: relative;
-      z-index: 2; /* Por encima del bgOverlay */
+      z-index: 2; /* Per sobre del bgOverlay */
     }
-    /* Iconos actualizados para tema bíblico */
+    /* Iconos actualitzats per tema bíblic */
     .trivia-container::before, .mensaje-felicidades::before {
       content: "📖";
       position: absolute;
@@ -160,14 +160,14 @@
 
 <!-- Portada inicial -->
 <div id="cover">
-  <img src="JoséGit.png" alt="Portada">
+  <img src="JosepGit.png" alt="Portada">
 </div>
 
-<!-- Fondo semitransparente con la imagen, por encima del fondo naranja -->
+<!-- Fons semitransparent amb la imatge, per sobre del fons taronja -->
 <div id="bgOverlay"></div>
 
 <div class="trivia-container" id="triviaContainer">
-  <h1>📖 José, el hijo de Jacob ✝️</h1>
+  <h1>📖 Josep, fill de Jacob ✝️</h1>
   <div class="temporizador" id="temporizador">00:00</div>
   <p id="pregunta"></p>
   <button id="respuesta1" class="btn respuesta-btn"></button>
@@ -176,10 +176,10 @@
 </div>
 
 <div class="mensaje-felicidades" id="mensajeFelicidades">
-  <h2>✝️ ¡¡¡Enhorabuena!!! 📖</h2>
-  <p>Es difícil saber más cosas que tú...</p>
-  <p>Tiempo total: <span class="tiempo" id="tiempoFinal"></span></p>
-  <button class="btn btn-restart" onclick="reloadGame()">Volver a jugar</button>
+  <h2>✝️ Enhorabona! 📖</h2>
+  <p>És difícil saber més coses que tu...</p>
+  <p>Temps total: <span class="tiempo" id="tiempoFinal"></span></p>
+  <button class="btn btn-restart" onclick="reloadGame()">Tornar a jugar</button>
 </div>
 
 <script>
@@ -187,231 +187,231 @@
     window.location.reload();
   }
 
-  // Array completo de preguntas basadas en eventos bíblicos
+  // Array complet de preguntes basades en esdeveniments bíblics
   const preguntasCompletas = [
     { 
-      pregunta: "¿Qué mostró José mientras trabajaba en Egipto?", 
-      correcta: "Integridad y sabiduría", 
-      opciones: ["Ambición y orgullo", "Integridad y sabiduría", "Fuerza y valor"] 
+      pregunta: "Què va mostrar en Josep mentre treballava a Egipte?", 
+      correcta: "Integritat i saviesa", 
+      opciones: ["Ambició i orgull", "Integritat i saviesa", "Força i valor"] 
     },
     { 
-      pregunta: "¿Cómo salvó Egipto de la hambruna José?", 
-      correcta: "Administrando sabiamente los recursos", 
-      opciones: ["Construyendo barcos", "Organizando fiestas", "Administrando sabiamente los recursos"] 
+      pregunta: "Com va salvar en Josep Egipte de la fam?", 
+      correcta: "Administrant amb saviesa els recursos", 
+      opciones: ["Construint vaixells", "Organitzant festes", "Administrant amb saviesa els recursos"] 
     },
     { 
-      pregunta: "¿Por qué llegaron los hermanos de José a Egipto?", 
-      correcta: "Para buscar alimento por la hambruna", 
-      opciones: ["Para visitar a José", "Para buscar alimento por la hambruna", "Por turismo"] 
+      pregunta: "Per què van arribar els germans d'en Josep a Egipte?", 
+      correcta: "Per cercar aliment a causa de la fam", 
+      opciones: ["Per visitar en Josep", "Per cercar aliment a causa de la fam", "Per turisme"] 
     },
     { 
-      pregunta: "¿Qué hizo José con sus hermanos en lugar de vengarse?", 
-      correcta: "Los perdonó y les dio alimento", 
-      opciones: ["Los castigó", "Los ignoró", "Los perdonó y les dio alimento"] 
+      pregunta: "Què va fer en Josep amb els seus germans en lloc de venjar-se?", 
+      correcta: "Els va perdonar i els va donar aliment", 
+      opciones: ["Els va castigar", "Els va ignorar", "Els va perdonar i els va donar aliment"] 
     },
     { 
-      pregunta: "¿Qué permitió el Faraón a Jacob y su familia en Egipto?", 
-      correcta: "Que se establecieran en Egipto", 
-      opciones: ["Que viajaran por el desierto", "Que se establecieran en Egipto", "Que se mudaran a otra tierra"] 
+      pregunta: "Què va permetre el Faraó a Jacob i la seva família a Egipte?", 
+      correcta: "Que s'establissin a Egipte", 
+      opciones: ["Que viatjaren pel desert", "Que s'establissin a Egipte", "Que es traslladessin a una altra terra"] 
     },
     { 
-      pregunta: "¿Dónde prosperó la familia de Jacob en Egipto?", 
-      correcta: "En la región de Gosén", 
-      opciones: ["En el Nilo", "En la región de Gosén", "En el palacio del Faraón"] 
+      pregunta: "On va prosperar la família de Jacob a Egipte?", 
+      correcta: "A la regió de Gosèn", 
+      opciones: ["Al Nil", "A la regió de Gosèn", "Al palau del Faraó"] 
     },
     { 
-      pregunta: "¿Qué habilidad mostró José en la prisión?", 
-      correcta: "Interpretar sueños", 
-      opciones: ["Cantar canciones", "Cocinar pan", "Interpretar sueños"] 
+      pregunta: "Quina habilitat va mostrar en Josep a la presó?", 
+      correcta: "Interpretar somnis", 
+      opciones: ["Cantar cançons", "Coure pa", "Interpretar somnis"] 
     },
     { 
-      pregunta: "Según la predicción de José, ¿qué pasó con el copero y el panadero?", 
-      correcta: "El copero fue restaurado y el panadero fue ejecutado", 
-      opciones: ["Ambos fueron liberados", "Ambos fueron ejecutados", "El copero fue restaurado y el panadero fue ejecutado"] 
+      pregunta: "Segons la predicció d'en Josep, què va passar amb el coper i el forner?", 
+      correcta: "El coper va ser restaurat i el forner va ser executat", 
+      opciones: ["Tots dos van ser alliberats", "Tots dos van ser executats", "El coper va ser restaurat i el forner va ser executat"] 
     },
     { 
-      pregunta: "¿Quién recordó a José al Faraón al tener sueños inquietantes?", 
-      correcta: "El copero", 
-      opciones: ["El panadero", "El copero", "Un esclavo"] 
+      pregunta: "Qui va recordar en Josep al Faraó quan va tenir somnis inquietants?", 
+      correcta: "El coper", 
+      opciones: ["El forner", "El coper", "Un esclau"] 
     },
     { 
-      pregunta: "¿Qué interpretó José en el sueño del Faraón sobre vacas gordas y flacas?", 
-      correcta: "Años de abundancia y años de hambre", 
-      opciones: ["El fin del mundo", "Una invasión", "Años de abundancia y años de hambre"] 
+      pregunta: "Què va interpretar en Josep en el somni del Faraó sobre vaques grasses i primes?", 
+      correcta: "Anys d'abundància i anys de fam", 
+      opciones: ["El final del món", "Una invasió", "Anys d'abundància i anys de fam"] 
     },
     { 
-      pregunta: "¿Qué cargo recibió José por su sabiduría?", 
-      correcta: "Gobernador de Egipto", 
-      opciones: ["Consejero", "General del ejército", "Gobernador de Egipto"] 
+      pregunta: "Quin càrrec va rebre en Josep per la seva saviesa?", 
+      correcta: "Goberner d'Egipte", 
+      opciones: ["Conseller", "General de l'exèrcit", "Goberner d'Egipte"] 
     },
     { 
-      pregunta: "¿Qué sentía Jacob en Canaán por su hijo José?", 
-      correcta: "Lamentaba su pérdida", 
-      opciones: ["Lo celebraba", "Lamentaba su pérdida", "Lo había olvidado"] 
+      pregunta: "Què sentia Jacob a Canaan pel seu fill en Josep?", 
+      correcta: "Lamentava la seva pèrdua", 
+      opciones: ["El celebrava", "Lamentava la seva pèrdua", "El havia oblidat"] 
     },
     { 
-      pregunta: "¿Qué hicieron los hermanos de José al viajar a Egipto?", 
-      correcta: "Compraron trigo sin reconocer a José", 
-      opciones: ["Compraron trigo sin reconocer a José", "Lo buscaron para abrazarlo", "Se quedaron en Canaán"] 
+      pregunta: "Què van fer els germans d'en Josep quan van viatjar a Egipte?", 
+      correcta: "Van comprar blat sense reconèixer en Josep", 
+      opciones: ["Van comprar blat sense reconèixer en Josep", "El van buscar per abraçar-lo", "Es van quedar a Canaan"] 
     },
     { 
-      pregunta: "¿Cómo comprobó José si sus hermanos habían cambiado?", 
-      correcta: "Los puso a prueba", 
-      opciones: ["Los ignoró", "Los puso a prueba", "Les regaló dinero"] 
+      pregunta: "Com va comprovar en Josep si els seus germans havien canviat?", 
+      correcta: "Els va posar a prova", 
+      opciones: ["Els va ignorar", "Els va posar a prova", "Els va regalar diners"] 
     },
     { 
-      pregunta: "¿Qué pidió José como parte de la prueba a sus hermanos?", 
-      correcta: "Traer a Benjamín", 
-      opciones: ["Traer a Rubén", "Traer a Benjamín", "Traer a un esclavo"] 
+      pregunta: "Què va demanar en Josep com a part de la prova als seus germans?", 
+      correcta: "Portar en Benjamí", 
+      opciones: ["Portar en Rubèn", "Portar en Benjamí", "Portar un esclau"] 
     },
     { 
-      pregunta: "¿Qué hicieron los hermanos de José respecto a Benjamín?", 
-      correcta: "Convencieron a Jacob de llevar a Benjamín", 
-      opciones: ["Lo dejaron en Egipto", "Ignoraron a Benjamín", "Convencieron a Jacob de llevar a Benjamín"] 
+      pregunta: "Què van fer els germans d'en Josep respecte a Benjamí?", 
+      correcta: "Van convèncer en Jacob de portar en Benjamí", 
+      opciones: ["El van deixar a Egipte", "Van ignorar en Benjamí", "Van convèncer en Jacob de portar en Benjamí"] 
     },
     { 
-      pregunta: "¿Qué hizo José con su copa en el saco de Benjamín?", 
-      correcta: "La escondió y acusó de robo", 
-      opciones: ["La regaló", "La escondió y acusó de robo", "La perdió"] 
+      pregunta: "Què va fer en Josep amb la seva copa al sac d'en Benjamí?", 
+      correcta: "La va amagar i va acusar de robatori", 
+      opciones: ["La va regalar", "La va amagar i va acusar de robatori", "La va perdre"] 
     },
     { 
-      pregunta: "¿Qué hizo Judá para proteger a su padre Jacob?", 
-      correcta: "Se ofreció como esclavo en lugar de Benjamín", 
-      opciones: ["Huyó del país", "No hizo nada", "Se ofreció como esclavo en lugar de Benjamín"] 
+      pregunta: "Què va fer Judà per protegir el seu pare Jacob?", 
+      correcta: "Es va oferir com a esclau en lloc d'en Benjamí", 
+      opciones: ["Va fugir del país", "No va fer res", "Es va oferir com a esclau en lloc d'en Benjamí"] 
     },
     { 
-      pregunta: "¿Qué reveló José a sus hermanos al final de la prueba?", 
-      correcta: "Que Dios había usado todo para bien", 
-      opciones: ["Que era un espía", "Que estaban en problemas", "Que Dios había usado todo para bien"] 
+      pregunta: "Què va revelar en Josep als seus germans al final de la prova?", 
+      correcta: "Que Déu havia fet servir tot per al bé", 
+      opciones: ["Que era un espia", "Que estaven en problemes", "Que Déu havia fet servir tot per al bé"] 
     },
     { 
-      pregunta: "¿Qué ordenó José a sus hermanos respecto a Jacob?", 
-      correcta: "Que trajeran a Jacob y su familia a Egipto", 
-      opciones: ["Que dejaran a Jacob en Canaán", "Que olvidaran a Jacob", "Que trajeran a Jacob y su familia a Egipto"] 
+      pregunta: "Què va ordenar en Josep als seus germans respecte a Jacob?", 
+      correcta: "Que portessin en Jacob i la seva família a Egipte", 
+      opciones: ["Que deixessin en Jacob a Canaan", "Que oblidessin en Jacob", "Que portessin en Jacob i la seva família a Egipte"] 
     },
     { 
-      pregunta: "¿Cómo se sintieron Jacob y José al reencontrarse en Egipto?", 
-      correcta: "Con emoción", 
-      opciones: ["Con enfado", "Con indiferencia", "Con emoción"] 
+      pregunta: "Com es van sentir en Jacob i en Josep en retrobar-se a Egipte?", 
+      correcta: "Amb emoció", 
+      opciones: ["Amb ira", "Amb indiferència", "Amb emoció"] 
     },
     { 
-      pregunta: "¿Qué hizo Jacob antes de morir?", 
-      correcta: "Bendijo a sus hijos y predijo su futuro", 
-      opciones: ["Olvidó a su familia", "Les regaló tierras", "Bendijo a sus hijos y predijo su futuro"] 
+      pregunta: "Què va fer en Jacob abans de morir?", 
+      correcta: "Va beneir els seus fills i va predir el seu futur", 
+      opciones: ["Va oblidar la seva família", "Els va regalar terres", "Va beneir els seus fills i va predir el seu futur"] 
     },
     { 
-      pregunta: "¿Qué juró José a su familia antes de morir?", 
-      correcta: "Llevar sus huesos a la Tierra Prometida", 
-      opciones: ["Quedarse en Egipto", "Olvidar sus orígenes", "Llevar sus huesos a la Tierra Prometida"] 
+      pregunta: "Què va jurar en Josep a la seva família abans de morir?", 
+      correcta: "Portar els seus ossos a la Terra Promesa", 
+      opciones: ["Quedar-se a Egipte", "Oblidar els seus orígens", "Portar els seus ossos a la Terra Promesa"] 
     },
     { 
-      pregunta: "¿Qué ocurrió con José al final de su vida?", 
-      correcta: "Murió en Egipto y su historia continuó con el pueblo hebreo", 
-      opciones: ["Su historia terminó", "Se olvidó de él", "Murió en Egipto y su historia continuó con el pueblo hebreo"] 
+      pregunta: "Què va passar amb en Josep al final de la seva vida?", 
+      correcta: "Va morir a Egipte i la seva història va continuar amb el poble hebreu", 
+      opciones: ["La seva història va acabar", "Es va oblidar d'ell", "Va morir a Egipte i la seva història va continuar amb el poble hebreu"] 
     },
     { 
-      pregunta: "¿Qué hizo el nuevo Faraón que no recordaba a José?", 
-      correcta: "Esclavizó a los hebreos", 
-      opciones: ["Los liberó", "Los ayudó", "Esclavizó a los hebreos"] 
+      pregunta: "Què va fer el nou Faraó que no recordava en Josep?", 
+      correcta: "Va esclavitzar els hebreus", 
+      opciones: ["Els va alliberar", "Els va ajudar", "Va esclavitzar els hebreus"] 
     },
     { 
-      pregunta: "¿Cómo vivían los hebreos en Egipto cuando se recordaba a José?", 
-      correcta: "En paz", 
-      opciones: ["En guerra", "Con miedo", "En paz"] 
+      pregunta: "Com vivien els hebreus a Egipte quan es recordava en Josep?", 
+      correcta: "En pau", 
+      opciones: ["En guerra", "Amb por", "En pau"] 
     },
     { 
-      pregunta: "¿Qué caracterizaba al nuevo Faraón que subió al poder?", 
-      correcta: "No conocía la historia de José", 
-      opciones: ["Era muy sabio", "Era amigo de los hebreos", "No conocía la historia de José"] 
+      pregunta: "Què caracteritzava el nou Faraó que va pujar al poder?", 
+      correcta: "No coneixia la història d'en Josep", 
+      opciones: ["Era molt savi", "Era amic dels hebreus", "No coneixia la història d'en Josep"] 
     },
     { 
-      pregunta: "¿Cómo veía el nuevo Faraón a los hebreos?", 
-      correcta: "Como extranjeros con creencias distintas", 
-      opciones: ["Como ciudadanos", "Como hermanos", "Como extranjeros con creencias distintas"] 
+      pregunta: "Com veia el nou Faraó els hebreus?", 
+      correcta: "Com a estrangers amb creences diferents", 
+      opciones: ["Com a ciutadans", "Com a germans", "Com a estrangers amb creences diferents"] 
     },
     { 
-      pregunta: "¿Qué hicieron los egipcios con los hebreos?", 
-      correcta: "Los convirtieron en esclavos y les obligaron a construir ciudades", 
-      opciones: ["Los hicieron reyes", "Los liberaron", "Los convirtieron en esclavos y les obligaron a construir ciudades"] 
+      pregunta: "Què van fer els egipcis amb els hebreus?", 
+      correcta: "Els van convertir en esclaus i els van obligar a construir ciutats", 
+      opciones: ["Els van fer reis", "Els van alliberar", "Els van convertir en esclaus i els van obligar a construir ciutats"] 
     },
     { 
-      pregunta: "¿Qué ordenó el Faraón respecto a los varones hebreos recién nacidos?", 
-      correcta: "Que fueran arrojados al Nilo", 
-      opciones: ["Que fueran protegidos", "Que fueran educados", "Que fueran arrojados al Nilo"] 
+      pregunta: "Què va ordenar el Faraó respecte als mascles hebreus acabats de néixer?", 
+      correcta: "Que fossin llançats al Nil", 
+      opciones: ["Que fossin protegits", "Que fossin educats", "Que fossin llançats al Nil"] 
     },
     { 
-      pregunta: "¿Qué hizo Jocabed con Moisés cuando era bebé?", 
-      correcta: "Lo escondió y lo puso en una canasta en el Nilo", 
-      opciones: ["Lo regaló", "Lo escondió y lo puso en una canasta en el Nilo", "Lo dejó en la puerta del palacio"] 
+      pregunta: "Què va fer Jocabed amb Moisès quan era nadó?", 
+      correcta: "El va amagar i el va posar en una cistella al Nil", 
+      opciones: ["El va regalar", "El va amagar i el va posar en una cistella al Nil", "El va deixar a la porta del palau"] 
     },
     { 
-      pregunta: "¿Qué hizo la hija del Faraón al encontrar la canasta con Moisés?", 
-      correcta: "Adoptó a Moisés", 
-      opciones: ["La rompió", "La ignoró", "Adoptó a Moisés"] 
+      pregunta: "Què va fer la filla del Faraó en trobar la cistella amb Moisès?", 
+      correcta: "Va adoptar en Moisès", 
+      opciones: ["La va trencar", "La va ignorar", "Va adoptar en Moisès"] 
     },
     { 
-      pregunta: "¿Qué hizo Moisés cuando la princesa lo tomó en brazos?", 
-      correcta: "Comenzó a llorar", 
-      opciones: ["Se rió", "Sonrió", "Comenzó a llorar"] 
+      pregunta: "Què va fer en Moisès quan la princesa el va prendre als braços?", 
+      correcta: "Va començar a plorar", 
+      opciones: ["Va riure", "Va somriure", "Va començar a plorar"] 
     },
     { 
-      pregunta: "¿Qué hizo Miriam con la canasta en la que estaba Moisés?", 
-      correcta: "La vigiló y habló con la princesa", 
-      opciones: ["La escondió", "La tiró al Nilo", "La vigiló y habló con la princesa"] 
+      pregunta: "Què va fer Miriam amb la cistella en què estava en Moisès?", 
+      correcta: "La va vigilar i va parlar amb la princesa", 
+      opciones: ["La va amagar", "La va tirar al Nil", "La va vigilar i va parlar amb la princesa"] 
     },
     { 
-      pregunta: "¿Qué sugirió Miriam para cuidar a Moisés?", 
-      correcta: "Que una nodriza hebrea lo criara", 
-      opciones: ["Que se mudara al palacio", "Que Moisés fuera enviado a la escuela", "Que una nodriza hebrea lo criara"] 
+      pregunta: "Què va suggerir Miriam per cuidar en Moisès?", 
+      correcta: "Que una nodrissa hebrea el criés", 
+      opciones: ["Que es traslladés al palau", "Que en Moisès fos enviat a l'escola", "Que una nodrissa hebrea el criés"] 
     },
     { 
-      pregunta: "¿Quién fue elegida para cuidar a Moisés y recibió un pago por ello?", 
-      correcta: "Jocabed, su madre", 
-      opciones: ["Miriam", "La hija del Faraón", "Jocabed, su madre"] 
+      pregunta: "Qui va ser escollida per cuidar en Moisès i va rebre un pagament per això?", 
+      correcta: "Jocabed, la seva mare", 
+      opciones: ["Miriam", "La filla del Faraó", "Jocabed, la seva mare"] 
     },
     { 
-      pregunta: "¿Qué papel tuvo el Nilo en la historia de Moisés?", 
-      correcta: "Fue clave para su rescate y en las plagas de Egipto", 
-      opciones: ["Fue un río tranquilo", "Fue olvidado", "Fue clave para su rescate y en las plagas de Egipto"] 
+      pregunta: "Quin paper va tenir el Nil en la història d'en Moisès?", 
+      correcta: "Va ser clau per al seu rescat i en les plagues d'Egipte", 
+      opciones: ["Va ser un riu tranquil", "Va ser oblidat", "Va ser clau per al seu rescat i en les plagues d'Egipte"] 
     },
     { 
-      pregunta: "¿Qué se dice de Aarón, el hermano de Moisés?", 
-      correcta: "Nació antes del edicto y no fue afectado", 
-      opciones: ["Nació después y fue afectado", "No se menciona su nacimiento", "Nació antes del edicto y no fue afectado"] 
+      pregunta: "Què se diu d'Aaró, el germà d'en Moisès?", 
+      correcta: "Va néixer abans de l'edicte i no va ser afectat", 
+      opciones: ["Va néixer després i va ser afectat", "No se menciona el seu naixement", "Va néixer abans de l'edicte i no va ser afectat"] 
     },
     { 
-      pregunta: "¿Qué ordenó Dios a Abraham en Génesis 12:1-9?", 
-      correcta: "Salir de Ur y dirigirse a Canaán", 
-      opciones: ["Quedarse en Ur", "Construir un templo", "Salir de Ur y dirigirse a Canaán"] 
+      pregunta: "Què va ordenar Déu a Abraham en Gènesi 12:1-9?", 
+      correcta: "Sortir d'Ur i dirigir-se a Canaan", 
+      opciones: ["Quedar-se a Ur", "Construir un temple", "Sortir d'Ur i dirigir-se a Canaan"] 
     },
     { 
-      pregunta: "¿Qué prometió Dios a Abraham acerca de su descendencia en Génesis 15:5?", 
-      correcta: "Que sería tan numerosa como las estrellas del cielo", 
-      opciones: ["Que sería pequeña", "Que sería famosa", "Que sería tan numerosa como las estrellas del cielo"] 
+      pregunta: "Què va prometre Déu a Abraham sobre la seva descendència en Gènesi 15:5?", 
+      correcta: "Que seria tan nombrosa com les estrelles del cel", 
+      opciones: ["Que seria petita", "Que seria famosa", "Que seria tan nombrosa com les estrelles del cel"] 
     },
     { 
-      pregunta: "¿Qué acontecimiento cumplió la promesa de Dios a Abraham y Sara?", 
-      correcta: "El nacimiento de Isaac", 
-      opciones: ["El nacimiento de Jacob", "El nacimiento de Isaac", "El viaje a Canaán"] 
+      pregunta: "Quin esdeveniment va complir la promesa de Déu a Abraham i Sara?", 
+      correcta: "El naixement d'Isaac", 
+      opciones: ["El naixement de Jacob", "El naixement d'Isaac", "El viatge a Canaan"] 
     },
     { 
-      pregunta: "¿Qué soñó Jacob en Génesis 28?", 
-      correcta: "Una escalera que llega al cielo", 
-      opciones: ["Una gran torre", "Un valle profundo", "Una escalera que llega al cielo"] 
+      pregunta: "Què va somiar Jacob en Gènesi 28?", 
+      correcta: "Una escala que arriba al cel", 
+      opciones: ["Una gran torre", "Un vall profund", "Una escala que arriba al cel"] 
     },
     { 
-      pregunta: "¿Qué cambio hizo Dios en Jacob después de luchar con un ángel?", 
-      correcta: "Lo llamó Israel", 
-      opciones: ["Lo llamó José", "Lo llamó Moisés", "Lo llamó Israel"] 
+      pregunta: "Què va canviar Déu en Jacob després de lluitar amb un àngel?", 
+      correcta: "El va anomenar Israel", 
+      opciones: ["El va anomenar Josep", "El va anomenar Moisès", "El va anomenar Israel"] 
     },
     { 
-      pregunta: "¿Qué hicieron los hermanos de José en Génesis 37 antes de venderlo?", 
-      correcta: "Lo arrojaron a un pozo", 
-      opciones: ["Lo abrazaron", "Lo invitaron a cenar", "Lo arrojaron a un pozo"] 
+      pregunta: "Què van fer els germans d'en Josep en Gènesi 37 abans de vendre'l?", 
+      correcta: "El van llençar en un pou", 
+      opciones: ["El van abraçar", "El van convidar a sopar", "El van llençar en un pou"] 
     }
   ];
 
-  // Mezclar todas las preguntas y seleccionar 7 al azar
+  // Barrejar totes les preguntes i seleccionar 7 a l'atzar
   preguntasCompletas.sort(() => 0.5 - Math.random());
   const preguntasSeleccionadas = preguntasCompletas.slice(0, 7);
   preguntasSeleccionadas.forEach(p => p.opciones.sort(() => 0.5 - Math.random()));
@@ -420,10 +420,10 @@
   let tiempoInicio;
   let intervalo;
 
-  // Crear el contexto de audio
+  // Crear el context d'àudio
   const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-  // Función para generar un sonido con fundido suave
+  // Funció per generar un so amb un fundit suau
   function playBeep(frequency, duration, type = 'sine', fadeTime = 0.1) {
     const osc = audioCtx.createOscillator();
     const gainNode = audioCtx.createGain();
@@ -431,7 +431,7 @@
     osc.frequency.value = frequency;
     osc.type = type;
     
-    // Comienza con volumen 0 y aumenta gradualmente
+    // Comença amb volum 0 i augmenta gradualment
     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
     gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
     gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
@@ -443,7 +443,7 @@
     setTimeout(() => osc.stop(), duration);
   }
 
-  // Función para generar pitido de error (más suave, con frecuencia reducida)
+  // Funció per generar un pitjor d'error (més suau, amb freqüència reduïda)
   function emitirPitido() {
     if (audioCtx.state === 'suspended') 
       audioCtx.resume().then(() => playBeep(500, 300, 'sine', 0.2));
@@ -451,7 +451,7 @@
       playBeep(500, 300, 'sine', 0.2);
   }
 
-  // Función para generar el sonido de campanillas angelicales
+  // Funció per generar el so de campanetes angelicals
   function playChime(frequencies, duration, type = 'triangle', fadeTime = 0.2) {
     const osc1 = audioCtx.createOscillator();
     const osc2 = audioCtx.createOscillator();
@@ -479,7 +479,7 @@
     }, duration);
   }
   
-  // Función para el pitido de acierto con campanillas angelicales
+  // Funció per al pitjor d'encert amb campanetes angelicals
   function emitirPitidoDulce() {
     if (audioCtx.state === 'suspended') 
       audioCtx.resume().then(() => playChime([800, 1200], 800, 'triangle', 0.3));
@@ -487,7 +487,7 @@
       playChime([800, 1200], 800, 'triangle', 0.3);
   }
   
-  // Actualizar temporizador
+  // Actualitzar temporitzador
   function actualizarTemporizador() {
     let tiempoPasado = Date.now() - tiempoInicio;
     let minutos = Math.floor(tiempoPasado / 60000);
@@ -496,7 +496,7 @@
       `${String(minutos).padStart(2, "0")}:${String(segundos).padStart(2, "0")}`;
   }
   
-  // Mostrar la pregunta actual y asignar eventos a los botones
+  // Mostrar la pregunta actual i assignar esdeveniments als botons
   function mostrarPregunta() {
     if (indicePregunta >= preguntasSeleccionadas.length) {
       clearInterval(intervalo);
@@ -531,10 +531,10 @@
     });
   }
   
-  // Mostrar la portada por 3 segundos y luego iniciar el juego
+  // Mostrar la portada durant 3 segons i després iniciar el joc
   setTimeout(function() {
     document.getElementById("cover").style.display = "none";
-    // Iniciar el temporizador a partir de este momento
+    // Iniciar el temporitzador a partir d'aquest moment
     tiempoInicio = Date.now();
     intervalo = setInterval(actualizarTemporizador, 1000);
     mostrarPregunta();
