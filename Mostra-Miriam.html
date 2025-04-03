@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miriam, la veu del desert (Mostra) 📖✝️</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffcc33, #ff6600);
+      margin: 0;
+      position: relative;
+    }
+    /* Capa de fons semitransparent amb la imatge */
+    #bgOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url("CatMiriamGit.png") no-repeat center center;
+      background-size: contain;
+      opacity: 0.5;
+      z-index: 1;
+      pointer-events: none;
+    }
+    /* Portada inicial que es mostra durant 3 segons */
+    #cover {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #cover img {
+      max-height: 100%;
+      max-width: 100%;
+    }
+    .trivia-container, .missatge-felicitats {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+      border: 4px double #ff6600;
+      position: relative;
+      z-index: 2; /* Per sobre del fons semitransparent */
+    }
+    /* Icones per tema bíblic */
+    .trivia-container::before, .missatge-felicitats::before {
+      content: "📖";
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      font-size: 30px;
+    }
+    .trivia-container::after, .missatge-felicitats::after {
+      content: "✝️";
+      position: absolute;
+      bottom: -15px;
+      right: -15px;
+      font-size: 30px;
+    }
+    h1 {
+      font-size: 26px;
+      margin-bottom: 15px;
+      color: #ff6600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+    #respuesta1 { background-color: #007bff; }
+    #respuesta2 { background-color: #ff9800; }
+    #respuesta3 { background-color: #9c27b0; }
+    .btn:hover {
+      filter: brightness(85%);
+      transform: scale(1.05);
+    }
+    .btn.incorrect {
+      background-color: #ff4444;
+      animation: shake 0.5s;
+    }
+    .btn.correct {
+      background-color: #00cc66 !important;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+    .temporizador {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff6600;
+      background: #fff3cd;
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+    .missatge-felicitats {
+      display: none;
+    }
+    .missatge-felicitats h2 {
+      font-size: 30px;
+      color: #00cc66;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .missatge-felicitats p {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .missatge-felicitats .tiempo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .btn-restart {
+      background-color: #007bff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Portada inicial -->
+<div id="cover">
+  <img src="CatMiriamGit.png" alt="Portada">
+</div>
+
+<!-- Fons semitransparent amb la imatge -->
+<div id="bgOverlay"></div>
+
+<div class="trivia-container" id="triviaContainer">
+  <h1>📖 Miriam, la veu del desert (Mostra) ✝️</h1>
+  <div class="temporizador" id="temporizador">00:00</div>
+  <p id="pregunta"></p>
+  <button id="respuesta1" class="btn respuesta-btn"></button>
+  <button id="respuesta2" class="btn respuesta-btn"></button>
+  <button id="respuesta3" class="btn respuesta-btn"></button>
+</div>
+
+<div class="missatge-felicitats" id="mensajeFelicidades">
+  <h2>✝️ Enhorabona!!! 📖</h2>
+  <p>Has respost totes les preguntes!</p>
+  <p>Temps total: <span class="tiempo" id="tiempoFinal"></span></p>
+  <button class="btn btn-restart" onclick="reloadGame()">Torna a jugar</button>
+</div>
+
+<script>
+  function reloadGame() {
+    window.location.reload();
+  }
+
+  // Array de 14 preguntes sobre "Miriam, la veu del desert"
+  const preguntasCompletas = [
+    { 
+      pregunta: "Per què els hebreus van ser convertits en esclaus a Egipte?",
+      correcta: "Perquè el nou Faraó temia el seu creixement.",
+      opciones: [
+        "Perquè hi van arribar massa estrangers a la terra.",
+        "Perquè el nou Faraó temia el seu creixement.",
+        "Perquè els egipcis necessitaven més treballadors."
+      ]
+    },
+    { 
+      pregunta: "Qui va ordenar que els nadons varons hebreus fossin llençats al Nil?",
+      correcta: "El Faraó.",
+      opciones: [
+        "Josep.",
+        "Aaró.",
+        "El Faraó."
+      ]
+    },
+    { 
+      pregunta: "Com es deia la mare de Miriam, Moisès i Aaró?",
+      correcta: "Jocabed.",
+      opciones: [
+        "Rebeca.",
+        "Jocabed.",
+        "Débora."
+      ]
+    },
+    { 
+      pregunta: "Quant de temps va aconseguir en Jocabed amagar en Moisès?",
+      correcta: "Tres mesos.",
+      opciones: [
+        "Un any.",
+        "Sis mesos.",
+        "Tres mesos."
+      ]
+    },
+    { 
+      pregunta: "Com va protegir en Jocabed en Moisès quan no el va poder amagar més?",
+      correcta: "El va posar en una cistella de papiro al Nil.",
+      opciones: [
+        "El va deixar amb una altra família hebrea.",
+        "El va posar en una cistella de papiro al Nil.",
+        "El va amagar al temple dels egipcis."
+      ]
+    },
+    { 
+      pregunta: "Qui es va quedar vigilant la cistella d’en Moisès?",
+      correcta: "Miriam.",
+      opciones: [
+        "Aaró.",
+        "Miriam.",
+        "Un sacerdot egipci."
+      ]
+    },
+    { 
+      pregunta: "Com va reaccionar en Moisès quan la princesa el va prendre als braços?",
+      correcta: "Va plorar.",
+      opciones: [
+        "Va somriure.",
+        "Es va quedar adormit.",
+        "Va plorar."
+      ]
+    },
+    { 
+      pregunta: "Qui va acabar cuidant d’en Moisès després que la filla del Faraó l’adoptés?",
+      correcta: "La seva mare, Jocabed.",
+      opciones: [
+        "La seva mare, Jocabed.",
+        "Una sacerdotissa egipcia.",
+        "Miriam."
+      ]
+    },
+    { 
+      pregunta: "Com va recompensar la filla del Faraó a Jocabed?",
+      correcta: "Li va pagar per criar en Moisès.",
+      opciones: [
+        "Li va donar un lloc al palau.",
+        "Li va pagar per criar en Moisès.",
+        "Li va permetre tornar a la seva terra."
+      ]
+    },
+    { 
+      pregunta: "On va créixer en Moisès després de ser criat per la seva mare?",
+      correcta: "Al palau del Faraó.",
+      opciones: [
+        "A la casa de la seva família hebrea.",
+        "Al desert.",
+        "Al palau del Faraó."
+      ]
+    },
+    { 
+      pregunta: "Quina importància va tenir el riu Nil en la història d’en Moisès?",
+      correcta: "Va ser on la seva vida va ser salvada i més tard on Déu va mostrar el seu poder.",
+      opciones: [
+        "Va ser on en Moisès va aprendre a nedar.",
+        "Va ser on la seva vida va ser salvada i més tard on Déu va mostrar el seu poder.",
+        "Va ser on en Moisès va amagar el seu poble dels egipcis."
+      ]
+    },
+    { 
+      pregunta: "Què va passar amb Miriam després que en Moisès fou portat al palau?",
+      correcta: "Va tornar amb la seva família hebrea.",
+      opciones: [
+        "Va tornar amb la seva família hebrea.",
+        "Es va convertir en la consellera del Faraó.",
+        "Va ser portada al palau amb el seu germà."
+      ]
+    },
+    { 
+      pregunta: "Qui era Aaró en relació amb en Moisès?",
+      correcta: "El seu germà gran.",
+      opciones: [
+        "El seu cosí.",
+        "El seu germà gran.",
+        "El seu oncle."
+      ]
+    },
+    { 
+      pregunta: "Per què l’Aaró no va ser afectat per l’edicte del Faraó?",
+      correcta: "Perquè havia nascut abans de l’ordre de matar els nadons varons hebreus.",
+      opciones: [
+        "Perquè havia nascut abans de l’ordre de matar els nadons varons hebreus.",
+        "Perquè va ser amagat al temple egipci.",
+        "Perquè va ser criat per una família egipcia."
+      ]
+    }
+  ];
+
+  // Es barregen totes les preguntes i se'n seleccionen 5 a l'atzar
+  preguntasCompletas.sort(() => 0.5 - Math.random());
+  const preguntasSeleccionadas = preguntasCompletas.slice(0, 5);
+  preguntasSeleccionadas.forEach(p => p.opciones.sort(() => 0.5 - Math.random()));
+
+  let indicePregunta = 0;
+  let tiempoInicio = Date.now();
+  let intervalo = setInterval(actualitzarTemporitzador, 1000);
+
+  // Crear el context d'àudio
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // Funció per generar so amb un desfàs suau
+  function playBeep(frequency, duration, type = 'sine', fadeTime = 0.1) {
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.frequency.value = frequency;
+    osc.type = type;
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start();
+    setTimeout(() => osc.stop(), duration);
+  }
+
+  // So d'error (pitido suau)
+  function emitirPitido() {
+    if (audioCtx.state === 'suspended')
+      audioCtx.resume().then(() => playBeep(500, 300, 'sine', 0.2));
+    else 
+      playBeep(500, 300, 'sine', 0.2);
+  }
+
+  // Funció per so d'encert: campanetes angelicals
+  function playChime(frequencies, duration, type = 'triangle', fadeTime = 0.2) {
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc1.frequency.value = frequencies[0];
+    osc2.frequency.value = frequencies[1];
+    osc1.type = type;
+    osc2.type = type;
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc1.connect(gainNode);
+    osc2.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc1.start();
+    osc2.start();
+    
+    setTimeout(() => {
+      osc1.stop();
+      osc2.stop();
+    }, duration);
+  }
+
+  // So d'encert (campanetes angelicals)
+  function emitirPitidoDulce() {
+    if (audioCtx.state === 'suspended')
+      audioCtx.resume().then(() => playChime([800, 1200], 800, 'triangle', 0.3));
+    else 
+      playChime([800, 1200], 800, 'triangle', 0.3);
+  }
+
+  // Actualitzar el temporitzador
+  function actualitzarTemporitzador() {
+    let tempsPassat = Date.now() - tiempoInicio;
+    let minuts = Math.floor(tempsPassat / 60000);
+    let segons = Math.floor((tempsPassat % 60000) / 1000);
+    document.getElementById("temporizador").textContent =
+      `${String(minuts).padStart(2, "0")}:${String(segons).padStart(2, "0")}`;
+  }
+
+  // Mostrar la pregunta actual i configurar les respostes
+  function mostrarPregunta() {
+    if (indicePregunta >= preguntasSeleccionadas.length) {
+      clearInterval(intervalo);
+      document.getElementById("triviaContainer").style.display = "none";
+      document.getElementById("mensajeFelicidades").style.display = "block";
+      document.getElementById("tiempoFinal").textContent = document.getElementById("temporizador").textContent;
+      return;
+    }
+  
+    let preguntaActual = preguntasSeleccionadas[indicePregunta];
+    document.getElementById("pregunta").textContent = preguntaActual.pregunta;
+    document.getElementById("respuesta1").textContent = preguntaActual.opciones[0];
+    document.getElementById("respuesta2").textContent = preguntaActual.opciones[1];
+    document.getElementById("respuesta3").textContent = preguntaActual.opciones[2];
+  
+    document.querySelectorAll(".respuesta-btn").forEach(boton => {
+      boton.classList.remove("correct", "incorrect");
+      boton.onclick = () => {
+        if (boton.textContent === preguntaActual.correcta) {
+          boton.classList.add("correct");
+          emitirPitidoDulce();
+          setTimeout(() => {
+            indicePregunta++;
+            mostrarPregunta();
+          }, 500);
+        } else {
+          boton.classList.add("incorrect");
+          emitirPitido();
+          setTimeout(() => boton.classList.remove("incorrect"), 500);
+        }
+      };
+    });
+  }
+  
+  // Mostrar la portada inicial durant 3 segons i després continuar amb el joc
+  setTimeout(function() {
+    document.getElementById("cover").style.display = "none";
+  }, 3000);
+  
+  mostrarPregunta();
+</script>
+
+</body>
+</html>
