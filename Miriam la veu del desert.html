@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Miriam, la veu del desert 📖✝️</title>
+  <style>
+    /* Estils generals */
+    body {
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffcc33, #ff6600);
+      margin: 0;
+      position: relative;
+    }
+    /* Fons semitransparent amb la imatge que es manté durant la partida */
+    #bgOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url("CatMiriamGit.png") no-repeat center center;
+      background-size: contain;
+      opacity: 0.5;
+      z-index: 1;
+      pointer-events: none;
+    }
+    /* Portada inicial que es mostra completa durant 3 segons */
+    #cover {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #cover img {
+      max-height: 100%;
+      max-width: 100%;
+    }
+    .trivia-container, .missatge-enhorabona {
+      background-color: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+      border: 4px double #ff6600;
+      position: relative;
+      z-index: 2; /* Per sobre del bgOverlay */
+    }
+    /* Icones per a tema bíblic */
+    .trivia-container::before, .missatge-enhorabona::before {
+      content: "📖";
+      position: absolute;
+      top: -15px;
+      left: -15px;
+      font-size: 30px;
+    }
+    .trivia-container::after, .missatge-enhorabona::after {
+      content: "✝️";
+      position: absolute;
+      bottom: -15px;
+      right: -15px;
+      font-size: 30px;
+    }
+    h1 {
+      font-size: 26px;
+      margin-bottom: 15px;
+      color: #ff6600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    p {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      transition: transform 0.2s ease, background-color 0.3s ease;
+    }
+    #resposta1 { background-color: #007bff; }
+    #resposta2 { background-color: #ff9800; }
+    #resposta3 { background-color: #9c27b0; }
+    .btn:hover {
+      filter: brightness(85%);
+      transform: scale(1.05);
+    }
+    .btn.incorrect {
+      background-color: #ff4444;
+      animation: shake 0.5s;
+    }
+    .btn.correct {
+      background-color: #00cc66 !important;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+    .temporitzador {
+      font-size: 22px;
+      font-weight: bold;
+      color: #ff6600;
+      background: #fff3cd;
+      padding: 5px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+    .missatge-enhorabona {
+      display: none;
+    }
+    .missatge-enhorabona h2 {
+      font-size: 30px;
+      color: #00cc66;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .missatge-enhorabona p {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .missatge-enhorabona .tiempo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #007bff;
+    }
+    .btn-restart {
+      background-color: #007bff;
+      padding: 15px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Portada inicial -->
+<div id="cover">
+  <img src="CatMiriamGit.png" alt="Portada">
+</div>
+
+<!-- Fons semitransparent amb la imatge, situat darrere del contingut -->
+<div id="bgOverlay"></div>
+
+<div class="trivia-container" id="triviaContainer">
+  <h1>📖 Miriam, la veu del desert ✝️</h1>
+  <div class="temporitzador" id="temporitzador">00:00</div>
+  <p id="pregunta"></p>
+  <button id="resposta1" class="btn resposta-btn"></button>
+  <button id="resposta2" class="btn resposta-btn"></button>
+  <button id="resposta3" class="btn resposta-btn"></button>
+</div>
+
+<div class="missatge-enhorabona" id="missatgeEnhorabona">
+  <h2>✝️ !!!Enhorabona!!! 📖</h2>
+  <p>Has respost totes les preguntes!</p>
+  <p>Temps total: <span class="tiempo" id="tempsFinal"></span></p>
+  <button class="btn btn-restart" onclick="reloadGame()">Tornar a jugar</button>
+</div>
+
+<script>
+  function reloadGame() {
+    window.location.reload();
+  }
+
+  const preguntesCompletes = [
+    { 
+      pregunta: "Com eren tractats els hebreus a Egipte?", 
+      correcta: "Com a esclaus treballant en la construcció", 
+      opcions: ["Com a nobles", "Com a comerciants", "Com a esclaus treballant en la construcció"]
+    },
+    { 
+      pregunta: "Quina ordre va donar el Faraó sobre els nadons hebreus?", 
+      correcta: "Llençar els acabats de néixer al Nil", 
+      opcions: ["Llençar els acabats de néixer al Nil", "Criar-los al palau", "Protegir-los"]
+    },
+    { 
+      pregunta: "Què va fer Iocabed amb Moisès per salvar-lo?", 
+      correcta: "El va amagar durant tres mesos", 
+      opcions: ["El va amagar durant tres mesos", "El va regalar", "El va deixar al palau"]
+    },
+    { 
+      pregunta: "On va col·locar Iocabed a Moisès per protegir-lo?", 
+      correcta: "En una cistella al Nil", 
+      opcions: ["En una cistella al Nil", "En un cofre al desert", "En un bressol a casa"]
+    },
+    { 
+      pregunta: "Qui va vigilar Moisès des de la riba del Nil?", 
+      correcta: "Miriam", 
+      opcions: ["Miriam", "Iocabed", "La filla del Faraó"]
+    },
+    { 
+      pregunta: "Qui va trobar Moisès al Nil?", 
+      correcta: "La filla del Faraó", 
+      opcions: ["La filla del Faraó", "Una serventa egípcia", "Miriam"]
+    },
+    { 
+      pregunta: "Què va fer Miriam per ajudar Moisès després de ser trobat?", 
+      correcta: "Va suggerir que Iocabed fos la seva nodrissa", 
+      opcions: ["Va suggerir que Iocabed fos la seva nodrissa", "El va cridar per jugar", "El va portar al palau"]
+    },
+    { 
+      pregunta: "On va créixer Moisès després de ser adoptat?", 
+      correcta: "A la cort egípcia", 
+      opcions: ["A la cort egípcia", "Al desert", "En un poble hebreu"]
+    },
+    { 
+      pregunta: "Què va fer Moisès quan va veure a un egipci colpejant un hebreu?", 
+      correcta: "Va matar l'egipci", 
+      opcions: ["Va matar l'egipci", "Va cridar a un guàrdia", "Va fugir sense fer res"]
+    },
+    { 
+      pregunta: "On Déu va cridar a Moisès per donar-li una missió especial?", 
+      correcta: "A la sarça ardent", 
+      opcions: ["A la sarça ardent", "Al desert", "Al palau"]
+    },
+    { 
+      pregunta: "Què van demanar Moisès i Aaron al Faraó?", 
+      correcta: "Que deixés anar els hebreus", 
+      opcions: ["Que deixés anar els hebreus", "Que augmentés els impostos", "Que construísse més temples"]
+    },
+    { 
+      pregunta: "Què va enviar Déu sobre Egipte per persuadir el Faraó?", 
+      correcta: "Deu plagues", 
+      opcions: ["Deu plagues", "Deu regals", "Deu festes"]
+    },
+    { 
+      pregunta: "Què van fer els hebreus per protegir-se de l'última plaga?", 
+      correcta: "Van marcar les seves portes amb sang d'agnell", 
+      opcions: ["Van marcar les seves portes amb sang d'agnell", "Van encendre espelmes", "Van construir barreres"]
+    },
+    { 
+      pregunta: "Què va fer el Faraó després de l'última plaga?", 
+      correcta: "Va deixar anar els hebreus", 
+      opcions: ["Va deixar anar els hebreus", "Va augmentar el treball", "Va construir més piràmides"]
+    },
+    { 
+      pregunta: "Com van creuar els hebreus el Mar Roig?", 
+      correcta: "Amb un camí sec, quan les aigües es van obrir", 
+      opcions: ["Amb un camí sec, quan les aigües es van obrir", "Nedant sense ajuda", "Utilitzant vaixells"]
+    },
+    { 
+      pregunta: "Què va fer Miriam per celebrar la victòria al Mar Roig?", 
+      correcta: "Va cantar i ballar amb pandereta", 
+      opcions: ["Va cantar i ballar amb pandereta", "Va cridar de por", "Es va amagar"]
+    },
+    { 
+      pregunta: "Quin aliment especial va enviar Déu als hebreus al desert?", 
+      correcta: "Manà del cel", 
+      opcions: ["Manà del cel", "Pa normal", "Fruites del desert"]
+    },
+    { 
+      pregunta: "Què va fer Déu amb l'aigua amarga de Mara?", 
+      correcta: "La va fer dolça i potable", 
+      opcions: ["La va fer dolça i potable", "La va congelar", "La va convertir en sorra"]
+    },
+    { 
+      pregunta: "Què va rebre Moisès al Mont Sinaï?", 
+      correcta: "Els Deu Manaments", 
+      opcions: ["Els Deu Manaments", "Un cetre de poder", "Una corona"]
+    },
+    { 
+      pregunta: "Què van fer Miriam i Aaron que va portar al càstig de Miriam?", 
+      correcta: "Van criticar el lideratge de Moisès", 
+      opcions: ["Van criticar el lideratge de Moisès", "Van celebrar massa", "No van menjar manà"]
+    },
+    { 
+      pregunta: "Què va succeir amb Miriam a Cades?", 
+      correcta: "Va morir abans d'entrar a la Terra Promesa", 
+      opcions: ["Va morir abans d'entrar a la Terra Promesa", "Es va casar", "Es va convertir en reina"]
+    },
+    { 
+      pregunta: "Quina plaga va fer que els egipcis patissin per piollets?", 
+      correcta: "La plaga dels piollets", 
+      opcions: ["La plaga dels piollets", "La plaga de les granotes", "La plaga dels granissos"]
+    },
+    { 
+      pregunta: "Quina plaga va fer que Egipte s'omplís de mosques?", 
+      correcta: "La plaga de les mosques", 
+      opcions: ["La plaga de les mosques", "La plaga de l'aigua", "La plaga del foc"]
+    },
+    { 
+      pregunta: "Quina plaga va afectar principalment el bestiar egipci?", 
+      correcta: "La plaga sobre el bestiar", 
+      opcions: ["La plaga sobre el bestiar", "La plaga dels piollets", "La plaga de les locustes"]
+    },
+    { 
+      pregunta: "Què va causar Moisès en llençar cendra que va afectar la pell dels egipcis?", 
+      correcta: "La plaga de les úlceres", 
+      opcions: ["La plaga de les úlceres", "La plaga del manà", "La plaga de la foscor"]
+    },
+    { 
+      pregunta: "Quina plaga va destruir els cultius i causar dany amb granissos a Egipte?", 
+      correcta: "La plaga dels granissos", 
+      opcions: ["La plaga dels granissos", "La plaga de les granotes", "La plaga dels piollets"]
+    },
+    { 
+      pregunta: "Què va fer Déu per ajudar Moisès a dirigir el poble?", 
+      correcta: "Va designar setanta ancians", 
+      opcions: ["Va designar setanta ancians", "Va construir un temple", "Enviava profetes"]
+    },
+    { 
+      pregunta: "Qui van tenir prohibit d'entrar a la Terra Promesa?", 
+      correcta: "La antiga generació, incloent Moisès, Aaron i Miriam", 
+      opcions: ["La antiga generació, incloent Moisès, Aaron i Miriam", "Només els estrangers", "Només els sacerdots"]
+    },
+    { 
+      pregunta: "Què va veure Moisès abans de morir al Mont Nebo?", 
+      correcta: "La Terra Promesa", 
+      opcions: ["La Terra Promesa", "El Mar Roig", "El Mont Sinaï"]
+    },
+    { 
+      pregunta: "Qui va ser escollit per guiar el poble després de Moisès?", 
+      correcta: "Josuè", 
+      opcions: ["Josuè", "Aaron", "Miriam"]
+    },
+    { 
+      pregunta: "Com van creuar els israelites el riu Jordà?", 
+      correcta: "Milagrosament, amb l'aigua aturada", 
+      opcions: ["Milagrosament, amb l'aigua aturada", "Nedant en vaixells", "Creuant per un pont"]
+    },
+    { 
+      pregunta: "Què va succeir quan els israelites van marxejar al voltant de Jericó durant set dies?", 
+      correcta: "Els murs es van derrumbar", 
+      opcions: ["Els murs es van derrumbar", "Jericó es va il·luminar", "El poble va celebrar sense motiu"]
+    }
+  ];
+
+  // Es barregen totes les preguntes i se'n seleccionen 7 a l'atzar
+  preguntesCompletes.sort(() => 0.5 - Math.random());
+  const preguntesSeleccionades = preguntesCompletes.slice(0, 7);
+  preguntesSeleccionades.forEach(p => p.opcions.sort(() => 0.5 - Math.random()));
+
+  let indicePregunta = 0;
+  let tempsInici = Date.now();
+  let interval = setInterval(actualitzarTemporitzador, 1000);
+
+  // Crear el context d'àudio
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  // Funció per generar so amb esvaïment suau
+  function playBeep(frequency, duration, type = 'sine', fadeTime = 0.1) {
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc.frequency.value = frequency;
+    osc.type = type;
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc.start();
+    setTimeout(() => osc.stop(), duration);
+  }
+
+  // So d'error (pitido suau)
+  function emitirPitido() {
+    if (audioCtx.state === 'suspended')
+      audioCtx.resume().then(() => playBeep(500, 300, 'sine', 0.2));
+    else 
+      playBeep(500, 300, 'sine', 0.2);
+  }
+
+  // Funció per so d'encert: campanetes angelicals
+  function playChime(frequencies, duration, type = 'triangle', fadeTime = 0.2) {
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    osc1.frequency.value = frequencies[0];
+    osc2.frequency.value = frequencies[1];
+    osc1.type = type;
+    osc2.type = type;
+    
+    gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + fadeTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioCtx.currentTime + duration/1000 - fadeTime);
+    
+    osc1.connect(gainNode);
+    osc2.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    osc1.start();
+    osc2.start();
+    
+    setTimeout(() => {
+      osc1.stop();
+      osc2.stop();
+    }, duration);
+  }
+
+  // So d'encert (campanetes angelicals)
+  function emitirPitidoDulce() {
+    if (audioCtx.state === 'suspended')
+      audioCtx.resume().then(() => playChime([800, 1200], 800, 'triangle', 0.3));
+    else 
+      playChime([800, 1200], 800, 'triangle', 0.3);
+  }
+
+  // Actualitzar el temporitzador
+  function actualitzarTemporitzador() {
+    let tempsTranscorregut = Date.now() - tempsInici;
+    let minuts = Math.floor(tempsTranscorregut / 60000);
+    let segons = Math.floor((tempsTranscorregut % 60000) / 1000);
+    document.getElementById("temporitzador").textContent =
+      `${String(minuts).padStart(2, "0")}:${String(segons).padStart(2, "0")}`;
+  }
+
+  // Mostrar la pregunta actual i configurar les respostes
+  function mostrarPregunta() {
+    if (indicePregunta >= preguntesSeleccionades.length) {
+      clearInterval(interval);
+      document.getElementById("triviaContainer").style.display = "none";
+      document.getElementById("missatgeEnhorabona").style.display = "block";
+      document.getElementById("tempsFinal").textContent = document.getElementById("temporitzador").textContent;
+      return;
+    }
+  
+    let preguntaActual = preguntesSeleccionades[indicePregunta];
+    document.getElementById("pregunta").textContent = preguntaActual.pregunta;
+    document.getElementById("resposta1").textContent = preguntaActual.opcions[0];
+    document.getElementById("resposta2").textContent = preguntaActual.opcions[1];
+    document.getElementById("resposta3").textContent = preguntaActual.opcions[2];
+  
+    document.querySelectorAll(".resposta-btn").forEach(boto => {
+      boto.classList.remove("correct", "incorrect");
+      boto.onclick = () => {
+        if (boto.textContent === preguntaActual.correcta) {
+          boto.classList.add("correct");
+          emitirPitidoDulce();
+          setTimeout(() => {
+            indicePregunta++;
+            mostrarPregunta();
+          }, 500);
+        } else {
+          boto.classList.add("incorrect");
+          emitirPitido();
+          setTimeout(() => boto.classList.remove("incorrect"), 500);
+        }
+      };
+    });
+  }
+  
+  // Mostrar la portada inicial durant 3 segons i després iniciar el joc
+  setTimeout(function() {
+    document.getElementById("cover").style.display = "none";
+  }, 3000);
+  
+  mostrarPregunta();
+</script>
+
+</body>
+</html>
