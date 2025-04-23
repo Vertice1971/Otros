@@ -1,0 +1,478 @@
+/* ---------------------- */
+/* ESTILOS GENERALES */
+/* ---------------------- */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #222;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+}
+
+#game-container {
+    max-width: 600px;
+    margin: auto;
+    background: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Contenedor de pruebas (opcional) */
+#test-container {
+    margin-top: 20px;
+}
+
+/* Estilo para el título de la habitación */
+#room-title {
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    color: #ffcc00; /* Amarillo para resaltar */
+    text-transform: uppercase;
+}
+
+/* Temporizador */
+#timer {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #ff5555; /* Rojo para indicar urgencia */
+}
+
+/* Botones generales */
+button {
+    background: #0066cc;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button:hover {
+    background: #005bb5;
+}
+
+/* Oculta los elementos no visibles */
+.hidden {
+    display: none;
+}
+
+/* Estilo para los mensajes de feedback */
+.feedback {
+    font-weight: bold;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+/* Correcto */
+.correct {
+    color: lightgreen;
+}
+
+/* Incorrecto */
+.incorrect {
+    color: red;
+}
+
+/* ---------------------- */
+/* ESTILOS PARA PRUEBA 1 */
+/* ---------------------- */
+
+/* Contenedor de selección de imágenes */
+#image-selection {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Imágenes seleccionables */
+.selectable-image {
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.2s;
+}
+
+.selectable-image:hover {
+    transform: scale(1.1);
+}
+
+.selectable-image.selected {
+    border: 2px solid yellow;
+}
+
+.selectable-image.used {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Línea de tiempo */
+#timeline {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Espacios para colocar los cuadros de la biografía */
+.timeline-slot {
+    width: 100px;
+    height: 100px;
+    background-color: #444;
+    border: 2px dashed white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.timeline-slot:hover {
+    background-color: #555;
+}
+
+/* ---------------------- */
+/* ESTILOS PARA PRUEBA 4 */
+/* ---------------------- */
+
+/* Contenedor de los iconos */
+#icon-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Iconos individuales */
+.icon img {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.icon img:hover {
+    transform: scale(1.1);
+}
+
+/* Resaltar el icono seleccionado */
+.active {
+    outline: 3px solid yellow;
+    outline-offset: 2px;
+    border-radius: 10px;
+}
+
+/* Apagar la opacidad de los iconos ya utilizados */
+.used {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Estilos para la columna de reglas */
+#rules-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Espacios para colocar las reglas */
+.rule-slot {
+    width: 80px;
+    height: 80px;
+    background-color: #444;
+    border: 2px dashed white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    font-size: 36px;
+    text-align: center;
+}
+
+/* Cuando un icono se coloca correctamente */
+.rule-slot.correct {
+    background-color: #222;
+    border: 2px solid #ffcc00;
+    color: brown;
+}
+
+/* ---------------------- */
+/* MENSAJES DE ESTADO */
+/* ---------------------- */
+
+/* Mensaje de estado */
+#message {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: red;
+}
+/* ---------------------- */
+/* ESTILOS PARA PRUEBA 10 */
+/* ---------------------- */
+
+.path-slot {
+    width: 90px;
+    height: 40px;
+    border: 2px dashed white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    background-color: #222;
+    font-size: 12px;
+    padding: 4px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.path-slot.filled {
+    border: 2px solid #ffcc00;
+    background-color: #333;
+}
+
+.door-slot {
+    transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+#francine-label {
+    transition: color 0.5s ease;
+}
+
+.draggable-block {
+    padding: 8px 10px;
+    background-color: #0066cc;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    min-width: 80px;
+}
+
+.selected-block {
+    outline: 2px solid yellow;
+}
+
+/* Animación de resplandor para la puerta */
+@keyframes door-glow {
+    0%   { box-shadow: 0 0 0px yellow; }
+    50%  { box-shadow: 0 0 20px yellow; }
+    100% { box-shadow: 0 0 0px yellow; }
+}
+
+.door-slot.activated {
+    animation: door-glow 1s ease-in-out 3;
+}
+.final-door {
+    background-color: #333;
+    border: 2px solid white;
+    font-size: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    color: white;
+}
+.final-door.activated {
+    animation: door-glow 1s ease-in-out 3;
+}
+/* ---------------------- */
+/* ESTILOS ESCENARIO PRUEBA 11 */
+/* ---------------------- */
+
+#reveal-scene {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    height: 300px; /* antes 400px */
+    margin: auto;
+    overflow: hidden;
+}
+
+#genio-fondo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* en lugar de cover */
+    display: block;
+}
+
+.cortina {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background-image: url('png/FrancinePrimerPlano.png');
+    background-size: 200% 100%;
+    z-index: 2;
+    transition: transform 2s ease-in-out;
+}
+
+#cortina-izq {
+    left: 0;
+    background-position: left;
+}
+
+#cortina-der {
+    right: 0;
+    background-position: right;
+}
+
+/* Texto narrativo en la parte baja */
+#scene-text {
+    margin-top: 20px;
+    font-size: 18px;
+    font-style: italic;
+    color: #ffcc00;
+    text-align: center;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---------------------- */
+/* EFECTO CINTA DE CINE - PRUEBA 11 */
+/* ---------------------- */
+
+#scrolling-text-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Para que no interfiera si hay clics */
+    z-index: 9999;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 40px;
+    background: transparent;
+}
+
+#scrolling-text {
+    position: relative;
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    font-size: 22px; /* antes 16px */
+    line-height: 1.6;
+    color: red; /* antes #ffcc00 */
+    font-style: italic;
+    animation: roll-up 25s linear forwards;
+}
+
+@keyframes roll-up {
+    0% {
+        transform: translateY(100%);
+    }
+    100% {
+        transform: translateY(-120%);
+    }
+}
+
+@keyframes bubbleUp {
+    0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+    100% { transform: translateX(-50%) translateY(-100px); opacity: 0; }
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.fadein-slow {
+    animation: fadein 5s forwards;
+}
+
+@keyframes blink {
+    50% { opacity: 0.4; }
+}
+
+/* ----------------------------------------- */
+/* AJUSTES RESPONSIVOS GENERALES Y MÓVILES   */
+/* ----------------------------------------- */
+
+@media screen and (max-width: 600px) {
+    #game-container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    img,
+    .selectable-image,
+    .option-image {
+        max-width: 100%;
+        height: auto;
+    }
+
+    .timeline-slot,
+    .rule-slot,
+    .path-slot,
+    .draggable-block {
+        width: 80px !important;
+        font-size: 11px;
+    }
+
+    #room-title {
+        font-size: 18px;
+    }
+
+    #timer {
+        font-size: 16px;
+    }
+
+    #scrolling-text {
+        font-size: 18px;
+    }
+}
+
+/* ----------------------------------------- */
+/* ESCALA FLUIDA DE IMÁGENES Y TEXTOS        */
+/* ----------------------------------------- */
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.option-image {
+    width: 100px;
+    max-width: 30vw;
+}
+
+/* ----------------------------------------- */
+/* PREVENCIÓN DE DESBORDAMIENTOS HORIZONTALES */
+/* ----------------------------------------- */
+
+body, html {
+    overflow-x: hidden;
+}
+
+/* ----------------------------------------- */
+/* AJUSTE DE FUENTE PARA PANTALLAS PEQUEÑAS */
+/* ----------------------------------------- */
+
+body {
+    font-size: 16px;
+}
+
+@media screen and (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+}
