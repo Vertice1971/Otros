@@ -175,6 +175,9 @@ function showCredits() {
         Puedes editarlo o adaptarlo a tus necesidades desde:<br>
         <a href="https://github.com/vertice1971/Historia_de_la_Filosofia" target="_blank" style="color: #ffcc00;">
             github.com/vertice1971/Historia_de_la_Filosofia
+        </a><br>
+        <a href="https://www.amazon.es/dp/B0F61P4TXK/ref=sr_1_1?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=1UYGTMHGP65IT&dib=eyJ2IjoiMSJ9.4EA8FozSRdrsUxxWzZ_6Jw.Sbsuqvp7gi48kUXBn0x_Uvdk33wfCxmgJBS_xWR9biE&dib_tag=se&keywords=aprender+programar+usando+la+ia&qid=1745418665&sprefix=aprender+programar+usando+la+ia%2Caps%2C232&sr=8-1" target="_blank" style="color: #ffcc00;">
+            Programar desde cero
         </a>
     </div>
     `;
