@@ -33,12 +33,19 @@
       background: white; border-radius: 10px; padding: 25px;
       box-shadow: 0 10px 20px rgba(0,0,0,0.1); transition: all 0.3s ease;
     }
-    .menu h1::after, .game-container h1::after {
-      content: "Proyectos Transversales 4ºESO";
+
+    /* Subtítulo bajo cada H1 con enlace */
+    .menu h1 .subtitle,
+    .game-container h1 .subtitle {
       display: block;
       font-size: 0.4em;
       color: #888;
       margin-top: 5px;
+    }
+    .menu h1 .subtitle a,
+    .game-container h1 .subtitle a {
+      color: #888;
+      text-decoration: underline;
     }
 
     .difficulty-option {
@@ -90,8 +97,16 @@
 </head>
 <body>
   <div class="container">
+
     <div class="menu" id="menu">
-      <h1>TRES EN RAYA</h1>
+      <h1>
+        TRES EN RAYA
+        <span class="subtitle">
+          Proyectos Transversales 4ºESO –
+          <a href="https://www.amazon.es/dp/B0F61P4TXK/ref=sr_1_1?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=1UYGTMHGP65IT&dib=eyJ2IjoiMSJ9.4EA8FozSRdrsUxxWzZ_6Jw.Sbsuqvp7gi48kUXBn0x_Uvdk33wfCxmgJBS_xWR9biE&dib_tag=se&keywords=aprender+programar+usando+la+ia&qid=1745418665&sprefix=aprender+programar+usando+la+ia%2Caps%2C232&sr=8-1"
+             target="_blank">Programar desde cero</a>
+        </span>
+      </h1>
       <h2>Configuración</h2>
       <div>
         <label><input type="radio" name="symbol" value="X" checked> Tú juegas con X</label>
@@ -119,7 +134,14 @@
     </div>
 
     <div class="game-container" id="game-container" style="display:none;">
-      <h1>TRES EN RAYA</h1>
+      <h1>
+        TRES EN RAYA
+        <span class="subtitle">
+          Proyectos Transversales 4ºESO –
+          <a href="https://www.amazon.es/dp/B0F61P4TXK/ref=sr_1_1?__mk_es_ES=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=1UYGTMHGP65IT&dib=eyJ2IjoiMSJ9.4EA8FozSRdrsUxxWzZ_6Jw.Sbsuqvp7gi48kUXBn0x_Uvdk33wfCxmgJBS_xWR9biE&dib_tag=se&keywords=aprender+programar+usando+la+ia&qid=1745418665&sprefix=aprender+programar+usando+la+ia%2Caps%2C232&sr=8-1"
+             target="_blank">Programar desde cero</a>
+        </span>
+      </h1>
       <div id="game-info" class="game-info" aria-live="polite" aria-atomic="true">Tu turno</div>
       <div id="scoreboard" class="scoreboard">Jugador: 0 | IA: 0 | Empates: 0</div>
       <div class="board" id="board">
@@ -138,6 +160,7 @@
         <button class="btn" id="restart-btn">Reiniciar</button>
       </div>
     </div>
+
   </div>
 
   <script>
@@ -204,7 +227,6 @@
         });
       }
 
-      // Genera un beep con frecuencia dada
       playBeep(freq) {
         const ctx = this.audioCtx;
         const osc = ctx.createOscillator();
@@ -233,8 +255,8 @@
         this.gameEl.style.display = 'block';
 
         if (aiVsAiMode) {
-          this.state.playerSymbol = 'X';  // Joshua
-          this.state.aiSymbol = 'O';      // WOPR
+          this.state.playerSymbol = 'X';
+          this.state.aiSymbol = 'O';
           this.state.currentPlayer = 'player';
           this.updateScoreboard(true);
           this.updateInfo('Simulación Joshua vs WOPR', true);
@@ -285,7 +307,6 @@
       }
 
       play(idx, symbol) {
-        // beep al hacer el movimiento
         this.playBeep(symbol === 'X' ? 880 : 440);
         this.state.board[idx] = symbol;
         const cell = this.cells[idx];
@@ -310,9 +331,7 @@
         const sym = this.state.currentPlayer === 'player'
           ? this.state.playerSymbol
           : this.state.aiSymbol;
-        const opp = sym === 'X'
-          ? 'O'
-          : 'X';
+        const opp = sym === 'X' ? 'O' : 'X';
         const move = this.getHeuristicMoveFor(sym, opp);
         if (move != null) this.play(move, sym);
         if (this.checkEnd(sym)) return;
