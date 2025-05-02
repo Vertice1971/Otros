@@ -6,5 +6,5 @@
 - [Realisme](https://vertice1971.github.io/Otros/Mostres%20digitals/Realisme.html)
 - [Tres en ratlla](https://vertice1971.github.io/Otros/Mostres%20digitals/Tres%20en%20ratlla.html)
 - [Neurotransmissors](https://vertice1971.github.io/Otros/Mostres%20digitals/Neurotransmissors/Neurotransmissors3A.html)
-- [El rescate de Francine (Escape Room Descartes)](https://vertice1971.github.io/Otros/Mostres%20digitals/El%20rescate%20de%20Francine/EscapeDescartes.html)
+- [El rescate de Francine (Escape Room Descartes)-en castellà](https://vertice1971.github.io/Otros/Mostres%20digitals/El%20rescate%20de%20Francine/EscapeDescartes.html)
 
