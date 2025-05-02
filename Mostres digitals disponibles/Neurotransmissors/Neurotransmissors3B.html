@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neurotransmissors amb Animació Cíclica</title>
+    <meta name="description" content="Aprèn sobre neurotransmissors, agonistes i antagonistes en aquest recurs interactiu educatiu.">
+    <meta name="keywords" content="neurotransmissors, agonistes, antagonistes, neurociència, educació">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --primary-hover: #0056b3;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --button-padding: 10px 20px;
+            --button-font-size: 1em;
+            --receptor-color: #cccccc;
+            --receptor-shape-color: #ffffff;
+            --animation-speed: 1.5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--background-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            align-items: center;
+        }
+
+        h1 {
+            color: var(--text-color);
+            text-align: center;
+            margin: 20px 0;
+            font-size: 2em;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .section {
+            width: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .active {
+            display: flex;
+        }
+
+        button {
+            padding: var(--button-padding);
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-size: var(--button-font-size);
+            position: absolute;
+            bottom: 40px;
+            right: 5px;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: scale(1.05);
+        }
+
+        .neuro {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 50px;
+            z-index: 1;
+        }
+
+        .square, .circle, .pentagon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .square {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            background-color: #ffa07a; /* Color taronja */
+        }
+
+        .circle {
+            border-radius: 50%;
+            background-color: #9370db; /* Color morat */
+        }
+
+        .pentagon {
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+            background-color: #32cd32; /* Color verd */
+        }
+
+        .receptor1 {
+            position: relative;
+            width: 120px;
+            height: 60px;
+            background-color: var(--receptor-color);
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 100px;
+            transition: background-color 0.3s ease;
+            z-index: 0;
+        }
+
+        .receptor1 .receptor-shape {
+            position: absolute;
+            top: -15px;
+            width: 20px;
+            height: 20px;
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+            background-color: var(--receptor-shape-color);
+        }
+
+        /* Nova classe per a la imatge */
+        .image-neuro-contacto {
+            position: absolute;
+            top: 60%; /* Centra verticalment en el contenidor */
+            left: 10px; /* Espai des del marge esquerre */
+            transform: translateY(-50%); /* Ajusta per centrar completament */
+            width: 175px; /* Ajusta la mida segons prefereixis */
+            z-index: -1; /* Assegura que no interferixi amb altres elements */
+            opacity: 0.8; /* Opcional: ajusta l'opacitat si ho prefereixes */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            button {
+                width: 100%;
+                padding: 15px;
+                font-size: 1em;
+            }
+            h1 {
+                font-size: 1.5em;
+                margin: 10px 0;
+            }
+            .section {
+                padding: 10px;
+            }
+            .neuro .square,
+            .neuro .circle,
+            .neuro .pentagon {
+                width: 20px;
+                height: 20px;
+            }
+            .receptor1 {
+                width: 90px;
+                height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Neurotransmissors: Substàncies Agonistes i Antagonistes</h1>
+    <p style="font-size: 14px; color: #004d40; margin-bottom: 20px;">
+      Grup Projectes Transversals 1r de Batxillerat – 
+      <a href="mailto:tomcue@iesjuandelacierva.com" style="color: #004d40; text-decoration: underline;">tomcue@iesjuandelacierva.com</a>
+    </p>
+    
+    <div class="container">
+        <!-- Imatge afegida sense alterar l'estructura -->
+        <img src="Imatges/Neuro1contacto.png" alt="Imatge de Neurotransmissor" class="image-neuro-contacto">
+        
+        <section id="introSection" class="section active">
+            <h2>Substàncies Agonistes</h2>
+            <p>Els agonistes són substàncies que imiten l'acció d'un neurotransmissor. En entrar en contacte amb el receptor, el fan activar de manera similar i, per tant, es produeix la mateixa reacció al cervell. En ser artificials, la dosi pot ser molt diferent de la produïda de manera natural, tant per bé com per mal.</p>
+
+            <div class="neuro neuro1">
+                <div class="circle"></div> <!-- Círcul morat -->
+                <div class="square"></div> <!-- Quadrat taronja -->
+                <div class="circle"></div> <!-- Círcul morat -->
+                <div class="pentagon"></div> <!-- Pentàgon verd -->
+            </div>
+
+            <div class="receptor1">
+                <div class="receptor-shape"></div>
+            </div>
+            
+            <button id="nextToAntagonistas">Següent: Antagonistes</button>
+        </section>
+
+        <section id="agonistasSection" class="section">
+            <h2>Substàncies Agonistes</h2>
+            <p>Els agonistes són substàncies que imiten l'acció d'un neurotransmissor. En entrar en contacte amb el receptor, el fan activar de manera similar i, per tant, es produeix la mateixa reacció al cervell. En ser artificials, la dosi pot ser molt diferent de la produïda de manera natural, tant per bé com per mal.</p>
+
+            <div class="neuro neuro2">
+                <div class="circle"></div>
+                <div class="square"></div>
+                <div class="circle"></div>
+                <div class="pentagon"></div> <!-- Manté el pentàgon verd a la part inferior -->
+            </div>
+
+            <div class="receptor1 receptor-circle">
+                <div class="receptor-shape"></div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const animationConfig = {
+            introSection: {
+                className: 'neuro1',
+                speed: 1.5
+            },
+            agonistasSection: {
+                className: 'neuro2',
+                speed: 1.5
+            }
+        };
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('nextToAntagonistas').addEventListener('click', () => {
+                window.location.href = './Neurotransmissors3C.html'; // Redirigeix a Neurotransmissors3C.html
+            });
+            initializeSection('introSection');
+        });
+
+        function resetReceptor() {
+            const receptor = document.querySelector('.receptor1');
+            receptor.className = 'receptor1';
+        }
+
+        function animateNeuro(className, speed) {
+            const neuro = document.querySelector(`.${className}`);
+            const receptor = document.querySelector('.receptor1');
+            const lastFigure = neuro.lastElementChild;
+            const lastFigureColor = getComputedStyle(lastFigure).backgroundColor;
+
+            let positionY = 0;
+            let isAligned = false;
+            const delay = 1000;
+
+            function move() {
+                positionY += speed;
+                neuro.style.transform = `translateY(${positionY}px)`;
+
+                const neuroRect = neuro.getBoundingClientRect();
+                const receptorRect = receptor.getBoundingClientRect();
+
+                if (neuroRect.bottom >= receptorRect.top && !isAligned) {
+                    isAligned = true;
+                    positionY -= speed;
+                    neuro.style.transform = `translateY(${positionY}px)`;
+                    receptor.style.backgroundColor = lastFigureColor;
+                    setTimeout(resetPosition, delay);
+                    return;
+                }
+
+                if (!isAligned) requestAnimationFrame(move);
+            }
+
+            function resetPosition() {
+                positionY = 0;
+                neuro.style.transform = `translateY(0px)`;
+                receptor.style.backgroundColor = '';
+                isAligned = false;
+                requestAnimationFrame(move);
+            }
+
+            move();
+        }
+
+        function initializeSection(sectionId) {
+            showSection(sectionId);
+            resetReceptor();
+            startAnimation(sectionId);
+        }
+
+        function startAnimation(sectionId) {
+            const config = animationConfig[sectionId];
+            if (config) {
+                animateNeuro(config.className, config.speed);
+            }
+        }
+    </script>
+</body>
+</html>
