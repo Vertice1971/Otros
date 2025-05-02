@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pràctica de Neurotransmissors</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f4f4; 
+        }
+        .contenedor { 
+            width: 90%; 
+            max-width: 600px; 
+            margin: 20px auto; 
+            text-align: center; 
+        }
+        /* Estils Millorats per a la Pantalla de Benvinguda */
+        #bienvenida {
+            background: linear-gradient(135deg, #6fb1fc 0%, #4364f7 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        #bienvenida:hover {
+            transform: scale(1.02);
+        }
+        #bienvenida h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        #bienvenida p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        /* Millores en el Botó */
+        button { 
+            padding: 15px 30px; 
+            font-size: 1.2em; 
+            cursor: pointer; 
+            background-color: #ff9800; 
+            color: white; 
+            border: none;
+            border-radius: 10px; 
+            margin-top: 20px; 
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        button:hover { 
+            background-color: #e68900; 
+            transform: scale(1.05);
+        }
+        .image-container { 
+            display: flex; 
+            gap: 10px; 
+            justify-content: center; 
+            margin: 20px 0; 
+        }
+        .image-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            cursor: pointer; 
+        }
+        .neurotransmitter-img { 
+            width: 150px; 
+            border: 2px solid #ddd; 
+            border-radius: 5px; 
+        }
+        .option-img { 
+            width: 100px; 
+            border: 2px solid #ddd; 
+            border-radius: 5px; 
+        }
+        .label { 
+            font-weight: bold; 
+            margin-top: 5px; 
+        }
+        #receptor { 
+            border: 2px dashed #555; 
+            padding: 20px; 
+            margin-top: 20px; 
+        }
+        #molecula { 
+            font-size: 1.5em; 
+            margin: 20px; 
+        }
+        .correcto { 
+            background-color: #c8e6c9; 
+            border-color: #388e3c; 
+        }
+        .incorrecto { 
+            background-color: #ffcdd2; 
+            border-color: #d32f2f; 
+        }
+
+        /* Estil de la moraleja */
+        .moraleja { 
+            font-weight: bold; 
+            color: #d32f2f; 
+            border: 2px solid #d32f2f; 
+            padding: 10px; 
+            margin: 10px; 
+            border-radius: 5px; 
+            animation: parpadeo 1s infinite; 
+            background-color: #ffe6e6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1em;
+        }
+
+        .moraleja .icono-alerta {
+            font-size: 1.5em;
+        }
+
+        @keyframes parpadeo {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Responsivitat Millorada */
+        @media (max-width: 600px) {
+            #bienvenida {
+                padding: 30px 20px;
+            }
+            #bienvenida h1 {
+                font-size: 2em;
+            }
+            #bienvenida p {
+                font-size: 1em;
+            }
+            button { 
+                padding: 12px 25px; 
+                font-size: 1em; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Pantalla de Benvinguda -->
+    <div id="bienvenida" class="contenedor">
+        <h1>Benvingut a la Pràctica de Neurotransmissors</h1>
+        <p style="font-size: 14px; color: #004d40; margin-bottom: 20px;">
+          Grup Projectes Transversals 1r de Batxillerat – 
+          <a href="mailto:tomcue@iesjuandelacierva.com" style="color: #004d40; text-decoration: underline;">tomcue@iesjuandelacierva.com</a>
+        </p>
+        <p>En aquest exercici, identificaràs la substància agonista o antagonista necessària. Apareixerà una situació i l'aspecte de la molècula del neurotransmissor implicat en la situació. La teva missió és trobar, entre les opcions de solució, la molècula agonista o antagonista que s'ha de fer servir en el context que es presenta.</p>
+        <button onclick="iniciarEjercicio()">Iniciar</button>
+    </div>
+
+    <!-- Interfície Principal de l'Exercici -->
+    <div id="ejercicio" class="contenedor" style="display:none;">
+        <h2 id="contexto"></h2>
+        <div id="molecula"><img id="neurotransmitterImg" class="neurotransmitter-img" src="" alt="Imatge del Neurotransmissor"></div>
+        <div id="receptor" ondrop="soltar(event)" ondragover="permitirSoltar(event)">Arrossega la substància aquí</div>
+        <div id="opciones" class="image-container">
+            <!-- Les opcions d'imatges es generaran dinàmicament aquí -->
+        </div>
+        <button id="siguiente" onclick="siguienteSituacion()" style="display:none;">Següent</button>
+    </div>
+
+    <!-- Pantalla Final amb Resum -->
+    <div id="final" class="contenedor" style="display:none;">
+        <h1>Resum de l'Exercici</h1>
+        <p id="resultado">Aquí es mostraran els resultats finals i el nombre d'intents.</p>
+        <button onclick="reiniciar()">Reiniciar Exercici</button>
+    </div>
+
+    <script>
+        // Variables globals
+        let intentos = 0;
+        let situacionActual = 0;
+        let correctoColocado = false;
+
+        const neurotransmisores = [
+            { 
+                nombre: "Adrenalina", 
+                descripcion: "Excés d'adrenalina provoca pressió alta i ansietat física. Selecciona la substància que pot ajudar a reduir aquests efectes.", 
+                img: "Imatges/Adrenalina.png",
+                opciones: [
+                    { nombre: "Propranolol", img: "Imatges/Propranolol.png", esCorrecta: true },
+                    { nombre: "L-Dopa", img: "Imatges/L-Dopa.png", esCorrecta: false },
+                    { nombre: "Benzodiacepines", img: "Imatges/Benzodiacepines.png", esCorrecta: false },
+                    { nombre: "Adrenalina", img: "Imatges/Adrenalina.png", esCorrecta: false }
+                ]
+            },
+            { 
+                nombre: "GABA", 
+                descripcion: "Déficit de GABA provoca ansietat; selecciona la substància que pot promoure la relaxació.", 
+                img: "Imatges/GABA.png",
+                opciones: [
+                    { nombre: "Benzodiacepines", img: "Imatges/Benzodiacepines.png", esCorrecta: true },
+                    { nombre: "Propranolol", img: "Imatges/Propranolol.png", esCorrecta: false },
+                    { nombre: "Risperidona", img: "Imatges/Risperidona.png", esCorrecta: false },
+                    { nombre: "Testosterona", img: "Imatges/Testosterona.png", esCorrecta: false }
+                ]
+            },
+            { 
+                nombre: "Dopamina", 
+                descripcion: "Déficit de dopamina en Parkinson; selecciona la substància que pot millorar el control motor.", 
+                img: "Imatges/Dopamina.png",
+                opciones: [
+                    { nombre: "L-Dopa", img: "Imatges/L-Dopa.png", esCorrecta: true },
+                    { nombre: "Adrenalina", img: "Imatges/Adrenalina.png", esCorrecta: false },
+                    { nombre: "Marihuana", img: "Imatges/Marihuana.png", esCorrecta: false },
+                    { nombre: "Propranolol", img: "Imatges/Propranolol.png", esCorrecta: false }
+                ]
+            },
+            { 
+                nombre: "Testosterona", 
+                descripcion: "Bloquejar la testosterona per tractar l'acné i problemes hormonals. Selecciona la substància que pot ajudar.", 
+                img: "Imatges/Testosterona.png",
+                opciones: [
+                    { nombre: "Espironolactona", img: "Imatges/Espironolactona.png", esCorrecta: true },
+                    { nombre: "L-Dopa", img: "Imatges/L-Dopa.png", esCorrecta: false },
+                    { nombre: "Marihuana", img: "Imatges/Marihuana.png", esCorrecta: false },
+                    { nombre: "Testosterona", img: "Imatges/Testosterona.png", esCorrecta: false }
+                ]
+            },
+            { 
+                nombre: "Receptors Cannabinoides", 
+                descripcion: "Per buscar efectes de relaxació i eufòria, selecciona la substància que pot aconseguir aquest efecte.", 
+                img: "Imatges/Cannabinoides.png",
+                opciones: [
+                    { nombre: "Marihuana", img: "Imatges/Marihuana.png", esCorrecta: true },
+                    { nombre: "Adrenalina", img: "Imatges/Adrenalina.png", esCorrecta: false },
+                    { nombre: "Dopamina", img: "Imatges/Dopamina.png", esCorrecta: false },
+                    { nombre: "Espironolactona", img: "Imatges/Espironolactona.png", esCorrecta: false }
+                ],
+                moraleja: "⚠️ Cuidado: el consum de marihuana pot portar a problemes greus de salut mental, com l'esquizofrènia."
+            },
+            { 
+                nombre: "Dopamina (Excessiva)", 
+                descripcion: "Excés de dopamina provoca al·lucinacions; selecciona la substància que pot reduir aquest efecte.", 
+                img: "Imatges/Dopamina.png",
+                opciones: [
+                    { nombre: "Risperidona", img: "Imatges/Risperidona.png", esCorrecta: true },
+                    { nombre: "Dopamina", img: "Imatges/Dopamina.png", esCorrecta: false },
+                    { nombre: "Espironolactona", img: "Imatges/Espironolactona.png", esCorrecta: false },
+                    { nombre: "GABA", img: "Imatges/GABA.png", esCorrecta: false }
+                ]
+            }
+        ];
+
+        function iniciarEjercicio() {
+            document.getElementById("bienvenida").style.display = "none";
+            document.getElementById("ejercicio").style.display = "block";
+            intentos = 0;
+            situacionActual = 0;
+            correctoColocado = false;
+            mezclarArray(neurotransmisores); // Baralla l'ordre dels neurotransmissors
+            generarSituacion();
+        }
+
+        function mezclarArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function generarSituacion() {
+            if (situacionActual < neurotransmisores.length) {
+                const situacion = neurotransmisores[situacionActual];
+                const contextoElem = document.getElementById("contexto");
+                contextoElem.innerText = situacion.descripcion;
+                contextoElem.classList.remove("moraleja"); // Elimina la classe de moraleja si estava aplicada
+                document.getElementById("neurotransmitterImg").src = situacion.img;
+                cargarOpciones(situacion);
+                document.getElementById("siguiente").style.display = "none"; // Amaga el botó al generar una nova situació
+                correctoColocado = false;
+                activarReceptor(true);
+            } else {
+                mostrarResultados();
+            }
+        }
+
+        function activarReceptor(activar) {
+            const receptor = document.getElementById("receptor");
+            receptor.ondrop = activar ? soltar : null;
+            receptor.ondragover = activar ? permitirSoltar : null;
+        }
+
+        function cargarOpciones(situacion) {
+            const opcionesContainer = document.getElementById("opciones");
+            opcionesContainer.innerHTML = ""; // Neteja les opcions
+            mezclarArray(situacion.opciones); // Baralla les opcions de resposta
+
+            situacion.opciones.forEach(opcion => {
+                const optionDiv = document.createElement("div");
+                optionDiv.className = "image-item";
+                optionDiv.draggable = true;
+                optionDiv.ondragstart = arrastrar;
+                optionDiv.dataset.esCorrecta = opcion.esCorrecta;
+
+                const img = document.createElement("img");
+                img.src = opcion.img;
+                img.className = "option-img";
+                img.alt = opcion.nombre;
+
+                const label = document.createElement("div");
+                label.className = "label";
+                label.textContent = opcion.nombre;
+
+                optionDiv.appendChild(img);
+                optionDiv.appendChild(label);
+                opcionesContainer.appendChild(optionDiv);
+            });
+        }
+
+        function arrastrar(event) {
+            event.dataTransfer.setData("text", event.target.parentNode.dataset.esCorrecta);
+        }
+
+        function permitirSoltar(event) {
+            event.preventDefault();
+        }
+
+        function soltar(event) {
+            event.preventDefault();
+            if (!correctoColocado) {
+                const esCorrecta = event.dataTransfer.getData("text") === "true";
+                verificarRespuesta(esCorrecta);
+            }
+        }
+
+        function verificarRespuesta(esCorrecta) {
+            const situacion = neurotransmisores[situacionActual];
+            const receptor = document.getElementById("receptor");
+            const contextoElem = document.getElementById("contexto");
+
+            if (esCorrecta) {
+                receptor.classList.add("correcto");
+                correctoColocado = true;
+                activarReceptor(false); // Desactiva el receptor per evitar més soltar
+
+                // Comprova si la situació té una moraleja
+                if (situacion.moraleja) {
+                    contextoElem.innerHTML = `<span class="icono-alerta">⚠️</span> ${situacion.moraleja.replace('⚠️ ', '')}`;
+                    contextoElem.classList.add("moraleja"); // Afegeix estil de moraleja
+                }
+
+                // Mostra el botó "Següent" immediatament
+                document.getElementById("siguiente").style.display = "block";
+            } else {
+                receptor.classList.add("incorrecto");
+                setTimeout(() => receptor.classList.remove("incorrecto"), 1000);
+                intentos++;
+            }
+        }
+
+        function siguienteSituacion() {
+            document.getElementById("receptor").classList.remove("correcto");
+            situacionActual++;
+            document.getElementById("siguiente").style.display = "none";
+            generarSituacion();
+        }
+
+        function mostrarResultados() {
+            document.getElementById("ejercicio").style.display = "none";
+            document.getElementById("final").style.display = "block";
+            document.getElementById("resultado").innerText = `Has completat l'exercici amb ${intentos} intents addicionals.`;
+        }
+
+        function reiniciar() {
+            intentos = 0;
+            situacionActual = 0;
+            correctoColocado = false;
+            document.getElementById("bienvenida").style.display = "block";
+            document.getElementById("final").style.display = "none";
+        }
+    </script>
+</body>
+</html>

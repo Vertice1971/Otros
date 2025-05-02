@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Realisme en Literatura 4t d'ESO</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; text-align: center; background-color: #f5f8ff; }
+        .header-info { font-size: 0.9em; color: #555; margin-bottom: 5px; line-height: 1.2; }
+        .question-container { display: none; padding: 20px; border: 1px solid #ccc; border-radius: 10px; max-width: 600px; margin: 20px auto; background: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .option { display: block; padding: 10px; margin: 10px 0; border: 2px solid #ddd; border-radius: 5px; cursor: pointer; transition: background 0.3s, transform 0.2s; }
+        .option:hover { background: #e0ebff; transform: scale(1.05); }
+        .correct { background: #c8e6c9; border-color: green; }
+        .incorrect { background: #ffcdd2; border-color: red; }
+        #start-btn, #restart-btn, #next-btn { margin-top: 20px; padding: 10px 15px; background: #007BFF; color: white; border: none; cursor: pointer; border-radius: 5px; }
+        #restart-btn { background: #28a745; }
+        #next-btn { position: fixed; right: 20px; top: 30%; display: none; }
+        #info-container { margin-top: 20px; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <div class="header-info">
+        <div>Projectes Transversals 4t d'ESO</div>
+        <div>IES Juan de la Cierva</div>
+    </div>
+    <h1>Test de Realisme en Literatura 4t d'ESO</h1>
+    <div id="info-container"></div>
+    <button id="start-btn">Començar Quiz</button>
+    <div id="quiz-container" class="question-container"></div>
+    <button id="next-btn">Següent</button>
+    <button id="restart-btn" style="display:none;">Reiniciar</button>
+
+    <script>
+        const data = {
+            "preguntas": [
+                // 1–10: preguntes generals de Realisme/Naturalime
+                { "texto": "Quin moviment literari va sorgir al segle XIX com a resposta a la Revolució Industrial?", "opciones": { "a":"Realime", "b":"Romanticisme", "c":"Modernisme" }, "respuesta":"a" },
+                { "texto": "Quina tècnica narrativa predomina en la novel·la realista?", "opciones": { "a":"Narrador omniscient en 3a persona", "b":"Monòleg interior", "c":"Escriptura fragmentada" }, "respuesta":"a" },
+                { "texto": "Què caracteritza el Naturalime respecte al Realisme?", "opciones": { "a":"Ús del mètode científic", "b":"Exaltació del món rural", "c":"Presència de fantasmes" }, "respuesta":"a" },
+                { "texto": "Quin autor francès va inspirar 'La Comèdia Humana'?", "opciones": { "a":"Honoré de Balzac", "b":"Victor Hugo", "c":"Gustave Flaubert" }, "respuesta":"a" },
+                { "texto": "Quina novel·la de Flaubert va influir 'La Regenta' de Clarín?", "opciones": { "a":"Madame Bovary", "b":"Salammbô", "c":"L'Éducation sentimentale" }, "respuesta":"a" },
+                { "texto": "Quin element determina el comportament segons el Naturalime?", "opciones": { "a":"Entorn social i biologia", "b":"Llibre albir", "c":"Destí diví" }, "respuesta":"a" },
+                { "texto": "Quina novel·la de Dickens exemplifica el Realisme anglès?", "opciones": { "a":"David Copperfield", "b":"Oliver Twist", "c":"Grandes esperanzas" }, "respuesta":"a" },
+                { "texto": "Quina obra de Dostoievski se sol associar al Realisme rus?", "opciones": { "a":"Crim i càstig", "b":"El jugador", "c":"Memòries del subjuntiu" }, "respuesta":"a" },
+                { "texto": "Per a què serveix la descrició detallada en el Realisme?", "opciones": { "a":"Verosimilitud absoluta", "b":"Crear somnis", "c":"Trencar la trama" }, "respuesta":"a" },
+                { "texto": "Quina funció tenen sovint els personatges secundaris realistes?", "opciones": { "a":"Crítica social", "b":"Ornament estètic", "c":"Representar déus" }, "respuesta":"a" },
+
+                // 11–32: Literatura espanyola (remogudes i reduïdes a 12 preguntes)
+                { "texto": "Quin autor espanyol és exponent del Realisme?","opciones": {"a":"Benito Pérez Galdós","b":"Federico García Lorca","c":"Miguel de Cervantes"},"respuesta":"a"},
+                { "texto": "Quina obra de Galdós debat conflictes polítics?","opciones": {"a":"La desheredada","b":"Marianela","c":"Episodios Nacionales"},"respuesta":"a"},
+                { "texto": "Quin autor espanyol, a més de Galdós, destaca al Realisme?","opciones": {"a":"Juan Valera","b":"Leopoldo Alas","c":"Gonzalo Torrente Ballester"},"respuesta":"a"},
+                { "texto": "Quina novel·la de Juan Valera és psicològica?","opciones": {"a":"Pepita Jiménez","b":"El sombrero de tres picos","c":"Doña Perfecta"},"respuesta":"a"},
+                { "texto": "Quina novel·la de Clarín és una novel·la de tesis?","opciones":{"a":"La Regenta","b":"Doña Perfecta","c":"La desheredada"},"respuesta":"a"},
+                { "texto": "Quina obra de Galdós incorpora Naturalime?","opciones":{"a":"La desheredada","b":"Fortunata i Jacinta","c":"Pepita Jiménez"},"respuesta":"a"},
+                { "texto": "Quina obra de Galdós mostra influència naturalista?","opciones":{"a":"Fortunata i Jacinta","b":"Nana","c":"Madame Bovary"},"respuesta":"a"},
+                { "texto": "Quina novel·la espanyola tracta xoc tradició-progrés?","opciones":{"a":"Los Pazos de Ulloa","b":"El Quijote","c":"Fortunata i Jacinta"},"respuesta":"a"},
+                { "texto": "Quin recurs estilístic realista aporta expressivitat?","opciones":{"a":"Hipèrbate","b":"Al·legoria","c":"Enumeració"},"respuesta":"a"},
+                { "texto": "En quin període es va desenvolupar el Realisme espanyol?","opciones":{"a":"1868-1880","b":"Segle XVII","c":"Segle XX"},"respuesta":"a"},
+                { "texto": "Quin paper té el narrador omniscient?","opciones":{"a":"Revelar pensaments íntims","b":"Ser protagonista","c":"Limitar-se a un diàleg"},"respuesta":"a"},
+                { "texto": "Com es fa la crítica social realista?","opciones":{"a":"Descripció detallada de la quotidianitat","b":"Episodis fantàstics","c":"Multiplicant narradors"},"respuesta":"a"},
+
+                // 33–53: 21 preguntes de Literatura catalana de l’època
+                { "texto": "Quin autor català del segle XIX és considerat precursor del Realisme literari?", "opciones": { "a":"Víctor Balaguer","b":"Jacint Verdaguer","c":"Àngel Guimerà" }, "respuesta":"a" },
+                { "texto": "Quina obra de Víctor Balaguer tracta conflictes polítics i socials?", "opciones": { "a":"'Ismene'","b":"'Eudald Serra'","c":"'Lo Pi de les Tres Branques'" }, "respuesta":"a" },
+                { "texto": "Quin teatre realista va escriure Àngel Guimerà?", "opciones": { "a":"'Mar i Cel'","b":"'Terra Baixa'","c":"'La filla del mar'" }, "respuesta":"b" },
+                { "texto": "Quina novel·la realista de Narcís Oller descriu la burgesia de Barcelona?", "opciones": { "a":"'La papallona'","b":"'L'any mil'","c":"'L'Escanyapobres'" }, "respuesta":"a" },
+                { "texto": "Quin autor naturalista català va escriure 'La febre d'or'?", "opciones": { "a":"Emili Vilanova","b":"Àngel Guimerà","c":"Víctor Català" }, "respuesta":"a" },
+                { "texto": "Quina obra de Víctor Català (Caterina Albert) és un paradigma del Naturalisme català?", "opciones": { "a":"'Drames rurals'","b":"'Solitud'","c":"'Un film familiar'" }, "respuesta":"a" },
+                { "texto": "Quin gènere va impulsar Narcís Oller a Catalunya?", "opciones": { "a":"Novel·la urbana realista","b":"Poesia lírica","c":"Drama medieval" }, "respuesta":"a" },
+                { "texto": "Quin autor va publicar 'Font de Doò' amb esperit realista?", "opciones": { "a":"Josep Yxart","b":"Jacint Verdaguer","c":"Àngel Guimerà" }, "respuesta":"a" },
+                { "texto": "Quina temàtica social destaca a 'La papallona' de Narcís Oller?", "opciones": { "a":"Situació de les dones","b":"Monarquia absoluta","c":"Felicitat rural" }, "respuesta":"a" },
+                { "texto": "Quin moviment literari català va influir la Revista 'La Renaixença'?", "opciones": { "a":"Realisme","b":"Modernisme","c":"Simbolisme" }, "respuesta":"a" },
+                { "texto": "Quin autor català va escriure assajos sobre la situació social industrial?", "opciones": { "a":"Emili Vilanova","b":"Joan Maragall","c":"Francesc Eiximenis" }, "respuesta":"a" },
+                { "texto": "Quina característica té la prolífica obra de Víctor Balaguer?", "opciones": { "a":"Mescla de política i història","b":"Visions fantàstiques","c":"Poesia comuna" }, "respuesta":"a" },
+                { "texto": "Quin dramaturg català va introduir la crítica social en el teatre realista?", "opciones": { "a":"Víctor Català","b":"Àngel Guimerà","c":"Joan Maragall" }, "respuesta":"b" },
+                { "texto": "Quin escriptor va descriure amb detall la Barcelona burgesa del segle XIX?", "opciones": { "a":"Narcís Oller","b":"Emili Vilanova","c":"Víctor Balaguer" }, "respuesta":"a" },
+                { "texto": "Quina escriptora va destacar per relats de temàtica rural amb realisme cru?", "opciones": { "a":"Víctor Català","b":"Carme Karr","c":"Caterina Albert" }, "respuesta":"a" },
+                { "texto": "Quin autor va pintar la Barcelona obrera a 'La febre d'or'?", "opciones": { "a":"Emili Vilanova","b":"Narcís Oller","c":"Víctor Català" }, "respuesta":"a" },
+                { "texto": "Quina obra de Joan Maragall conté reflexions realistes sobre la societat?", "opciones": { "a":"'Oda nova'","b":"'Poesies'","c":"'La vaca cega'" }, "respuesta":"b" },
+                { "texto": "Quin gènere va cultivar Víctor Balaguer per difondre idees liberals?", "opciones": { "a":"Teatre històric","b":"Llibre de poesies","c":"Relat autobiogràfic" }, "respuesta":"a" },
+                { "texto": "Quina novel·la curta d'Emili Vilanova aborda conflictes familiars realistes?", "opciones": { "a":"'El mestre de clavells'","b":"'Ismene'","c":"'La papallona'" }, "respuesta":"a" },
+                { "texto": "Quin escriptor català va traduir obres realistes franceses al català?", "opciones": { "a":"Josep Yxart","b":"Àngel Guimerà","c":"Joan Maragall" }, "respuesta":"a" }
+            ]
+        };
+
+        let preguntas = data.preguntas;
+        let preguntasElegidas = [];
+        let preguntaActual = 0;
+        let correctas = 0;
+
+        const infoContainer = document.getElementById('info-container');
+        const startBtn = document.getElementById('start-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const nextBtn = document.getElementById('next-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            infoContainer.innerHTML = `<p>El test conté <strong>${preguntas.length}</strong> preguntes.</p>`;
+            startBtn.style.display = 'inline-block';
+        });
+
+        startBtn.addEventListener('click', () => {
+            let num = prompt(`Quantes preguntes vols jugar? (1-${preguntas.length})`, preguntas.length);
+            num = parseInt(num);
+            if (isNaN(num) || num < 1 || num > preguntas.length) {
+                alert('Número no vàlid. Es jugaran totes les preguntes.');
+                num = preguntas.length;
+            }
+            preguntasElegidas = shuffle([...preguntas]).slice(0, num);
+            startBtn.style.display = 'none';
+            infoContainer.innerHTML = '';
+            mostrarPregunta();
+        });
+
+        function mostrarPregunta() {
+            if (preguntaActual < preguntasElegidas.length) {
+                quizContainer.innerHTML = '';
+                quizContainer.style.display = 'block';
+                nextBtn.style.display = 'none';
+
+                const p = preguntasElegidas[preguntaActual];
+                const h2 = document.createElement('h2');
+                h2.textContent = p.texto;
+                quizContainer.appendChild(h2);
+
+                shuffle(Object.entries(p.opciones).map(([k,v]) => ({ key:k, texto:v })))
+                    .forEach(op => {
+                        const div = document.createElement('div');
+                        div.className = 'option';
+                        div.textContent = op.texto;
+                        div.dataset.val = op.key;
+                        div.addEventListener('click', () => validar(div, p.respuesta));
+                        quizContainer.appendChild(div);
+                    });
+            } else {
+                quizContainer.innerHTML = `<h2>Test finalitzat!</h2><p>Has encertat ${correctas} de ${preguntasElegidas.length} preguntes.</p>`;
+                nextBtn.style.display = 'none';
+                restartBtn.style.display = 'inline-block';
+            }
+        }
+
+        function validar(elem, resp) {
+            document.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
+            if (elem.dataset.val === resp) {
+                elem.classList.add('correct');
+                correctas++;
+            } else {
+                elem.classList.add('incorrect');
+                const correcte = document.querySelector(`.option[data-val='${resp}']`);
+                if (correcte) correcte.classList.add('correct');
+            }
+            nextBtn.style.display = 'inline-block';
+        }
+
+        nextBtn.addEventListener('click', () => {
+            preguntaActual++;
+            mostrarPregunta();
+        });
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+    </script>
+</body>
+</html>
