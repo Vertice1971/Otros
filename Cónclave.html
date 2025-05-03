@@ -2,16 +2,55 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Ruleta de la fortuna</title>
+<title>Cónclave</title>
 <style>
-  body { margin:0; display:flex; justify-content:center; align-items:center; height:100vh; background:#f4f4f4; }
-  #canvas { border:2px solid #333; border-radius:50%; }
-  #spin { position:absolute; top:50%; transform:translateY(-50%); background:#333; color:#fff; border:none; padding:10px 20px; cursor:pointer; font-size:16px; }
+  body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #f4f4f4;
+    font-family: sans-serif;
+  }
+  h1 {
+    margin-bottom: 20px;
+    font-size: 32px;
+    color: #333;
+  }
+  #container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+  }
+  #canvas {
+    border: 2px solid #333;
+    border-radius: 50%;
+    display: block;
+  }
+  #spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 10px;
+    z-index: 10;
+  }
 </style>
 </head>
 <body>
-<canvas id="canvas" width="500" height="500"></canvas>
-<button id="spin">Girar</button>
+<h1>Cónclave</h1>
+<div id="container">
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <button id="spin">Girar</button>
+</div>
 <script>
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
@@ -33,17 +72,16 @@
       ctx.fill();
       ctx.save();
       ctx.translate(
-        center + Math.cos(angle + angleSize/2) * (center - 80),
-        center + Math.sin(angle + angleSize/2) * (center - 80)
+        center + Math.cos(angle + angleSize / 2) * (center - 80),
+        center + Math.sin(angle + angleSize / 2) * (center - 80)
       );
-      ctx.rotate(angle + angleSize/2 + Math.PI/2);
+      ctx.rotate(angle + angleSize / 2 + Math.PI / 2);
       ctx.fillStyle = '#000';
       ctx.font = '18px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(names[i], 0, 0);
       ctx.restore();
     }
-    // indicador
     ctx.fillStyle = '#e74c3c';
     ctx.beginPath();
     ctx.moveTo(center - 10, 10);
@@ -62,9 +100,9 @@
     const from = startAngle;
     function animate(now) {
       const t = Math.min((now - start) / duration, 1);
-      const ease = t<.5?2*t*t: -1+(4-2*t)*t;
+      const ease = t < .5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
       startAngle = from + (finalAngle - from) * ease;
-      ctx.clearRect(0,0,size,size);
+      ctx.clearRect(0, 0, size, size);
       drawWheel();
       if (t < 1) requestAnimationFrame(animate);
     }
