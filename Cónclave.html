@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Ruleta de la fortuna</title>
+<style>
+  body { margin:0; display:flex; justify-content:center; align-items:center; height:100vh; background:#f4f4f4; }
+  #canvas { border:2px solid #333; border-radius:50%; }
+  #spin { position:absolute; top:50%; transform:translateY(-50%); background:#333; color:#fff; border:none; padding:10px 20px; cursor:pointer; font-size:16px; }
+</style>
+</head>
+<body>
+<canvas id="canvas" width="500" height="500"></canvas>
+<button id="spin">Girar</button>
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const size = canvas.width;
+  const center = size / 2;
+  const names = ['Parolin','Zuppi','Tagle','Erdö','Ambongo','Pizzaballa','Prevost','Aveline'];
+  const segments = names.length;
+  const angleSize = 2 * Math.PI / segments;
+  let startAngle = 0;
+
+  function drawWheel() {
+    for (let i = 0; i < segments; i++) {
+      const angle = startAngle + i * angleSize;
+      ctx.beginPath();
+      ctx.moveTo(center, center);
+      ctx.arc(center, center, center - 10, angle, angle + angleSize);
+      ctx.closePath();
+      ctx.fillStyle = i % 2 ? '#fff' : '#ddd';
+      ctx.fill();
+      ctx.save();
+      ctx.translate(
+        center + Math.cos(angle + angleSize/2) * (center - 80),
+        center + Math.sin(angle + angleSize/2) * (center - 80)
+      );
+      ctx.rotate(angle + angleSize/2 + Math.PI/2);
+      ctx.fillStyle = '#000';
+      ctx.font = '18px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(names[i], 0, 0);
+      ctx.restore();
+    }
+    // indicador
+    ctx.fillStyle = '#e74c3c';
+    ctx.beginPath();
+    ctx.moveTo(center - 10, 10);
+    ctx.lineTo(center + 10, 10);
+    ctx.lineTo(center, 40);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function spin() {
+    const rounds = Math.floor(Math.random() * 3) + 4;
+    const extra = Math.random() * 2 * Math.PI;
+    const finalAngle = rounds * 2 * Math.PI + extra;
+    const duration = 4000;
+    const start = performance.now();
+    const from = startAngle;
+    function animate(now) {
+      const t = Math.min((now - start) / duration, 1);
+      const ease = t<.5?2*t*t: -1+(4-2*t)*t;
+      startAngle = from + (finalAngle - from) * ease;
+      ctx.clearRect(0,0,size,size);
+      drawWheel();
+      if (t < 1) requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+  }
+
+  drawWheel();
+  document.getElementById('spin').addEventListener('click', spin);
+</script>
+</body>
+</html>
