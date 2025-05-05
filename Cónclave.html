@@ -3,30 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <title>Cónclave</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      height: 100vh;
+      justify-content: flex-start;
+      min-height: 100vh;
       background: #f4f4f4;
       font-family: sans-serif;
+      padding-top: 1rem;
+    }
+    #bottom-link {
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+    #bottom-link a {
+      color: #3366cc;
+      text-decoration: none;
+    }
+    #bottom-link a:hover,
+    #bottom-link a:active {
+      text-decoration: underline;
     }
     h1 {
-      margin-bottom: 20px;
-      font-size: 32px;
+      margin: 0.5rem 0 1rem;
+      font-size: 2rem;
       color: #333;
+      text-align: center;
     }
     #container {
       position: relative;
-      width: 500px;
-      height: 500px;
+      width: 90vw;
+      max-width: 500px;
+      aspect-ratio: 1 / 1;
     }
     #canvas {
+      width: 100%;
+      height: 100%;
       border: 2px solid #333;
       border-radius: 50%;
+      display: block;
     }
     #spin {
       position: absolute;
@@ -36,30 +56,51 @@
       background: #333;
       color: #fff;
       border: none;
-      padding: 12px 24px;
+      padding: 0.75rem 1.5rem;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 1rem;
       border-radius: 10px;
       z-index: 10;
     }
   </style>
 </head>
 <body>
-  <h1>Cónclave</h1>
+  <h1>Cónclave 2025</h1>
   <div id="container">
-    <canvas id="canvas" width="500" height="500"></canvas>
+    <canvas id="canvas"></canvas>
     <button id="spin">Girar</button>
+  </div>
+  <div id="bottom-link">
+    <a href="https://www.amazon.es/dp/B0F61P4TXK" target="_blank">Enlace para aprender a hacerlo tú</a>
   </div>
   <script>
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    const size = canvas.width;
-    const center = size / 2;
-    const names = ['Parolin','Zuppi','Tagle','Erdö','Ambongo','Pizzaballa','Prevost','Aveline'];
+    const names = [
+      'Parolin',
+      'Zuppi',
+      'Tagle',
+      'Erdö',
+      'Ambongo',
+      'Pizzaballa',
+      'Prevost',
+      'Aveline',
+      'López Romero',
+      'Fdez. Artime'
+    ];
     const segments = names.length;
     const angleSize = 2 * Math.PI / segments;
     let startAngle = 0;
     let highlightIndex = null;
+    let size, center;
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      size = canvas.width;
+      center = size / 2;
+    }
 
     function drawWheel(highlight = null) {
       ctx.clearRect(0, 0, size, size);
@@ -69,75 +110,70 @@
         ctx.moveTo(center, center);
         ctx.arc(center, center, center - 10, angle, angle + angleSize);
         ctx.closePath();
-        if (i === highlight) {
-          ctx.fillStyle = '#fff9b1';           // color vivo para el ganador
-        } else {
-          ctx.fillStyle = (i % 2 ? '#fff' : '#ddd');
-        }
+        ctx.fillStyle = (i === highlight) ? '#fff9b1' : (i % 2 ? '#fff' : '#ddd');
         ctx.fill();
         if (i === highlight) {
           ctx.lineWidth = 4;
-          ctx.strokeStyle = '#c0392b';         // borde para resaltar
+          ctx.strokeStyle = '#c0392b';
           ctx.stroke();
         }
-
         ctx.save();
         ctx.translate(
-          center + Math.cos(angle + angleSize/2) * (center - 80),
-          center + Math.sin(angle + angleSize/2) * (center - 80)
+          center + Math.cos(angle + angleSize/2) * (center - size * 0.16),
+          center + Math.sin(angle + angleSize/2) * (center - size * 0.16)
         );
         ctx.rotate(angle + angleSize/2 + Math.PI/2);
         ctx.fillStyle = '#000';
-        ctx.font = '18px sans-serif';
+        ctx.font = `${Math.max(size * 0.035, 10)}px sans-serif`;
         ctx.textAlign = 'center';
         ctx.fillText(names[i], 0, 0);
         ctx.restore();
       }
       ctx.fillStyle = '#e74c3c';
       ctx.beginPath();
-      ctx.moveTo(center - 10, 10);
-      ctx.lineTo(center + 10, 10);
-      ctx.lineTo(center, 40);
+      ctx.moveTo(center - size * 0.02, size * 0.02);
+      ctx.lineTo(center + size * 0.02, size * 0.02);
+      ctx.lineTo(center, size * 0.08);
       ctx.closePath();
       ctx.fill();
     }
 
     function spin() {
-      document.getElementById('spin').disabled = true;
+      spinBtn.disabled = true;
       highlightIndex = null;
       drawWheel();
-
       const rounds = Math.floor(Math.random() * 3) + 4;
       const extra = Math.random() * 2 * Math.PI;
       const finalAngle = startAngle + rounds * 2 * Math.PI + extra;
       const duration = 4000;
       const startTime = performance.now();
       const from = startAngle;
-
       function animate(now) {
         const t = Math.min((now - startTime) / duration, 1);
         const ease = t < .5 ? 2*t*t : -1 + (4 - 2*t)*t;
         startAngle = from + (finalAngle - from) * ease;
         drawWheel();
-        if (t < 1) {
-          requestAnimationFrame(animate);
-        } else {
+        if (t < 1) requestAnimationFrame(animate);
+        else {
           const degrees = finalAngle * 180 / Math.PI + 90;
           const normalized = degrees % 360;
           const sectorAngle = 360 / segments;
-          const index = Math.floor((360 - normalized) / sectorAngle) % segments;
-          highlightIndex = index;
-          drawWheel(index);
-          document.getElementById('spin').disabled = false;
+          highlightIndex = Math.floor((360 - normalized) / sectorAngle) % segments;
+          drawWheel(highlightIndex);
+          spinBtn.disabled = false;
         }
       }
-
       requestAnimationFrame(animate);
     }
 
+    const spinBtn = document.getElementById('spin');
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      drawWheel(highlightIndex);
+    });
+    resizeCanvas();
     drawWheel();
-    document.getElementById('spin').addEventListener('click', spin);
+    spinBtn.addEventListener('click', spin);
   </script>
 </body>
 </html>
-f
