@@ -33,12 +33,9 @@
     #bottom-link { font-size: .9rem; margin-top: .5rem }
     #bottom-link a { color: #3366cc; text-decoration: none }
     #bottom-link a:hover { text-decoration: underline }
-    #winner-card { width: 90vw; max-width: 500px; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); margin-bottom: 1rem }
-    #winner-card h3 { margin: 0 0 .5rem; font-size: 1.25rem; color: #333 }
-    #winner-features li { margin: .25rem 0 }
-    #user-bets { width: 90vw; max-width: 500px; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15) }
-    #user-bets h3 { margin: 0 0 .5rem; font-size: 1.25rem; color: #333 }
-    #user-bets-list li { margin: .25rem 0 }
+    #winner-card, #user-bets { width: 90vw; max-width: 500px; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); margin-bottom: 1rem }
+    #winner-card h3, #user-bets h3 { margin: 0 0 .5rem; font-size: 1.25rem; color: #333 }
+    #winner-features li, #user-bets-list li { margin: .25rem 0 }
   </style>
 </head>
 <body>
@@ -56,37 +53,30 @@
           <option value="América">América</option>
         </select>
         <input type="text" id="bet-cont" value="0" inputmode="numeric" pattern="\d*" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-        <span class="result"></span>
       </div>
       <div data-key="nes">
         <label>Italiano o Español</label>
         <input type="text" id="bet-nes" value="0" inputmode="numeric" pattern="\d*" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-        <span class="result"></span>
       </div>
       <div data-key="young">
         <label>Menor de 70</label>
         <input type="text" id="bet-young" value="0" inputmode="numeric" pattern="\d*" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-        <span class="result"></span>
       </div>
       <div data-key="old">
         <label>70 o más</label>
         <input type="text" id="bet-old" value="0" inputmode="numeric" pattern="\d*" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-        <span class="result"></span>
       </div>
       <div data-key="Conservador">
         <label>Conservador</label>
         <input type="text" id="bet-cons" value="0" inputmode="numeric" pattern="\d*" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-        <span class="result"></span>
       </div>
       <div data-key="Moderado">
         <label>Moderado</label>
         <input type="text" id="bet-mod" value="0" inputmode="numeric" pattern="\d*" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-        <span class="result"></span>
       </div>
       <div data-key="Progresista">
         <label>Progresista</label>
         <input type="text" id="bet-prog" value="0" inputmode="numeric" pattern="\d*" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-        <span class="result"></span>
       </div>
       <button id="place">Jugar</button>
       <button id="clear">Borrar apuestas</button>
@@ -102,21 +92,19 @@
   </div>
 
   <div id="screen3" class="screen">
-    <div id="results" style="width:90vw;max-width:500px;background:#fff;padding:1rem;border-radius:8px">
-      <h2 id="winner-name">Resultado:</h2>
-      <div id="winner-card">
-        <h3>Ficha del cardenal</h3>
-        <ul id="winner-features"></ul>
-      </div>
-      <div id="user-bets">
-        <h3>Tus apuestas</h3>
-        <ul id="user-bets-list"></ul>
-      </div>
-      <div id="bank-results" style="font-size:1.2rem;margin:1rem 0">
-        Florines: <span id="bank-results-value">100</span>
-      </div>
-      <button id="next-round">Siguiente ronda</button>
+    <h2 id="winner-name">Resultado:</h2>
+    <div id="winner-card">
+      <h3>Ficha del cardenal</h3>
+      <ul id="winner-features"></ul>
     </div>
+    <div id="user-bets">
+      <h3>Tus apuestas</h3>
+      <ul id="user-bets-list"></ul>
+    </div>
+    <div id="bank-results" style="font-size:1.2rem;margin:1rem 0">
+      Florines: <span id="bank-results-value">100</span>
+    </div>
+    <button id="next-round">Siguiente ronda</button>
   </div>
 
   <div id="bottom-link">
@@ -125,12 +113,12 @@
 
   <script>
     function secureRandom() {
-      const array = new Uint32Array(1);
-      crypto.getRandomValues(array);
-      return array[0] / 2**32;
+      const array = new Uint32Array(1)
+      crypto.getRandomValues(array)
+      return array[0] / 2**32
     }
 
-    const names = ['Parolin','Zuppi','Tagle','Erdö','Ambongo','Pizzaballa','Prevost','Aveline','López Romero','Fdez. Artime'];
+    const names = ['Parolin','Zuppi','Tagle','Erdö','Ambongo','Pizzaballa','Prevost','Aveline','López Romero','Fdez. Artime']
     const props = {
       Parolin:{continent:'Europa',nes:true,age:'70+',ideology:'Moderado'},
       Zuppi:{continent:'Europa',nes:true,age:'<70',ideology:'Progresista'},
@@ -142,37 +130,39 @@
       Aveline:{continent:'África',nes:false,age:'<70',ideology:'Progresista'},
       'López Romero':{continent:'Europa',nes:true,age:'70+',ideology:'Progresista'},
       'Fdez. Artime':{continent:'Europa',nes:true,age:'<70',ideology:'Moderado'}
-    };
+    }
     const odds = {
       continent:{Europa:1.67,Asia:10.00,África:5.00,América:10.00},
       nes:{true:2.00},
       age:{'<70':1.43,'70+':3.33},
       ideology:{Conservador:5.00,Moderado:3.33,Progresista:2.00}
-    };
-    let bank = 100, bets = null;
+    }
+    let bank = 100, bets = null
     const bankEl = document.getElementById('bank-value'),
           bankResultsEl = document.getElementById('bank-results-value'),
           placeBtn = document.getElementById('place'),
           clearBtn = document.getElementById('clear'),
           resetBtn = document.getElementById('reset'),
           spinBtn = document.getElementById('spin'),
-          nextRoundBtn = document.getElementById('next-round');
+          nextRoundBtn = document.getElementById('next-round')
 
     function showScreen(n) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(`screen${n}`).classList.add('active');
-      if (n === 2) setTimeout(resize, 50);
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
+      document.getElementById(`screen${n}`).classList.add('active')
+      if (n === 2) setTimeout(resize, 50)
     }
+
     function updateBank() {
-      bankEl.textContent = bank.toFixed(2);
-      bankResultsEl.textContent = bank.toFixed(2);
-      if (bank <= 0) { spinBtn.disabled = true; placeBtn.disabled = true; alert('Juego terminado'); }
+      bankEl.textContent = bank.toFixed(2)
+      bankResultsEl.textContent = bank.toFixed(2)
     }
+
     function clearResults() {
-      document.querySelectorAll('.result').forEach(s => { s.textContent = ''; s.className = 'result'; });
+      document.querySelectorAll('.result').forEach(s => { s.textContent = ''; s.className = 'result' })
     }
+
     function readBets() {
-      const choice = document.getElementById('bet-cont-select').value;
+      const choice = document.getElementById('bet-cont-select').value
       return {
         continent: { choice, amount: parseInt(document.getElementById('bet-cont').value) || 0 },
         nes: parseInt(document.getElementById('bet-nes').value) || 0,
@@ -181,195 +171,209 @@
         Conservador: parseInt(document.getElementById('bet-cons').value) || 0,
         Moderado: parseInt(document.getElementById('bet-mod').value) || 0,
         Progresista: parseInt(document.getElementById('bet-prog').value) || 0
-      };
+      }
     }
 
     placeBtn.addEventListener('click', () => {
-      clearResults();
-      bets = readBets();
-      const inputs = document.querySelectorAll('#betting input');
+      clearResults()
+      bets = readBets()
+      const inputs = document.querySelectorAll('#betting input')
       for (const input of inputs) {
-        if (!/^[0-9]+$/.test(input.value)) return alert('Solo se permiten números enteros en las apuestas');
+        if (!/^[0-9]+$/.test(input.value)) return alert('Solo se permiten números enteros')
       }
-      const total = bets.continent.amount + bets.nes + bets.young + bets.old + bets.Conservador + bets.Moderado + bets.Progresista;
-      if (total > bank) return alert('No tienes suficientes florines');
-      if (total > 0) bank -= total;
-      updateBank();
-      document.getElementById('bet-cont-select').disabled = true;
-      document.getElementById('bet-cont').disabled = true;
-      document.querySelectorAll('#betting input:not(#bet-cont)').forEach(i => i.disabled = true);
-      placeBtn.disabled = true;
-      spinBtn.disabled = false;
-      showScreen(2);
-    });
+      const total = bets.continent.amount + bets.nes + bets.young + bets.old + bets.Conservador + bets.Moderado + bets.Progresista
+      if (total > bank) return alert('No tienes suficientes florines')
+      if (total > 0) bank -= total
+      updateBank()
+      document.getElementById('bet-cont-select').disabled = true
+      document.getElementById('bet-cont').disabled = true
+      document.querySelectorAll('#betting input:not(#bet-cont)').forEach(i => i.disabled = true)
+      placeBtn.disabled = true
+      spinBtn.disabled = false
+      showScreen(2)
+    })
 
     clearBtn.addEventListener('click', () => {
-      bets = null;
-      clearResults();
-      document.getElementById('bet-cont-select').disabled = false;
-      document.getElementById('bet-cont-select').selectedIndex = 0;
-      document.getElementById('bet-cont').value = 0;
-      document.getElementById('bet-cont').disabled = false;
-      document.querySelectorAll('#betting input:not(#bet-cont)').forEach(i => { i.value = 0; i.disabled = false; });
-      placeBtn.disabled = false;
-      spinBtn.disabled = true;
-      showScreen(1);
-    });
+      bets = null
+      clearResults()
+      document.getElementById('bet-cont-select').disabled = false
+      document.getElementById('bet-cont-select').selectedIndex = 0
+      document.getElementById('bet-cont').value = 0
+      document.getElementById('bet-cont').disabled = false
+      document.querySelectorAll('#betting input:not(#bet-cont)').forEach(i => { i.value = 0; i.disabled = false })
+      placeBtn.disabled = false
+      spinBtn.disabled = true
+      showScreen(1)
+    })
 
     resetBtn.addEventListener('click', () => {
-      bank = 100;
-      bets = null;
-      clearResults();
-      updateBank();
-      document.getElementById('bet-cont-select').disabled = false;
-      document.getElementById('bet-cont-select').selectedIndex = 0;
-      document.getElementById('bet-cont').value = 0;
-      document.getElementById('bet-cont').disabled = false;
-      document.querySelectorAll('#betting input:not(#bet-cont)').forEach(i => { i.value = 0; i.disabled = false; });
-      placeBtn.disabled = false;
-      spinBtn.disabled = true;
-      showScreen(1);
-    });
+      bank = 100
+      bets = null
+      clearResults()
+      updateBank()
+      document.getElementById('bet-cont-select').disabled = false
+      document.getElementById('bet-cont-select').selectedIndex = 0
+      document.getElementById('bet-cont').value = 0
+      document.getElementById('bet-cont').disabled = false
+      document.querySelectorAll('#betting input:not(#bet-cont)').forEach(i => { i.value = 0; i.disabled = false })
+      placeBtn.disabled = false
+      spinBtn.disabled = true
+      showScreen(1)
+    })
 
     nextRoundBtn.addEventListener('click', () => {
-      bets = null;
-      clearResults();
-      document.getElementById('bet-cont-select').disabled = false;
-      document.getElementById('bet-cont').disabled = false;
-      document.querySelectorAll('#betting input').forEach(i => { i.value = 0; i.disabled = false; });
-      placeBtn.disabled = false;
-      spinBtn.disabled = true;
-      showScreen(1);
-    });
+      bets = null
+      clearResults()
+      document.getElementById('bet-cont-select').disabled = false
+      document.getElementById('bet-cont').disabled = false
+      document.querySelectorAll('#betting input').forEach(i => { i.value = 0; i.disabled = false })
+      placeBtn.disabled = false
+      spinBtn.disabled = true
+      showScreen(1)
+    })
 
-    const canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d');
-    let size, center, startAngle = 0, highlightIndex = null;
-    const segments = names.length, angleSize = 2 * Math.PI / segments;
+    const canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d')
+    let size, center, startAngle = 0, highlightIndex = null
+    const segments = names.length, angleSize = 2 * Math.PI / segments
 
     function resize() {
-      const rect = document.getElementById('container').getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-      size = Math.min(canvas.width, canvas.height);
-      center = size / 2;
-      draw(highlightIndex);
+      const rect = document.getElementById('container').getBoundingClientRect()
+      canvas.width = rect.width
+      canvas.height = rect.height
+      size = Math.min(canvas.width, canvas.height)
+      center = size / 2
+      draw(highlightIndex)
     }
 
     function draw(h = null) {
-      if (!canvas.width || !canvas.height) return;
-      const r = center - 10;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (!canvas.width || !canvas.height) return
+      const r = center - 10
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
       for (let i = 0; i < segments; i++) {
-        const ang = startAngle + i * angleSize;
-        ctx.beginPath();
-        ctx.moveTo(center, center);
-        ctx.arc(center, center, r, ang, ang + angleSize);
-        ctx.closePath();
-        ctx.fillStyle = (i === h ? '#fff9b1' : i % 2 ? '#fff' : '#ddd');
-        ctx.fill();
+        const ang = startAngle + i * angleSize
+        ctx.beginPath()
+        ctx.moveTo(center, center)
+        ctx.arc(center, center, r, ang, ang + angleSize)
+        ctx.closePath()
+        ctx.fillStyle = (i === h ? '#fff9b1' : i % 2 ? '#fff' : '#ddd')
+        ctx.fill()
         if (i === h) {
-          ctx.lineWidth = 4;
-          ctx.strokeStyle = '#c0392b';
-          ctx.stroke();
+          ctx.lineWidth = 4
+          ctx.strokeStyle = '#c0392b'
+          ctx.stroke()
         }
-        ctx.save();
+        ctx.save()
         ctx.translate(
           center + Math.cos(ang + angleSize / 2) * r * 0.7,
           center + Math.sin(ang + angleSize / 2) * r * 0.7
-        );
-        ctx.rotate(ang + angleSize / 2 + Math.PI / 2);
-        ctx.fillStyle = '#000';
-        ctx.font = `${Math.max(size * 0.035, 10)}px sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.fillText(names[i], 0, 0);
-        ctx.restore();
+        )
+        ctx.rotate(ang + angleSize / 2 + Math.PI / 2)
+        ctx.fillStyle = '#000'
+        ctx.font = `${Math.max(size * 0.035, 10)}px sans-serif`
+        ctx.textAlign = 'center'
+        ctx.fillText(names[i], 0, 0)
+        ctx.restore()
       }
-      ctx.fillStyle = '#e74c3c';
-      ctx.beginPath();
-      ctx.moveTo(center - 10, 10);
-      ctx.lineTo(center + 10, 10);
-      ctx.lineTo(center, 40);
-      ctx.closePath();
-      ctx.fill();
+      ctx.fillStyle = '#e74c3c'
+      ctx.beginPath()
+      ctx.moveTo(center - 10, 10)
+      ctx.lineTo(center + 10, 10)
+      ctx.lineTo(center, 40)
+      ctx.closePath()
+      ctx.fill()
     }
 
     function spin() {
-      highlightIndex = null;
-      draw();
-      spinBtn.disabled = true;
-      const rounds = Math.floor(secureRandom() * 3) + 4;
-      const extra = secureRandom() * 2 * Math.PI;
-      const final = startAngle + rounds * 2 * Math.PI + extra;
-      const dur = 4000;
-      const t0 = performance.now();
-      const from = startAngle;
-      (function anim(t) {
-        const u = Math.min((t - t0) / dur, 1);
-        const e = u < 0.5 ? 2 * u * u : -1 + (4 - 2 * u) * u;
-        startAngle = from + (final - from) * e;
-        draw();
-        if (u < 1) requestAnimationFrame(anim);
-        else {
-          const deg = final * 180 / Math.PI + 90;
-          const norm = deg % 360;
-          const sect = 360 / segments;
-          highlightIndex = Math.floor((360 - norm) / sect) % segments;
-          draw(highlightIndex);
-          resolveSpin();
+      highlightIndex = null
+      draw()
+      spinBtn.disabled = true
+      
+      const rounds = Math.floor(secureRandom() * 3) + 4
+      const extra = secureRandom() * 2 * Math.PI
+      const targetAngle = rounds * 2 * Math.PI + extra
+      const duration = 4000
+      const startTime = performance.now()
+      
+      function animate(currentTime) {
+        const elapsed = currentTime - startTime
+        const progress = Math.min(elapsed / duration, 1)
+        const easeProgress = 1 - Math.pow(1 - progress, 3)
+        startAngle = easeProgress * targetAngle
+        draw()
+        if (progress < 1) {
+          requestAnimationFrame(animate)
+        } else {
+          const deg  = startAngle * 180 / Math.PI + 90
+          const norm = ((deg % 360) + 360) % 360
+          const sect = 360 / segments
+          highlightIndex = Math.floor((360 - norm) / sect) % segments   
+          draw(highlightIndex)
+          setTimeout(resolveSpin, 1500)
         }
-      })(t0);
+      }
+      
+      requestAnimationFrame(animate)
     }
 
     function resolveSpin() {
-      const name = names[highlightIndex];
-      const p = props[name];
-      document.getElementById('winner-name').textContent = 'Resultado: ' + name;
+      const name = names[highlightIndex]
+      const p = props[name]
+      document.getElementById('winner-name').textContent = 'Resultado: ' + name
 
       const features = [
         { label: 'Continente', value: p.continent },
         { label: 'Italiano o Español', value: p.nes ? 'Sí' : 'No' },
         { label: 'Edad', value: p.age === '70+' ? '70 o más' : 'Menor de 70' },
         { label: 'Ideología', value: p.ideology }
-      ];
-      const listEl = document.getElementById('winner-features');
-      listEl.innerHTML = '';
-      features.forEach(f => {
-        listEl.innerHTML += `<li>${f.label}: ${f.value}</li>`;
-      });
+      ]
+      const listEl = document.getElementById('winner-features')
+      listEl.innerHTML = ''
+      features.forEach(f => listEl.innerHTML += `<li>${f.label}: ${f.value}</li>`)
 
-      const betsListEl = document.getElementById('user-bets-list');
-      betsListEl.innerHTML = '';
+      const betsListEl = document.getElementById('user-bets-list')
+      betsListEl.innerHTML = ''
       const cats = [
         { key: 'continent', label: `Continente (${bets.continent.choice})`, amount: bets.continent.amount, match: bets.continent.choice === p.continent, odds: odds.continent[p.continent] },
-        { key: 'nes', label: 'Italiano o Español', amount: bets.nes, match: p.nes, odds: odds.nes[true] },
-        { key: 'young', label: 'Menor de 70', amount: bets.young, match: p.age === '<70', odds: odds.age['<70'] },
-        { key: 'old', label: '70 o más', amount: bets.old, match: p.age === '70+', odds: odds.age['70+'] },
-        { key: 'Conservador', label: 'Conservador', amount: bets.Conservador, match: p.ideology === 'Conservador', odds: odds.ideology.Conservador },
-        { key: 'Moderado', label: 'Moderado', amount: bets.Moderado, match: p.ideology === 'Moderado', odds: odds.ideology.Moderado },
-        { key: 'Progresista', label: 'Progresista', amount: bets.Progresista, match: p.ideology === 'Progresista', odds: odds.ideology.Progresista }
-      ];
+        { key: 'nes',       label: 'Italiano o Español',           amount: bets.nes,         match: p.nes,                odds: odds.nes[true] },
+        { key: 'young',     label: 'Menor de 70',                  amount: bets.young,       match: p.age === '<70',      odds: odds.age['<70'] },
+        { key: 'old',       label: '70 o más',                    amount: bets.old,         match: p.age === '70+',      odds: odds.age['70+'] },
+        { key: 'Conservador', label: 'Conservador',               amount: bets.Conservador, match: p.ideology === 'Conservador', odds: odds.ideology.Conservador },
+        { key: 'Moderado',  label: 'Moderado',                    amount: bets.Moderado,    match: p.ideology === 'Moderado',    odds: odds.ideology.Moderado },
+        { key: 'Progresista', label: 'Progresista',               amount: bets.Progresista, match: p.ideology === 'Progresista', odds: odds.ideology.Progresista }
+      ]
       cats.forEach(c => {
         if (c.amount > 0) {
           const profit = c.match
             ? (c.amount * c.odds - c.amount).toFixed(2)
-            : (-c.amount).toFixed(2);
-          const sign = profit > 0 ? '+' : '';
-          const icon = c.match ? '✓' : '✗';
-          betsListEl.innerHTML += `<li>${c.label}: <span class="${c.match ? 'tick' : 'cross'}">${icon}</span> ${sign}${profit}</li>`;
+            : (-c.amount).toFixed(2)
+          const sign = profit > 0 ? '+' : ''
+          const icon = c.match ? '✓' : '✗'
+          betsListEl.innerHTML += `<li>${c.label}: <span class="${c.match ? 'tick' : 'cross'}">${icon}</span> ${sign}${profit}</li>`
         }
-      });
+      })
 
-      let win = 0;
-      cats.forEach(c => { if (c.amount > 0 && c.match) win += c.amount * c.odds; });
-      bank += win;
-      updateBank();
-      bets = null;
-      setTimeout(() => showScreen(3), 500);
+      let win = 0
+      cats.forEach(c => { if (c.amount > 0 && c.match) win += c.amount * c.odds })
+
+      bank += win
+      updateBank()
+      if (bank <= 0) {
+        spinBtn.disabled = true
+        placeBtn.disabled = true
+        alert('Juego terminado')
+      }
+      bets = null
+      setTimeout(() => showScreen(3), 500)
     }
 
-    window.addEventListener('resize', resize);
-    window.addEventListener('load', () => { resize(); draw(); showScreen(1); });
-    spinBtn.addEventListener('click', spin);
+    window.addEventListener('resize', resize)
+    window.addEventListener('load', () => {
+      resize()
+      draw()
+      showScreen(1)
+      spinBtn.disabled = true
+    })
+    spinBtn.addEventListener('click', spin)
   </script>
 </body>
 </html>
