@@ -5,175 +5,319 @@
   <title>Cónclave</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box }
     body {
       margin: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-      background: #f4f4f4;
       font-family: sans-serif;
-      padding-top: 1rem;
+      background: #f4f4f4;
+      padding: 1rem;
     }
-    #bottom-link {
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
-    }
-    #bottom-link a {
-      color: #3366cc;
-      text-decoration: none;
-    }
-    #bottom-link a:hover,
-    #bottom-link a:active {
-      text-decoration: underline;
-    }
-    h1 {
-      margin: 0.5rem 0 1rem;
-      font-size: 2rem;
-      color: #333;
-      text-align: center;
-    }
-    #container {
-      position: relative;
-      width: 90vw;
-      max-width: 500px;
-      aspect-ratio: 1 / 1;
-    }
-    #canvas {
-      width: 100%;
-      height: 100%;
-      border: 2px solid #333;
-      border-radius: 50%;
-      display: block;
-    }
-    #spin {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #333;
-      color: #fff;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      cursor: pointer;
-      font-size: 1rem;
-      border-radius: 10px;
-      z-index: 10;
-    }
+    h1 { margin: .5rem 0 1rem; font-size: 2rem; color: #333 }
+    #bank { font-size: 1.2rem; margin-bottom: 1rem }
+    #betting { width: 90vw; max-width: 500px; background: #fff; padding: 1rem; border-radius: 8px }
+    #betting div { margin-bottom: .5rem; display: flex; align-items: center }
+    #betting label { width: 100px }
+    #betting select, #betting input { margin-right: .5rem }
+    .result { margin-left: .5rem }
+    .tick { color: green }
+    .cross { color: red }
+    button { margin: .5rem; padding: .5rem 1rem; font-size: 1rem }
+    #container { position: relative; width: 90vw; max-width: 500px; aspect-ratio: 1/1 }
+    #canvas { width: 100%; height: 100%; border: 2px solid #333; border-radius: 50%; background: #fff }
+    #spin { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); background: #333; color: #fff; border: none; padding: .75rem 1.5rem; cursor: pointer; font-size: 1rem; border-radius: 10px; z-index: 10 }
+    .screen { display: none; width: 100% }
+    .screen.active { display: flex; flex-direction: column; align-items: center }
+    #bottom-link { font-size: .9rem; margin-top: .5rem }
+    #bottom-link a { color: #3366cc; text-decoration: none }
+    #bottom-link a:hover { text-decoration: underline }
+    #winner-card { width: 90vw; max-width: 500px; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); margin-bottom: 1rem }
+    #winner-card h3 { margin: 0 0 .5rem; font-size: 1.25rem; color: #333 }
+    #winner-features li { margin: .25rem 0 }
   </style>
 </head>
 <body>
   <h1>Cónclave 2025</h1>
-  <div id="container">
-    <canvas id="canvas"></canvas>
-    <button id="spin">Girar</button>
+  <div id="bank">Florines: <span id="bank-value">1000</span></div>
+
+  <div id="screen1" class="screen active">
+    <div id="betting">
+      <div data-key="continent">
+        <label>Continente</label>
+        <select id="bet-cont-select">
+          <option value="Europa">Europa</option>
+          <option value="Asia">Asia</option>
+          <option value="África">África</option>
+          <option value="América">América</option>
+        </select>
+        <input type="number" id="bet-cont" min="0" value="0">
+        <span class="result"></span>
+      </div>
+      <div data-key="nes"><label>Italiano/Español</label><input type="number" id="bet-nes" min="0" value="0"><span class="result"></span></div>
+      <div data-key="young"><label>Menor de 70</label><input type="number" id="bet-young" min="0" value="0"><span class="result"></span></div>
+      <div data-key="old"><label>70 o más</label><input type="number" id="bet-old" min="0" value="0"><span class="result"></span></div>
+      <div data-key="Conservador"><label>Conservador</label><input type="number" id="bet-cons" min="0" value="0"><span class="result"></span></div>
+      <div data-key="Moderado"><label>Moderado</label><input type="number" id="bet-mod" min="0" value="0"><span class="result"></span></div>
+      <div data-key="Progresista"><label>Progresista</label><input type="number" id="bet-prog" min="0" value="0"><span class="result"></span></div>
+      <button id="place">Hacer apuestas</button>
+      <button id="clear">Borrar apuestas</button>
+      <button id="reset">Reiniciar juego</button>
+    </div>
   </div>
+
+  <div id="screen2" class="screen">
+    <div id="container">
+      <canvas id="canvas"></canvas>
+      <button id="spin" disabled>Girar</button>
+    </div>
+  </div>
+
+  <div id="screen3" class="screen">
+    <div id="results" style="width:90vw;max-width:500px;background:#fff;padding:1rem;border-radius:8px">
+      <h2 id="winner-name">Resultado:</h2>
+      <div id="winner-card">
+        <h3>Ficha del cardenal</h3>
+        <ul id="winner-features"></ul>
+      </div>
+      <div id="result-display">
+        <div data-key="continent"><label>Continente (<span id="cont-choice"></span>)</label><span class="result"></span></div>
+        <div data-key="nes"><label>Italiano/Español</label><span class="result"></span></div>
+        <div data-key="young"><label>Menor de 70</label><span class="result"></span></div>
+        <div data-key="old"><label>70 o más</label><span class="result"></span></div>
+        <div data-key="Conservador"><label>Conservador</label><span class="result"></span></div>
+        <div data-key="Moderado"><label>Moderado</label><span class="result"></span></div>
+        <div data-key="Progresista"><label>Progresista</label><span class="result"></span></div>
+      </div>
+      <div id="bank-results" style="font-size:1.2rem;margin:1rem 0">Florines: <span id="bank-results-value">1000</span></div>
+      <button id="next-round">Siguiente ronda</button>
+    </div>
+  </div>
+
   <div id="bottom-link">
     <a href="https://www.amazon.es/dp/B0F61P4TXK" target="_blank">Enlace para aprender a hacerlo tú</a>
   </div>
-  <script>
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const names = [
-      'Parolin',
-      'Zuppi',
-      'Tagle',
-      'Erdö',
-      'Ambongo',
-      'Pizzaballa',
-      'Prevost',
-      'Aveline',
-      'López Romero',
-      'Fdez. Artime'
-    ];
-    const segments = names.length;
-    const angleSize = 2 * Math.PI / segments;
-    let startAngle = 0;
-    let highlightIndex = null;
-    let size, center;
 
-    function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-      size = canvas.width;
-      center = size / 2;
+  <script>
+    const names = ['Parolin','Zuppi','Tagle','Erdö','Ambongo','Pizzaballa','Prevost','Aveline','López Romero','Fdez. Artime'];
+    const props = {
+      Parolin:{continent:'Europa',nes:true,age:'70+',ideology:'Moderado'},
+      Zuppi:{continent:'Europa',nes:true,age:'<70',ideology:'Progresista'},
+      Tagle:{continent:'Asia',nes:false,age:'<70',ideology:'Progresista'},
+      Erdö:{continent:'Europa',nes:false,age:'70+',ideology:'Conservador'},
+      Ambongo:{continent:'África',nes:false,age:'<70',ideology:'Conservador'},
+      Pizzaballa:{continent:'Europa',nes:true,age:'<70',ideology:'Progresista'},
+      Prevost:{continent:'América',nes:false,age:'<70',ideology:'Moderado'},
+      Aveline:{continent:'África',nes:false,age:'<70',ideology:'Progresista'},
+      'López Romero':{continent:'Europa',nes:true,age:'70+',ideology:'Progresista'},
+      'Fdez. Artime':{continent:'Europa',nes:true,age:'<70',ideology:'Moderado'}
+    };
+    const odds = {
+      continent:{Europa:1.67,Asia:10.00,África:5.00,América:10.00},
+      nes:{true:2.00},
+      age:{'<70':1.43,'70+':3.33},
+      ideology:{Conservador:5.00,Moderado:3.33,Progresista:2.00}
+    };
+    let bank=1000,bets=null,selectedContinent='';
+    const bankEl=document.getElementById('bank-value'),
+          bankResultsEl=document.getElementById('bank-results-value'),
+          placeBtn=document.getElementById('place'),
+          clearBtn=document.getElementById('clear'),
+          resetBtn=document.getElementById('reset'),
+          spinBtn=document.getElementById('spin'),
+          nextRoundBtn=document.getElementById('next-round'),
+          contChoiceEl=document.getElementById('cont-choice');
+
+    function showScreen(n){
+      document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+      document.getElementById(`screen${n}`).classList.add('active');
+      if(n===2) setTimeout(resize,50);
+    }
+    function updateBank(){
+      bankEl.textContent=bank.toFixed(2);
+      bankResultsEl.textContent=bank.toFixed(2);
+      if(bank<=0){spinBtn.disabled=true;placeBtn.disabled=true;alert('Juego terminado')}
+    }
+    function clearResults(){
+      document.querySelectorAll('.result').forEach(s=>{s.textContent='';s.className='result'});
+    }
+    function readBets(){
+      selectedContinent=document.getElementById('bet-cont-select').value;
+      return {
+        continent:{choice:selectedContinent,amount:Number(document.getElementById('bet-cont').value)},
+        nes:Number(document.getElementById('bet-nes').value),
+        young:Number(document.getElementById('bet-young').value),
+        old:Number(document.getElementById('bet-old').value),
+        Conservador:Number(document.getElementById('bet-cons').value),
+        Moderado:Number(document.getElementById('bet-mod').value),
+        Progresista:Number(document.getElementById('bet-prog').value)
+      };
     }
 
-    function drawWheel(highlight = null) {
-      ctx.clearRect(0, 0, size, size);
-      for (let i = 0; i < segments; i++) {
-        const angle = startAngle + i * angleSize;
+    placeBtn.addEventListener('click',()=>{
+      clearResults();
+      bets=readBets();
+      const total=bets.continent.amount+bets.nes+bets.young+bets.old+bets.Conservador+bets.Moderado+bets.Progresista;
+      if(total<=0||total>bank) return alert('Apuesta inválida');
+      bank-=total;
+      updateBank();
+      document.getElementById('bet-cont-select').disabled=true;
+      document.getElementById('bet-cont').disabled=true;
+      document.querySelectorAll('#betting input:not(#bet-cont)').forEach(i=>i.disabled=true);
+      placeBtn.disabled=true;
+      spinBtn.disabled=false;
+      showScreen(2);
+    });
+
+    clearBtn.addEventListener('click',()=>{
+      highlightIndex=null;draw();
+      bets=null;clearResults();
+      document.getElementById('bet-cont-select').disabled=false;
+      document.getElementById('bet-cont-select').selectedIndex=0;
+      document.getElementById('bet-cont').value=0;
+      document.getElementById('bet-cont').disabled=false;
+      document.querySelectorAll('#betting input:not(#bet-cont)').forEach(i=>{i.value=0;i.disabled=false});
+      placeBtn.disabled=false;
+      spinBtn.disabled=true;
+      showScreen(1);
+    });
+
+    resetBtn.addEventListener('click',()=>{
+      bank=1000;bets=null;clearResults();updateBank();
+      document.getElementById('bet-cont-select').disabled=false;
+      document.getElementById('bet-cont-select').selectedIndex=0;
+      document.getElementById('bet-cont').value=0;
+      document.getElementById('bet-cont').disabled=false;
+      document.querySelectorAll('#betting input:not(#bet-cont)').forEach(i=>{i.value=0;i.disabled=false});
+      placeBtn.disabled=false;
+      spinBtn.disabled=true;
+      highlightIndex=null;draw();
+      showScreen(1);
+    });
+
+    nextRoundBtn.addEventListener('click',()=>{
+      highlightIndex=null;draw();
+      clearResults();
+      document.getElementById('bet-cont-select').disabled=false;
+      document.getElementById('bet-cont').disabled=false;
+      document.querySelectorAll('#betting input').forEach(i=>{i.value=0;i.disabled=false});
+      placeBtn.disabled=false;
+      spinBtn.disabled=true;
+      showScreen(1);
+    });
+
+    const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
+    let size,center,startAngle=0,highlightIndex=null;
+    const segments=names.length,angleSize=2*Math.PI/segments;
+
+    function resize(){
+      const rect=document.getElementById('container').getBoundingClientRect();
+      canvas.width=rect.width;canvas.height=rect.height;
+      size=Math.min(canvas.width,canvas.height);center=size/2;
+      draw(highlightIndex);
+    }
+
+    function draw(h=null){
+      if(!canvas.width||!canvas.height) return;
+      const r=center-10;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(let i=0;i<segments;i++){
+        const ang=startAngle+i*angleSize;
         ctx.beginPath();
-        ctx.moveTo(center, center);
-        ctx.arc(center, center, center - 10, angle, angle + angleSize);
+        ctx.moveTo(center,center);
+        ctx.arc(center,center,r,ang,ang+angleSize);
         ctx.closePath();
-        ctx.fillStyle = (i === highlight) ? '#fff9b1' : (i % 2 ? '#fff' : '#ddd');
+        ctx.fillStyle=(i===h?'#fff9b1':i%2?'#fff':'#ddd');
         ctx.fill();
-        if (i === highlight) {
-          ctx.lineWidth = 4;
-          ctx.strokeStyle = '#c0392b';
-          ctx.stroke();
-        }
+        if(i===h){ctx.lineWidth=4;ctx.strokeStyle='#c0392b';ctx.stroke()}
         ctx.save();
-        ctx.translate(
-          center + Math.cos(angle + angleSize/2) * (center - size * 0.16),
-          center + Math.sin(angle + angleSize/2) * (center - size * 0.16)
-        );
-        ctx.rotate(angle + angleSize/2 + Math.PI/2);
-        ctx.fillStyle = '#000';
-        ctx.font = `${Math.max(size * 0.035, 10)}px sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.fillText(names[i], 0, 0);
+        ctx.translate(center+Math.cos(ang+angleSize/2)*(r*0.7),center+Math.sin(ang+angleSize/2)*(r*0.7));
+        ctx.rotate(ang+angleSize/2+Math.PI/2);
+        ctx.fillStyle='#000';
+        ctx.font=`${Math.max(size*0.035,10)}px sans-serif`;
+        ctx.textAlign='center';
+        ctx.fillText(names[i],0,0);
         ctx.restore();
       }
-      ctx.fillStyle = '#e74c3c';
+      ctx.fillStyle='#e74c3c';
       ctx.beginPath();
-      ctx.moveTo(center - size * 0.02, size * 0.02);
-      ctx.lineTo(center + size * 0.02, size * 0.02);
-      ctx.lineTo(center, size * 0.08);
+      ctx.moveTo(center-10,10);
+      ctx.lineTo(center+10,10);
+      ctx.lineTo(center,40);
       ctx.closePath();
       ctx.fill();
     }
 
-    function spin() {
-      spinBtn.disabled = true;
-      highlightIndex = null;
-      drawWheel();
-      const rounds = Math.floor(Math.random() * 3) + 4;
-      const extra = Math.random() * 2 * Math.PI;
-      const finalAngle = startAngle + rounds * 2 * Math.PI + extra;
-      const duration = 4000;
-      const startTime = performance.now();
-      const from = startAngle;
-      function animate(now) {
-        const t = Math.min((now - startTime) / duration, 1);
-        const ease = t < .5 ? 2*t*t : -1 + (4 - 2*t)*t;
-        startAngle = from + (finalAngle - from) * ease;
-        drawWheel();
-        if (t < 1) requestAnimationFrame(animate);
-        else {
-          const degrees = finalAngle * 180 / Math.PI + 90;
-          const normalized = degrees % 360;
-          const sectorAngle = 360 / segments;
-          highlightIndex = Math.floor((360 - normalized) / sectorAngle) % segments;
-          drawWheel(highlightIndex);
-          spinBtn.disabled = false;
+    function spin(){
+      highlightIndex=null;
+      draw();
+      spinBtn.disabled=true;
+      const rounds=Math.floor(Math.random()*3)+4;
+      const extra=Math.random()*2*Math.PI;
+      const final=startAngle+rounds*2*Math.PI+extra;
+      const dur=4000,t0=performance.now(),from=startAngle;
+      (function anim(t){
+        const u=Math.min((t-t0)/dur,1);
+        const e=u<.5?2*u*u:-1+(4-2*u)*u;
+        startAngle=from+(final-from)*e;
+        draw();
+        if(u<1) requestAnimationFrame(anim);
+        else{
+          const deg=final*180/Math.PI+90;
+          const norm=deg%360,sect=360/segments;
+          highlightIndex=Math.floor((360-norm)/sect)%segments;
+          draw(highlightIndex);
+          resolveSpin();
         }
-      }
-      requestAnimationFrame(animate);
+      })(t0);
     }
 
-    const spinBtn = document.getElementById('spin');
-    window.addEventListener('resize', () => {
-      resizeCanvas();
-      drawWheel(highlightIndex);
-    });
-    resizeCanvas();
-    drawWheel();
-    spinBtn.addEventListener('click', spin);
+    function resolveSpin(){
+      const name=names[highlightIndex],p=props[name];
+      document.getElementById('winner-name').textContent = 'Resultado: ' + name;
+      contChoiceEl.textContent=selectedContinent;
+      const features = [
+        {label:'Continente',real:p.continent,bet:bets.continent.amount,match:bets.continent.choice===p.continent,odds:odds.continent[p.continent]},
+        {label:'Italiano/Español',real:p.nes?'Sí':'No',bet:bets.nes,match:p.nes,odds:odds.nes[true]},
+        {label:'Edad',real:p.age==='70+'?'70 o más':'Menor de 70',bet:p.age==='70+'?bets.old:bets.young,match:true,odds:odds.age[p.age]},
+        {label:'Ideología',real:p.ideology,bet:bets[p.ideology],match:true,odds:odds.ideology[p.ideology]}
+      ];
+      const listEl=document.getElementById('winner-features');
+      listEl.innerHTML='';
+      features.forEach(f=>{
+        if(f.bet>0){
+          const resultText=f.match?'Correcto':'Fallo';
+          const profit=(f.match?f.bet*f.odds - f.bet:-f.bet).toFixed(2);
+          listEl.innerHTML+=`<li>${f.label}: ${f.real} | Tu apuesta: ${f.bet} (${resultText}, ${profit} florines)</li>`;
+        } else {
+          listEl.innerHTML+=`<li>${f.label}: ${f.real}</li>`;
+        }
+      });
+      const cats=[
+        {key:'continent',amount:bets.continent.amount,match:bets.continent.choice===p.continent,odds:odds.continent[p.continent]},
+        {key:'nes',amount:bets.nes,match:p.nes,odds:odds.nes[true]},
+        {key:'young',amount:bets.young,match:p.age==='<70',odds:odds.age['<70']},
+        {key:'old',amount:bets.old,match:p.age==='70+',odds:odds.age['70+']},
+        {key:'Conservador',amount:bets.Conservador,match:p.ideology==='Conservador',odds:odds.ideology.Conservador},
+        {key:'Moderado',amount:bets.Moderado,match:p.ideology==='Moderado',odds:odds.ideology.Moderado},
+        {key:'Progresista',amount:bets.Progresista,match:p.ideology==='Progresista',odds:odds.ideology.Progresista}
+      ];
+      cats.forEach(c=>{
+        if(c.amount>0){
+          const span=document.querySelector(`#result-display div[data-key="${c.key}"] .result`);
+          span.textContent=c.match?'✓':'✗';
+          span.classList.add(c.match?'tick':'cross');
+        }
+      });
+      let win=0; cats.forEach(c=>{ if(c.amount>0&&c.match) win+=c.amount*c.odds });
+      bank+=win; updateBank(); bets=null;
+      setTimeout(()=>showScreen(3),1000);
+    }
+
+    window.addEventListener('resize',resize);
+    window.addEventListener('load',()=>{resize();draw();showScreen(1)});
+    spinBtn.addEventListener('click',spin);
   </script>
 </body>
 </html>
