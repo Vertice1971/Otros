@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>¿Quién es quién en el Cónclave?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="estilos.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      background: #f5f5f5;
+      color: #2c3e50;
+      text-align: center;
+    }
+    .screen {
+      display: none;
+      padding: 2rem 1rem;
+    }
+    .screen.active {
+      display: block;
+    }
+    .boton-juego {
+      background-color: #34495e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 1rem 2rem;
+      margin: 0.5rem;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .boton-juego:hover {
+      background-color: #1abc9c;
+    }
+    .button-group {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .fichas {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(100px,1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .ficha {
+      background: #e1f5fe;
+      border: 2px solid #0277bd;
+      border-radius: 8px;
+      padding: 0.75rem;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      cursor: default;
+    }
+    .ficha.activable { cursor: pointer; }
+    .ficha.deshabilitada {
+      background: #ccc;
+      border-color: #999;
+      color: #666;
+    }
+    #contador {
+      font-size: 0.9rem;
+      margin: 1rem 0;
+    }
+    #respuesta {
+      font-size: 1rem;
+      margin: 1rem 0;
+      font-weight: bold;
+    }
+    #bottom-link {
+      margin-top: 2rem;
+      font-size: 1rem;
+    }
+    #bottom-link a {
+      color: #3366cc;
+      text-decoration: none;
+    }
+    #bottom-link a:hover {
+      text-decoration: underline;
+    }
+    /* instrucciones */
+    #pantalla-instrucciones { position: relative; padding: 0; }
+    #instr-img { width: 100%; display: block; }
+    #instr-overlay {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: white; text-shadow: 0 0 8px rgba(0,0,0,0.8);
+    }
+    #instr-overlay h1 { font-size: 4rem; margin: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- PANTALLA 0: INSTRUCCIONES -->
+  <div id="pantalla-instrucciones" class="screen active">
+    <img id="instr-img" src="img/Fondo1.png" alt="Candidato oculto">
+    <div id="instr-overlay">
+      <h1>?</h1>
+      <button id="btn-empezar" class="boton-juego">Empezar</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA 1: TABLERO -->
+  <div id="pantalla-fichas" class="screen">
+    <h2>¿Quién será el cardenal oculto?</h2>
+    <div id="tablero" class="fichas"></div>
+    <div class="button-group">
+      <button id="ir-a-preguntas" class="boton-juego">Preguntar</button>
+      <button id="probar-candidato" class="boton-juego">Quiero probar ya</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA 2: PREGUNTAS -->
+  <div id="pantalla-preguntas" class="screen">
+    <h2>Elige una pregunta</h2>
+    <p id="contador">Pregunta 1 de 5</p>
+    <div id="opciones-preguntas"></div>
+    <div id="respuesta"></div>
+  </div>
+
+  <!-- PANTALLA 3: VICTORIA -->
+  <div id="pantalla-victoria" class="screen">
+    <h2>¡Has acertado!</h2>
+    <p id="nombre-victoria"></p>
+    <img id="foto-victoria" alt="Foto del cardenal"
+         style="max-width:200px; margin-top:1rem;"
+         onerror="this.onerror=null;this.src=this.src.replace('.jpg','.jpeg')">
+    <div class="button-group">
+      <button onclick="location.reload()" class="boton-juego">Volver a jugar</button>
+      <a href="index.html" class="boton-juego">Volver al menú inicial</a>
+    </div>
+  </div>
+
+  <!-- PANTALLA 4: FALLO -->
+  <div id="pantalla-fallo" class="screen">
+    <h2>Fallaste...</h2>
+    <p>El cardenal secreto era:</p>
+    <p id="nombre-fallo"></p>
+    <img id="foto-fallo" alt="Foto del cardenal"
+         style="max-width:200px; margin-top:1rem;"
+         onerror="this.onerror=null;this.src=this.src.replace('.jpg','.jpeg')">
+    <div class="button-group">
+      <button onclick="location.reload()" class="boton-juego">Volver a jugar</button>
+      <a href="index.html" class="boton-juego">Volver al menú inicial</a>
+    </div>
+  </div>
+
+  <!-- ENLACE AMAZON -->
+  <div id="bottom-link">
+    <a href="https://www.amazon.es/dp/B0F61P4TXK" target="_blank">
+      Haz clic aquí para aprender a hacerlo tú
+    </a>
+  </div>
+
+  <script src="Cardenales.js"></script>
+  <script>
+    const maxPreguntas = 5;
+    let preguntaContador = 0,
+        askedQuestions = [],
+        haIntentadoAdivinar = false,
+        allowGuess = false;
+    const secreto = cardenales[Math.floor(Math.random()*cardenales.length)];
+
+    const preguntasList = [
+      {category:"Edad", text:"¿Tiene 70 años o más?", predicate:c=>c.edad_2025>=70},
+      {category:"Edad", text:"¿Tiene menos de 70 años?", predicate:c=>c.edad_2025<70},
+      {category:"Continente", text:"¿Es europeo?", predicate:c=>c.continente.includes("Europa")},
+      {category:"Continente", text:"¿Es americano?", predicate:c=>c.continente.includes("América")},
+      {category:"Continente", text:"¿Es asiático?", predicate:c=>c.continente.includes("Asia")},
+      {category:"Continente", text:"¿Es africano?", predicate:c=>c.continente.includes("África")},
+      {category:"Nacionalidad", text:"¿Es italiano?", predicate:c=>c.nacionalidad.includes("Italiano")},
+      {category:"Nacionalidad", text:"¿Es español?", predicate:c=>c.nacionalidad.includes("Español")},
+      {category:"Nacionalidad", text:"¿Es estadounidense?", predicate:c=>c.nacionalidad.includes("Estadounidense")},
+      {category:"Perfil doctrinal", text:"¿Es progresista?", predicate:c=>c.perfil_doctrinal==="Progresista"},
+      {category:"Perfil doctrinal", text:"¿Es moderado?", predicate:c=>c.perfil_doctrinal==="Moderado"},
+      {category:"Perfil doctrinal", text:"¿Es conservador?", predicate:c=>c.perfil_doctrinal==="Conservador"},
+      {category:"Cercanía a Francisco", text:"¿Es cercano a Francisco?", predicate:c=>c.cercano_a_Francisco},
+      {category:"Cercanía a Francisco", text:"¿Es independiente?", predicate:c=>!c.cercano_a_Francisco},
+      {category:"Orden religiosa", text:"¿Pertenece a orden religiosa?", predicate:c=>c.orden_religiosa!=="Ninguna"},
+      {category:"Aficiones", text:"¿Tiene alguna afición?", predicate:c=>c.aficiones!=="Ninguna"},
+      {category:"Aficiones", text:"¿Comunicación?", predicate:c=>c.aficiones==="Comunicación"},
+      {category:"Aficiones", text:"¿Bicicleta?", predicate:c=>c.aficiones==="Bicicleta"},
+      {category:"Aficiones", text:"¿Ecología?", predicate:c=>c.aficiones==="Ecología"},
+      {category:"Aficiones", text:"¿Idiomas?", predicate:c=>c.aficiones==="Idiomas"},
+      {category:"Aficiones", text:"¿Lectura?", predicate:c=>c.aficiones==="Lectura"},
+      {category:"Aficiones", text:"¿Pesca?", predicate:c=>c.aficiones==="Pesca"},
+      {category:"Aficiones", text:"¿Blogs?", predicate:c=>c.aficiones==="Blogs"},
+      {category:"Aficiones", text:"¿Tenis?", predicate:c=>c.aficiones==="Tenis"},
+      {category:"Aficiones", text:"¿Japón?", predicate:c=>c.aficiones==="Japón"}
+    ];
+
+    // Función para cambiar pantalla
+    function show(id) {
+      document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+    }
+
+    // Empezar y generar tablero
+    document.getElementById("btn-empezar").onclick = () => {
+      show("pantalla-fichas");
+      const tb = document.getElementById("tablero");
+      tb.innerHTML = "";
+      cardenales.forEach((c,i) => {
+        const d = document.createElement("div");
+        d.className = "ficha";
+        d.textContent = c.nombre.trim().split(" ").slice(-1)[0];
+        d.dataset.index = i;
+        tb.appendChild(d);
+      });
+    };
+
+    // Preguntar
+    document.getElementById("ir-a-preguntas").onclick = () => {
+      allowGuess = false;
+      muestraPreguntas();
+      show("pantalla-preguntas");
+      document.getElementById("respuesta").textContent = "";
+    };
+
+    // Probar ya
+    document.getElementById("probar-candidato").onclick = () => {
+      allowGuess = true;
+      alert("Haz clic en la ficha para adivinar (sólo 1 vez).");
+      document.querySelectorAll(".ficha").forEach(f=>{
+        if(!f.classList.contains("deshabilitada")) f.classList.add("activable");
+      });
+    };
+
+    // Click handlers
+    document.body.addEventListener("click", e => {
+      // intentar adivinar
+      if(e.target.classList.contains("ficha") && allowGuess && !haIntentadoAdivinar) {
+        const card = cardenales[e.target.dataset.index];
+        if(confirm(`¿Quieres probar con ${card.nombre}?`)) {
+          haIntentadoAdivinar = true;
+          card===secreto ? victoria(card) : fracaso(secreto);
+        }
+      }
+      // confirmar pregunta
+      if(e.target.id==="confirmar-pregunta") {
+        const sel = document.getElementById("select-pregunta");
+        if(!sel.value) return alert("Selecciona pregunta");
+        if(askedQuestions.includes(+sel.value)) return alert("Ya preguntaste");
+        askedQuestions.push(+sel.value);
+        const q = preguntasList[sel.value],
+              ans = q.predicate(secreto);
+        document.getElementById("respuesta").textContent=`Respuesta: ${ans?"Sí":"No"}`;
+        filtra(q,ans);
+        preguntaContador++;
+        sel.disabled = e.target.disabled = true;
+        if(preguntaContador>=maxPreguntas) {
+          document.getElementById("ir-a-preguntas").disabled = true;
+          allowGuess = true;
+          document.getElementById("probar-candidato").click();
+        }
+        setTimeout(()=> show("pantalla-fichas"), 3000);
+      }
+    });
+
+    function filtra(q, ans) {
+      document.querySelectorAll(".ficha").forEach(f => {
+        const c = cardenales[f.dataset.index],
+              cumple = q.predicate(c),
+              off = ans ? !cumple : cumple;
+        if(off) f.classList.add("deshabilitada");
+      });
+      const act = [...document.querySelectorAll(".ficha")]
+                    .filter(f=>!f.classList.contains("deshabilitada"));
+      if(act.length===1 && !haIntentadoAdivinar) {
+        victoria(cardenales[act[0].dataset.index]);
+      }
+    }
+
+    function victoria(c) {
+      show("pantalla-victoria");
+      document.getElementById("nombre-victoria").textContent = c.nombre;
+      const img = document.getElementById("foto-victoria");
+      const ap = c.nombre.trim().split(" ").slice(-1)[0];
+      img.onerror = ()=> img.src = `img/${ap}.jpeg`;
+      img.src = `img/${ap}.jpg`;
+    }
+
+    function fracaso(c) {
+      show("pantalla-fallo");
+      document.getElementById("nombre-fallo").textContent = c.nombre;
+      const img = document.getElementById("foto-fallo");
+      const ap = c.nombre.trim().split(" ").slice(-1)[0];
+      img.onerror = ()=> img.src = `img/${ap}.jpeg`;
+      img.src = `img/${ap}.jpg`;
+    }
+
+    function muestraPreguntas() {
+      const co = document.getElementById("opciones-preguntas");
+      co.innerHTML = "";
+      document.getElementById("contador").textContent =
+        `Pregunta ${preguntaContador+1} de ${maxPreguntas}`;
+      const sel = document.createElement("select");
+      sel.id="select-pregunta";
+      sel.innerHTML = '<option disabled selected value="">Selecciona pregunta</option>';
+      [...new Set(preguntasList.map(q=>q.category))].forEach(cat=>{
+        const og = document.createElement("optgroup");
+        og.label = cat;
+        preguntasList.forEach((q,i)=>{
+          if(q.category===cat){
+            const op = document.createElement("option");
+            op.value=i; op.textContent=q.text;
+            if(askedQuestions.includes(i)) op.disabled=true;
+            og.appendChild(op);
+          }
+        });
+        sel.appendChild(og);
+      });
+      co.appendChild(sel);
+      const btn = document.createElement("button");
+      btn.id="confirmar-pregunta";
+      btn.className="boton-juego";
+      btn.textContent="Confirmar pregunta";
+      co.appendChild(btn);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cónclave 2025 – Ruleta</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <header>
+    <h1 class="titulo-vaticano">Cónclave 2025 – La Ruleta</h1>
+  </header>
+
+  <div id="screen1" class="screen active">
+    <div id="container">
+      <canvas id="canvas"></canvas>
+      <button id="spin" disabled>Girar</button>
+    </div>
+  </div>
+
+  <div id="screen2" class="screen">
+    <h2 id="winner-name">Resultado:</h2>
+    <div id="winner-card" style="display: flex; align-items: flex-start; gap: 1rem;">
+      <div style="flex: 1;">
+        <h3>Ficha del cardenal</h3>
+        <ul id="winner-features"></ul>
+      </div>
+      <div>
+        <img id="winner-photo" src="" alt="Foto del cardenal" style="max-width: 120px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+      </div>
+    </div>
+    <button id="next">Volver a girar</button>
+    <a href="index.html" id="back-to-menu" class="boton-juego" style="margin-top: 1rem;">Volver al menú</a>
+  </div>
+
+  <div id="bottom-link">
+    <a href="https://www.amazon.es/dp/B0F61P4TXK" target="_blank">
+      Haz clic aquí para aprender a hacerlo tú
+    </a>
+  </div>
+
+  <!-- Primero los datos, luego el juego -->
+  <script src="Cardenales.js"></script>
+  <script src="ruleta.js"></script>
+</body>
+</html>
