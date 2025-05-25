@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- tomcue@iesjuandelacierva.com -->
+  <title>Test sobre Juan Ramón Jiménez</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+      background-color: #f5f8ff;
+    }
+    .question-container {
+      display: none;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 20px auto;
+      background: #ffffff;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    }
+    .option {
+      display: block;
+      padding: 10px;
+      margin: 10px 0;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .option:hover {
+      background: #e0ebff;
+      transform: scale(1.05);
+    }
+    .correct {
+      background: #c8e6c9;
+      border-color: green;
+    }
+    .incorrect {
+      background: #ffcdd2;
+      border-color: red;
+    }
+    #start-btn, #restart-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #restart-btn { background: #28a745 }
+    #next-btn {
+      position: fixed;
+      right: 20px;
+      top: 30%;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      display: none;
+    }
+    #info-container {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test sobre Juan Ramón Jiménez</h1>
+  <h2 style="font-size:0.6em;color:#555;">Tomás Cuesta. IES Juan de la Cierva</h2>
+  <div id="info-container"></div>
+  <button id="start-btn">Comenzar</button>
+  <div id="quiz-container" class="question-container"></div>
+  <button id="next-btn">Siguiente</button>
+  <button id="restart-btn">Reiniciar</button>
+  <script>
+    function shuffle(array) {
+      for (let i=array.length-1;i>0;i--) {
+        const j=Math.floor(Math.random()*(i+1));
+        [array[i],array[j]]=[array[j],array[i]];
+      }
+      return array;
+    }
+    const data = {
+      "preguntas": [
+        {"texto":"¿Dónde nació Juan Ramón Jiménez?","opciones":{"a":"Moguer (Huelva)","b":"Sevilla","c":"Madrid"},"respuesta":"a"},
+        {"texto":"¿En qué año nació?","opciones":{"a":"1881","b":"1875","c":"1890"},"respuesta":"a"},
+        {"texto":"¿En qué año murió?","opciones":{"a":"1958","b":"1945","c":"1965"},"respuesta":"a"},
+        {"texto":"¿Qué premio recibió en 1956?","opciones":{"a":"Nobel de Literatura","b":"Príncipe de Asturias","c":" Cervantes"},"respuesta":"a"},
+        {"texto":"¿Hacia qué poesía evolucionó?","opciones":{"a":"Poesía pura","b":"Realismo social","c":"Surrealismo"},"respuesta":"a"},
+        {"texto":"¿Hasta qué año dura su primera etapa?","opciones":{"a":"1915","b":"1920","c":"1905"},"respuesta":"a"},
+        {"texto":"¿Qué influye en su primera etapa?","opciones":{"a":"Rubén Darío y Modernismo","b":"Barroco español","c":"Antipoesía"},"respuesta":"a"},
+        {"texto":"¿Tema central en la primera etapa?","opciones":{"a":"La belleza ideal","b":"La crítica social","c":"La descripción objetiva"},"respuesta":"a"},
+        {"texto":"¿Cuándo comienza la segunda etapa?","opciones":{"a":"1916","b":"1910","c":"1925"},"respuesta":"a"},
+        {"texto":"¿Obra clave de la segunda etapa?","opciones":{"a":"Diario de un poeta recién casado","b":"Platero y yo","c":"Dios deseado y deseante"},"respuesta":"a"},
+        {"texto":"¿Qué elimina en la segunda etapa?","opciones":{"a":"Lo decorativo","b":"Lo simbólico","c":"Lo esencial"},"respuesta":"a"},
+        {"texto":"¿Cuándo empieza la tercera etapa?","opciones":{"a":"1937","b":"1930","c":"1945"},"respuesta":"a"},
+        {"texto":"¿Obra clave de la tercera etapa?","opciones":{"a":"Dios deseado y deseante","b":"Platero y yo","c":"Poeta en Nueva York"},"respuesta":"a"},
+        {"texto":"¿Qué caracteriza la tercera etapa?","opciones":{"a":"Poesía abstracta y filosófica","b":"Narrativa realista","c":"Ensayo histórico"},"respuesta":"a"},
+        {"texto":"¿Cuál es rasgo general de su poesía?","opciones":{"a":"Lenguaje depurado y esencial","b":"Ornamento recargado","c":"Anécdotas extensas"},"respuesta":"a"}
+      ]
+    };
+    let preguntas=data.preguntas, elegidas=[], actual=0, correctas=0;
+    const qc=document.getElementById('quiz-container'),
+          next=document.getElementById('next-btn'),
+          restart=document.getElementById('restart-btn'),
+          start=document.getElementById('start-btn'),
+          info=document.getElementById('info-container');
+    info.innerHTML=`<p>El test contiene <strong>${preguntas.length}</strong> preguntas.</p>`;
+    start.style.display='block';
+    start.addEventListener('click',()=>{
+      let n=parseInt(prompt(`¿Cuántas de ${preguntas.length} preguntas jugar?`,preguntas.length));
+      if(isNaN(n)||n<1||n>preguntas.length)n=preguntas.length;
+      elegidas=shuffle([...preguntas]).slice(0,n);
+      actual=0; correctas=0;
+      start.style.display='none';
+      info.innerHTML='';
+      mostrar();
+    });
+    function mostrar(){
+      if(actual<elegidas.length){
+        qc.innerHTML=''; qc.style.display='block'; next.style.display='none';
+        let p=elegidas[actual];
+        let h=document.createElement('h2'); h.textContent=p.texto; qc.appendChild(h);
+        shuffle(Object.entries(p.opciones).map(([k,v])=>({k,v}))).forEach(o=>{
+          let d=document.createElement('div');
+          d.classList.add('option');
+          d.textContent=o.v;
+          d.dataset.valor=o.k;
+          d.addEventListener('click',()=>validar(d,p.respuesta));
+          qc.appendChild(d);
+        });
+      } else {
+        qc.innerHTML=`<h2>Test finalizado</h2><p>Has acertado ${correctas} de ${elegidas.length}.</p>`;
+        next.style.display='none'; restart.style.display='block';
+      }
+    }
+    function validar(el,res){
+      document.querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');
+      if(el.dataset.valor===res){ el.classList.add('correct'); correctas++ }
+      else {
+        el.classList.add('incorrect');
+        let c=document.querySelector(`.option[data-valor='${res}']`);
+        if(c)c.classList.add('correct');
+      }
+      next.style.display='block';
+    }
+    next.addEventListener('click',()=>{
+      actual++;
+      mostrar();
+    });
+    restart.addEventListener('click',()=>{
+      restart.style.display='none';
+      start.style.display='block';
+      qc.style.display='none';
+      info.innerHTML=`<p>El test contiene <strong>${preguntas.length}</strong> preguntas.</p>`;
+    });
+  </script>
+</body>
+</html>

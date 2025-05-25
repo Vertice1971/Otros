@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- tomcue@iesjuandelacierva.com -->
+  <title>Test sobre Antonio Machado</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+      background-color: #f5f8ff;
+    }
+    .question-container {
+      display: none;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 20px auto;
+      background: #ffffff;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    }
+    .option {
+      display: block;
+      padding: 10px;
+      margin: 10px 0;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .option:hover {
+      background: #e0ebff;
+      transform: scale(1.05);
+    }
+    .correct {
+      background: #c8e6c9;
+      border-color: green;
+    }
+    .incorrect {
+      background: #ffcdd2;
+      border-color: red;
+    }
+    #start-btn, #restart-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #restart-btn { background: #28a745 }
+    #next-btn {
+      position: fixed;
+      right: 20px;
+      top: 30%;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      display: none;
+    }
+    #info-container {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test sobre Antonio Machado</h1>
+  <h2 style="font-size:0.6em;color:#555;">Tomás Cuesta. IES Juan de la Cierva</h2>
+  <div id="info-container"></div>
+  <button id="start-btn">Comenzar</button>
+  <div id="quiz-container" class="question-container"></div>
+  <button id="next-btn">Siguiente</button>
+  <button id="restart-btn">Reiniciar</button>
+  <script>
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+    const data = {
+      "preguntas": [
+        {"texto":"¿Dónde nació Antonio Machado?","opciones":{"a":"Sevilla","b":"Málaga","c":"Granada"},"respuesta":"a"},
+        {"texto":"¿En qué año nació?","opciones":{"a":"1875","b":"1881","c":"1867"},"respuesta":"a"},
+        {"texto":"¿En qué año murió?","opciones":{"a":"1939","b":"1958","c":"1940"},"respuesta":"a"},
+        {"texto":"¿De qué generación literaria formó parte?","opciones":{"a":"Generación del 98","b":"Generación del 27","c":"Romanticismo"},"respuesta":"a"},
+        {"texto":"¿Dónde estudió en España?","opciones":{"a":"Institución Libre de Enseñanza","b":"Universidad de Salamanca","c":"Colegio Mayor de Navarra"},"respuesta":"a"},
+        {"texto":"¿En qué ciudad conoció el simbolismo?","opciones":{"a":"París","b":"Londres","c":"Roma"},"respuesta":"a"},
+        {"texto":"¿Qué hecho personal marcó su vida?","opciones":{"a":"La muerte de Leonor","b":"Su matrimonio con Ana","c":"Su abandono de la poesía"},"respuesta":"a"},
+        {"texto":"¿Qué compromiso marcó su final de vida?","opciones":{"a":"Político","b":"Académico","c":"Artístico"},"respuesta":"a"},
+        {"texto":"¿Cuál es la obra clave de su primera etapa?","opciones":{"a":"Soledades, galerías y otros poemas","b":"Campos de Castilla","c":"Dios deseado y deseante"},"respuesta":"a"},
+        {"texto":"¿Entre qué años abarca la primera etapa?","opciones":{"a":"1903–1907","b":"1912–1917","c":"1937–1958"},"respuesta":"a"},
+        {"texto":"¿Qué verso clave corresponde a la primera etapa?","opciones":{"a":"“¿Adónde el camino irá?”","b":"“Caminante, no hay camino…”","c":"“La tarde está pálida”"},"respuesta":"a"},
+        {"texto":"¿Qué temas trata en la primera etapa?","opciones":{"a":"Interioridad y muerte","b":"Paisaje rural","c":"Crítica social"},"respuesta":"a"},
+        {"texto":"¿Cuál es la obra clave de la segunda etapa?","opciones":{"a":"Campos de Castilla","b":"Prosas profanas","c":"Platero y yo"},"respuesta":"a"},
+        {"texto":"¿Entre qué años abarca la segunda etapa?","opciones":{"a":"1912–1917","b":"1903–1907","c":"1937–1958"},"respuesta":"a"},
+        {"texto":"¿Qué verso clave corresponde a la segunda etapa?","opciones":{"a":"“Caminante, no hay camino…”","b":"“¡Ay, dolor!”","c":"“La noche es estrellada”"},"respuesta":"a"},
+        {"texto":"¿Qué estilo predomina en la segunda etapa?","opciones":{"a":"Claro y directo","b":"Simbólico y oscuro","c":"Barroco y recargado"},"respuesta":"a"},
+        {"texto":"¿Qué visión caracteriza la segunda etapa?","opciones":{"a":"Optimista y política","b":"Pesimista y solitaria","c":"Abstracta y filosófica"},"respuesta":"a"},
+        {"texto":"¿Cómo evoluciona su poesía?","opciones":{"a":"De introspectiva a comprometida","b":"De romántica a gótica","c":"De barroca a renacentista"},"respuesta":"a"},
+        {"texto":"¿Qué preocupaciones constantes expresa?","opciones":{"a":"Vida, tiempo e identidad colectiva","b":"Descripciones objetivas","c":"Fantasía y mito"},"respuesta":"a"},
+        {"texto":"¿Qué simboliza el camino?","opciones":{"a":"La vida como trayecto","b":"La muerte inevitable","c":"La ciudad moderna"},"respuesta":"a"},
+        {"texto":"¿Qué simboliza la tarde?","opciones":{"a":"El paso del tiempo","b":"El amanecer","c":"La juventud eterna"},"respuesta":"a"},
+        {"texto":"¿Qué simboliza el río?","opciones":{"a":"El fluir del tiempo","b":"La pasión amorosa","c":"La inmortalidad"},"respuesta":"a"},
+        {"texto":"¿Qué simboliza el mar?","opciones":{"a":"La muerte","b":"La esperanza","c":"La inocencia"},"respuesta":"a"},
+        {"texto":"¿Qué simboliza la noria y la fuente?","opciones":{"a":"Monotonía y eternidad","b":"Fuerza y renovación","c":"Caos y desorden"},"respuesta":"a"},
+        {"texto":"¿Qué simbolizan los espejos?","opciones":{"a":"Ilusiones frustradas","b":"Sabiduría antigua","c":"Belleza ideal"},"respuesta":"a"}
+      ]
+    };
+    let preguntas = data.preguntas;
+    let elegidas = [];
+    let actual = 0;
+    let correctas = 0;
+    const quizContainer = document.getElementById('quiz-container');
+    const nextBtn = document.getElementById('next-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const startBtn = document.getElementById('start-btn');
+    const info = document.getElementById('info-container');
+    info.innerHTML = `<p>El test contiene <strong>${preguntas.length}</strong> preguntas.</p>`;
+    startBtn.style.display = 'block';
+    startBtn.addEventListener('click', () => {
+      let n = parseInt(prompt(`¿Cuántas de ${preguntas.length} preguntas jugar?`, preguntas.length));
+      if (isNaN(n) || n<1 || n>preguntas.length) n = preguntas.length;
+      elegidas = shuffle([...preguntas]).slice(0, n);
+      actual = 0;
+      correctas = 0;
+      startBtn.style.display = 'none';
+      info.innerHTML = '';
+      mostrarPregunta();
+    });
+    function mostrarPregunta() {
+      if (actual < elegidas.length) {
+        quizContainer.innerHTML = '';
+        quizContainer.style.display = 'block';
+        nextBtn.style.display = 'none';
+        let p = elegidas[actual];
+        let h = document.createElement('h2');
+        h.textContent = p.texto;
+        quizContainer.appendChild(h);
+        let opts = shuffle(Object.entries(p.opciones).map(([k, v]) => ({k, v})));
+        opts.forEach(o => {
+          let d = document.createElement('div');
+          d.classList.add('option');
+          d.textContent = o.v;
+          d.dataset.valor = o.k;
+          d.addEventListener('click', () => validar(d, p.respuesta));
+          quizContainer.appendChild(d);
+        });
+      } else {
+        quizContainer.innerHTML = `<h2>Test finalizado</h2><p>Has acertado ${correctas} de ${elegidas.length}.</p>`;
+        nextBtn.style.display = 'none';
+        restartBtn.style.display = 'block';
+      }
+    }
+    function validar(el, res) {
+      document.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
+      if (el.dataset.valor === res) {
+        el.classList.add('correct');
+        correctas++;
+      } else {
+        el.classList.add('incorrect');
+        let c = document.querySelector(`.option[data-valor='${res}']`);
+        if (c) c.classList.add('correct');
+      }
+      nextBtn.style.display = 'block';
+    }
+    nextBtn.addEventListener('click', () => {
+      actual++;
+      mostrarPregunta();
+    });
+    restartBtn.addEventListener('click', () => {
+      restartBtn.style.display = 'none';
+      startBtn.style.display = 'block';
+      quizContainer.style.display = 'none';
+      info.innerHTML = `<p>El test contiene <strong>${preguntas.length}</strong> preguntas.</p>`;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- tomcue@iesjuandelacierva.com -->
+  <title>Test sobre Modernismo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+      background-color: #f5f8ff;
+    }
+    .question-container {
+      display: none;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 20px auto;
+      background: #ffffff;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .option {
+      display: block;
+      padding: 10px;
+      margin: 10px 0;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .option:hover {
+      background: #e0ebff;
+      transform: scale(1.05);
+    }
+    .correct {
+      background: #c8e6c9;
+      border-color: green;
+    }
+    .incorrect {
+      background: #ffcdd2;
+      border-color: red;
+    }
+    #start-btn, #restart-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #restart-btn { background: #28a745 }
+    #next-btn {
+      position: fixed;
+      right: 20px;
+      top: 30%;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      display: none;
+    }
+    #info-container {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test sobre Modernismo</h1>
+  <h2 style="font-size: 0.6em; color: #555;">Tomás Cuesta. IES Juan de la Cierva</h2>
+  <div id="info-container"></div>
+  <button id="start-btn">Comenzar</button>
+  <div id="quiz-container" class="question-container"></div>
+  <button id="next-btn">Siguiente</button>
+  <button id="restart-btn">Reiniciar</button>
+  <script>
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+    const data = {
+      "preguntas": [
+        {"texto":"¿En qué años surge el Modernismo?","opciones":{"a":"1888-1914","b":"1900-1920","c":"1870-1890"},"respuesta":"a"},
+        {"texto":"¿Cuál fue su objetivo central?","opciones":{"a":"Arte por el arte","b":"Compromiso social","c":"Crítica política"},"respuesta":"a"},
+        {"texto":"¿Qué valores rechazaba?","opciones":{"a":"Burgueses y positivistas","b":"Bohemios y dandi","c":"Medievales y exóticos"},"respuesta":"a"},
+        {"texto":"¿Qué actitud adopta el artista modernista?","opciones":{"a":"Bohemia o dandi","b":"Académica y clásica","c":"Realista y objetiva"},"respuesta":"a"},
+        {"texto":"¿Cuál es el género literario preferente?","opciones":{"a":"Poesía y cuento","b":"Novela","c":"Ensayo académico"},"respuesta":"a"},
+        {"texto":"¿Su propósito artístico?","opciones":{"a":"Crear mundos de belleza","b":"Mostrar objetivamente la realidad","c":"Defender la moral tradicional"},"respuesta":"a"},
+        {"texto":"¿Cómo es su lenguaje?","opciones":{"a":"Léxico culto y simbólico","b":"Lenguaje coloquial","c":"Función referencial"},"respuesta":"a"},
+        {"texto":"¿Qué significa “Art Nouveau”?","opciones":{"a":"Nombre francés del Modernismo","b":"Un estilo renacentista","c":"Un movimiento futurista"},"respuesta":"a"},
+        {"texto":"¿Qué evoca la “evasión hacia el pasado”?","opciones":{"a":"Ambientes aristocráticos del XVI","b":"Realidad moderna urbana","c":"Tecnología industrial"},"respuesta":"a"},
+        {"texto":"¿Qué simboliza el jardín modernista?","opciones":{"a":"Elementos vegetales y animales","b":"Paisajes urbanos","c":"Máquinas modernas"},"respuesta":"a"},
+        {"texto":"¿Qué tipo de sensaciones exalta?","opciones":{"a":"Cromáticas y olfativas","b":"Sonoras exclusivamente","c":"Solo táctiles"},"respuesta":"a"},
+        {"texto":"¿Qué materiales son nobles?","opciones":{"a":"Marfil y piedra","b":"Plástico e industrial","c":"Hormigón y acero"},"respuesta":"a"},
+        {"texto":"¿Qué opone al lujo y la elegancia?","opciones":{"a":"Producción industrial","b":"Estilo gótico","c":"Cultura popular"},"respuesta":"a"},
+        {"texto":"¿Cómo define la modernidad en el Modernismo?","opciones":{"a":"Síntesis estética de culturas","b":"Aislamiento nacional","c":"Rechazo de toda exotismo"},"respuesta":"a"},
+        {"texto":"¿Qué culturas fusiona?","opciones":{"a":"Japonesa, árabe y medieval","b":"Solo griega","c":"Exclusivamente china"},"respuesta":"a"},
+        {"texto":"¿Qué introduce en objetos cotidianos?","opciones":{"a":"Diseño y belleza","b":"Función industrial pura","c":"Sencillez minimalista"},"respuesta":"a"},
+        {"texto":"¿Qué utensilios embellece?","opciones":{"a":"Lámparas y joyas","b":"Solo herramientas agrícolas","c":"Vestimenta popular"},"respuesta":"a"},
+        {"texto":"¿Contra qué moralidad crítica?","opciones":{"a":"Tradicional y materialista","b":"Mística y esotérica","c":"Tecnológica moderna"},"respuesta":"a"},
+        {"texto":"¿Cómo se presenta el artista?","opciones":{"a":"Marginal e incomprendido","b":"Integrado en la sociedad","c":"Puramente objetivo"},"respuesta":"a"},
+        {"texto":"¿Qué método narrativo abandona?","opciones":{"a":"Realismo-Naturalismo","b":"Fantasía surrealista","c":"Terror gótico"},"respuesta":"a"}
+      ]
+    };
+    let preguntas = data.preguntas;
+    let preguntasElegidas = [];
+    let preguntaActual = 0;
+    let correctas = 0;
+    const quizContainer = document.getElementById('quiz-container');
+    const nextButton = document.getElementById('next-btn');
+    const restartButton = document.getElementById('restart-btn');
+    const startButton = document.getElementById('start-btn');
+    const infoContainer = document.getElementById('info-container');
+    infoContainer.innerHTML = `<p>El test contiene <strong>${preguntas.length}</strong> preguntas.</p>`;
+    startButton.style.display = 'block';
+    startButton.addEventListener('click', function() {
+      let num = prompt(`El test tiene ${preguntas.length} preguntas. ¿Cuántas deseas jugar?`, preguntas.length);
+      num = parseInt(num);
+      if (isNaN(num)||num<1||num>preguntas.length) num = preguntas.length;
+      preguntasElegidas = shuffle([...preguntas]).slice(0,num);
+      preguntaActual = 0;
+      correctas = 0;
+      startButton.style.display = 'none';
+      infoContainer.innerHTML = '';
+      mostrarPregunta();
+    });
+    function mostrarPregunta() {
+      if (preguntaActual<preguntasElegidas.length) {
+        quizContainer.innerHTML = '';
+        quizContainer.style.display = 'block';
+        nextButton.style.display = 'none';
+        let p = preguntasElegidas[preguntaActual];
+        let t = document.createElement('h2');
+        t.textContent = p.texto;
+        quizContainer.appendChild(t);
+        let opts = shuffle(Object.entries(p.opciones).map(([k,v])=>({k,v})));
+        opts.forEach(o=>{
+          let d = document.createElement('div');
+          d.classList.add('option');
+          d.textContent = o.v;
+          d.dataset.valor = o.k;
+          d.addEventListener('click',()=>validarRespuesta(d,p.respuesta));
+          quizContainer.appendChild(d);
+        });
+      } else {
+        quizContainer.innerHTML = `<h2>Test finalizado</h2><p>Has acertado ${correctas} de ${preguntasElegidas.length}.</p>`;
+        nextButton.style.display = 'none';
+        restartButton.style.display = 'block';
+      }
+    }
+    function validarRespuesta(el,res) {
+      document.querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');
+      if (el.dataset.valor===res) { el.classList.add('correct'); correctas++ }
+      else {
+        el.classList.add('incorrect');
+        let c = document.querySelector(`.option[data-valor='${res}']`);
+        if (c) c.classList.add('correct');
+      }
+      nextButton.style.display = 'block';
+    }
+    nextButton.addEventListener('click',()=>{
+      preguntaActual++;
+      mostrarPregunta();
+    });
+    restartButton.addEventListener('click',()=>{
+      restartButton.style.display='none';
+      startButton.style.display='block';
+      quizContainer.style.display='none';
+      infoContainer.innerHTML = `<p>El test contiene <strong>${preguntas.length}</strong> preguntas.</p>`;
+    });
+  </script>
+</body>
+</html>
