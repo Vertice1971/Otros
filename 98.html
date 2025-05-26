@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- tomcue@iesjuandelacierva.com -->
+  <title>Test sobre El grupo del 98</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+      background-color: #f5f8ff;
+    }
+    .question-container {
+      display: none;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 20px auto;
+      background: #ffffff;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    }
+    .option {
+      display: block;
+      padding: 10px;
+      margin: 10px 0;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .option:hover {
+      background: #e0ebff;
+      transform: scale(1.05);
+    }
+    .correct {
+      background: #c8e6c9;
+      border-color: green;
+    }
+    .incorrect {
+      background: #ffcdd2;
+      border-color: red;
+    }
+    #start-btn, #restart-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #restart-btn { background: #28a745 }
+    #next-btn {
+      position: fixed;
+      right: 20px;
+      top: 30%;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      display: none;
+    }
+    #info-container {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test sobre El grupo del 98</h1>
+  <h2 style="font-size:0.6em;color:#555;">Tomás Cuesta. IES Juan de la Cierva</h2>
+  <div id="info-container"></div>
+  <button id="start-btn">Comenzar</button>
+  <div id="quiz-container" class="question-container"></div>
+  <button id="next-btn">Siguiente</button>
+  <button id="restart-btn">Reiniciar</button>
+  <script>
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+    const data = {
+      "preguntas": [
+        {"texto":"¿En qué año perdió España sus últimas colonias?","opciones":{"a":"1898","b":"1905","c":"1888"},"respuesta":"a"},
+        {"texto":"¿Qué territorios perdió España?","opciones":{"a":"Cuba, Puerto Rico y Filipinas","b":"Guinea y Sahara","c":"Ceuta y Melilla"},"respuesta":"a"},
+        {"texto":"¿Cómo afectó esa pérdida?","opciones":{"a":"Crisis social, política y económica","b":"Boom económico","c":"Expansión cultural"},"respuesta":"a"},
+        {"texto":"¿Qué grupo de escritores surgió?","opciones":{"a":"Generación del 98","b":"Generación del 27","c":"Romanticismo tardío"},"respuesta":"a"},
+        {"texto":"¿Qué buscaban estos escritores?","opciones":{"a":"Regenerar España","b":"Refugiarse en lo exótico","c":"Imitar a Francia"},"respuesta":"a"},
+        {"texto":"¿Qué corrientes rechazaban?","opciones":{"a":"Ciencia positivista","b":"Simbolismo europeo","c":"Modernismo hispanoamericano"},"respuesta":"a"},
+        {"texto":"¿Qué temas reflexionaban?","opciones":{"a":"Existenciales, filosóficos y religiosos","b":"Pura aventura","c":"Tecnología y progreso"},"respuesta":"a"},
+        {"texto":"¿Cómo evolucionó su actitud?","opciones":{"a":"De compromiso a pesimismo contemplativo","b":"De pesimismo a optimismo festivo","c":"Siempre satírica"},"respuesta":"a"},
+        {"texto":"¿Qué valoraban tanto Modernismo como 98?","opciones":{"a":"Arte y belleza","b":"Realismo social","c":"Ficción científica"},"respuesta":"a"},
+        {"texto":"¿En qué se refugia el Modernismo?","opciones":{"a":"En lo exótico y minoritario","b":"En la realidad urbana","c":"En la tradición rural"},"respuesta":"a"},
+        {"texto":"¿Qué busca el 98 que difiere del Modernismo?","opciones":{"a":"Conectar con su pueblo","b":"Evadirse al pasado","c":"Crear mitologías"},"respuesta":"a"},
+        {"texto":"¿Qué región representaba la esencia de España?","opciones":{"a":"Castilla","b":"Andalucía","c":"Galicia"},"respuesta":"a"},
+        {"texto":"¿Qué proponían para regenerar España?","opciones":{"a":"Educación y acercamiento a Europa","b":"Aislamiento cultural","c":"Rechazo de la ciencia"},"respuesta":"a"},
+        {"texto":"¿Qué interés mostraban?","opciones":{"a":"La intrahistoria y tradiciones del pueblo","b":"Solo hechos militares","c":"Leyendas fantásticas"},"respuesta":"a"},
+        {"texto":"¿Qué autor no pertenece al 98?","opciones":{"a":"Gustavo Adolfo Bécquer","b":"Unamuno","c":"Azorín"},"respuesta":"a"}
+      ]
+    };
+    let preguntas = data.preguntas;
+    let elegidas = [];
+    let actual = 0;
+    let correctas = 0;
+    const qc = document.getElementById('quiz-container');
+    const nextBtn = document.getElementById('next-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const startBtn = document.getElementById('start-btn');
+    const info = document.getElementById('info-container');
+    info.innerHTML = `<p>El test contiene <strong>${preguntas.length}</strong> preguntas.</p>`;
+    startBtn.style.display = 'block';
+    startBtn.addEventListener('click', () => {
+      let n = parseInt(prompt(`¿Cuántas de ${preguntas.length} preguntas jugar?`, preguntas.length));
+      if (isNaN(n) || n < 1 || n > preguntas.length) n = preguntas.length;
+      elegidas = shuffle([...preguntas]).slice(0, n);
+      actual = 0;
+      correctas = 0;
+      startBtn.style.display = 'none';
+      info.innerHTML = '';
+      mostrarPregunta();
+    });
+    function mostrarPregunta() {
+      if (actual < elegidas.length) {
+        qc.innerHTML = '';
+        qc.style.display = 'block';
+        nextBtn.style.display = 'none';
+        let p = elegidas[actual];
+        let h = document.createElement('h2');
+        h.textContent = p.texto;
+        qc.appendChild(h);
+        shuffle(Object.entries(p.opciones).map(([k, v]) => ({k, v}))).forEach(o => {
+          let d = document.createElement('div');
+          d.classList.add('option');
+          d.textContent = o.v;
+          d.dataset.valor = o.k;
+          d.addEventListener('click', () => validar(d, p.respuesta));
+          qc.appendChild(d);
+        });
+      } else {
+        qc.innerHTML = `<h2>Test finalizado</h2><p>Has acertado ${correctas} de ${elegidas.length}.</p>`;
+        nextBtn.style.display = 'none';
+        restartBtn.style.display = 'block';
+      }
+    }
+    function validar(el, res) {
+      document.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
+      if (el.dataset.valor === res) {
+        el.classList.add('correct');
+        correctas++;
+      } else {
+        el.classList.add('incorrect');
+        let c = document.querySelector(`.option[data-valor='${res}']`);
+        if (c) c.classList.add('correct');
+      }
+      nextBtn.style.display = 'block';
+    }
+    nextBtn.addEventListener('click', () => {
+      actual++;
+      mostrarPregunta();
+    });
+    restartBtn.addEventListener('click', () => {
+      restartBtn.style.display = 'none';
+      startBtn.style.display = 'block';
+      qc.style.display = 'none';
+      info.innerHTML = `<p>El test contiene <strong>${preguntas.length}</strong> preguntas.</p>`;
+    });
+  </script>
+</body>
+</html>

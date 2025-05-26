@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- tomcue@iesjuandelacierva.com -->
+  <title>Test sobre Miguel de Unamuno</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+      background-color: #f5f8ff;
+    }
+    .question-container {
+      display: none;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 20px auto;
+      background: #ffffff;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    }
+    .option {
+      display: block;
+      padding: 10px;
+      margin: 10px 0;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .option:hover {
+      background: #e0ebff;
+      transform: scale(1.05);
+    }
+    .correct {
+      background: #c8e6c9;
+      border-color: green;
+    }
+    .incorrect {
+      background: #ffcdd2;
+      border-color: red;
+    }
+    #start-btn, #restart-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #restart-btn { background: #28a745 }
+    #next-btn {
+      position: fixed;
+      right: 20px;
+      top: 30%;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      display: none;
+    }
+    #info-container {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Test sobre Miguel de Unamuno</h1>
+  <h2 style="font-size:0.6em;color:#555;">Tomás Cuesta. IES Juan de la Cierva</h2>
+  <div id="info-container"></div>
+  <button id="start-btn">Comenzar</button>
+  <div id="quiz-container" class="question-container"></div>
+  <button id="next-btn">Siguiente</button>
+  <button id="restart-btn">Reiniciar</button>
+  <script>
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+    const data = {
+      "preguntas":[
+        {"texto":"¿Dónde nació Miguel de Unamuno?","opciones":{"a":"Bilbao","b":"Madrid","c":"Zaragoza"},"respuesta":"a"},
+        {"texto":"¿En qué año nació?","opciones":{"a":"1864","b":"1875","c":"1859"},"respuesta":"a"},
+        {"texto":"¿A qué régimen se enfrentó?","opciones":{"a":"Primo de Rivera y Franco","b":"Sánchez y Zapatero","c":"Alfonso XIII"},"respuesta":"a"},
+        {"texto":"¿Qué le ocurrió en 1936?","opciones":{"a":"Fue arrestado y destituido","b":"Recibió el Nobel","c":"Publicó Niebla"},"respuesta":"a"},
+        {"texto":"¿Por qué etapas ideológicas pasó?","opciones":{"a":"Del socialismo a inquietudes existenciales y religiosas","b":"Del liberalismo al conservadurismo","c":"Del anarquismo al marxismo"},"respuesta":"a"},
+        {"texto":"¿Qué temas le preocupan en sus ensayos?","opciones":{"a":"Existencia, Dios e inmortalidad","b":"Economía y política","c":"Historia medieval"},"respuesta":"a"},
+        {"texto":"¿Cómo describe al ser humano?","opciones":{"a":"“De carne y hueso”","b":"“Ser puramente racional”","c":"“Animal social”"},"respuesta":"a"},
+        {"texto":"¿Qué significa “Agonía del cristianismo”?","opciones":{"a":"Lucha entre razón y fe","b":"Fin de la religión","c":"Euforia espiritual"},"respuesta":"a"},
+        {"texto":"¿Qué distingue “historia” de “intrahistoria”?","opciones":{"a":"Grandes hechos vs vida anónima","b":"Justicia vs injusticia","c":"Europa vs América"},"respuesta":"a"},
+        {"texto":"¿Cómo interpreta Unamuno al Quijote y Sancho?","opciones":{"a":"Símbolo de regeneración frente a tradición estéril","b":"Crítica a la locura colectiva","c":"Fábula moral exclusivamente"},"respuesta":"a"},
+        {"texto":"¿Cómo es su estilo en los ensayos?","opciones":{"a":"Espontáneo, dialogado y reflexivo","b":"Formal y académico","c":"Poético y simbólico"},"respuesta":"a"},
+        {"texto":"¿Qué tema filosófico aborda?","opciones":{"a":"Libertad humana frente a Dios","b":"Materialismo histórico","c":"Teoría de conjuntos"},"respuesta":"a"},
+        {"texto":"¿Qué cuestión trata sobre la muerte?","opciones":{"a":"Necesidad de Dios ante la nada","b":"Celebración de la inexistencia","c":"Rechazo de toda espiritualidad"},"respuesta":"a"},
+        {"texto":"¿Qué concepto es central en su pensamiento?","opciones":{"a":"Inmortalidad personal","b":"Destino colectivo","c":"Determinismo social"},"respuesta":"a"},
+        {"texto":"¿Cómo define el carácter español?","opciones":{"a":"Tensión entre razón y fe","b":"Feliz armonía social","c":"Aislamiento cultural"},"respuesta":"a"},
+        {"texto":"¿Qué renovó en la novela española?","opciones":{"a":"Medio para ideas filosóficas","b":"Género de aventuras","c":"Historia medieval"},"respuesta":"a"},
+        {"texto":"¿Qué prioriza en sus novelas?","opciones":{"a":"Conflictos internos de los personajes","b":"Acción externa y aventuras","c":"Diálogos históricos"},"respuesta":"a"},
+        {"texto":"¿Qué estilo combina?","opciones":{"a":"Reflexión y emoción","b":"Humor y sátira","c":"Realismo objetivo"},"respuesta":"a"},
+        {"texto":"¿Cuál no es novela de Unamuno?","opciones":{"a":"La Regenta","b":"Niebla","c":"San Manuel Bueno, mártir"},"respuesta":"a"},
+        {"texto":"¿En qué año se publicó Niebla?","opciones":{"a":"1914","b":"1930","c":"1902"},"respuesta":"a"}
+      ]
+    };
+    let preguntas=data.preguntas, elegidas=[], actual=0, correctas=0;
+    const qc=document.getElementById('quiz-container'),
+          next=document.getElementById('next-btn'),
+          restart=document.getElementById('restart-btn'),
+          start=document.getElementById('start-btn'),
+          info=document.getElementById('info-container');
+    info.innerHTML=`<p>El test contiene <strong>${preguntas.length}</strong> preguntas.</p>`;
+    start.style.display='block';
+    start.addEventListener('click',()=>{
+      let n=parseInt(prompt(`¿Cuántas de ${preguntas.length} preguntas jugar?`,preguntas.length));
+      if(isNaN(n)||n<1||n>preguntas.length)n=preguntas.length;
+      elegidas=shuffle([...preguntas]).slice(0,n);
+      actual=0; correctas=0;
+      start.style.display='none'; info.innerHTML='';
+      mostrarPregunta();
+    });
+    function mostrarPregunta(){
+      if(actual<elegidas.length){
+        qc.innerHTML=''; qc.style.display='block'; next.style.display='none';
+        let p=elegidas[actual];
+        let h=document.createElement('h2'); h.textContent=p.texto; qc.appendChild(h);
+        shuffle(Object.entries(p.opciones).map(([k,v])=>({k,v}))).forEach(o=>{
+          let d=document.createElement('div');
+          d.classList.add('option'); d.textContent=o.v; d.dataset.valor=o.k;
+          d.addEventListener('click',()=>validar(d,p.respuesta));
+          qc.appendChild(d);
+        });
+      } else {
+        qc.innerHTML=`<h2>Test finalizado</h2><p>Has acertado ${correctas} de ${elegidas.length}.</p>`;
+        next.style.display='none'; restart.style.display='block';
+      }
+    }
+    function validar(el,res){
+      document.querySelectorAll('.option').forEach(o=>o.style.pointerEvents='none');
+      if(el.dataset.valor===res){ el.classList.add('correct'); correctas++ }
+      else {
+        el.classList.add('incorrect');
+        let c=document.querySelector(`.option[data-valor='${res}']`);
+        if(c)c.classList.add('correct');
+      }
+      next.style.display='block';
+    }
+    next.addEventListener('click',()=>{
+      actual++; mostrarPregunta();
+    });
+    restart.addEventListener('click',()=>{
+      restart.style.display='none'; start.style.display='block';
+      qc.style.display='none';
+      info.innerHTML=`<p>El test contiene <strong>${preguntas.length}</strong> preguntas.</p>`;
+    });
+  </script>
+</body>
+</html>
