@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Examen de Especialidad - Oposiciones Profesorado Secundaria Andalucía</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container" id="contenedor-principal">
+    <h2>Simulador de Examen de Especialidad - Oposiciones Profesorado Secundaria Andalucía</h2>
+    <p style="font-size: 0.8em; color: #666; margin-top: -1em;">tomcue@iesjuandelacierva.com</p>
+
+    <p id="parte-1" style="font-size: medium; margin: 1em 0;"><strong>Parte 1</strong></p>
+    <button id="btn-parte-2" class="boton-naranja">Pasar a Parte 2</button>
+
+    <form id="especialidad-form">
+      <label for="especialidad">Selecciona una especialidad:</label>
+      <select id="especialidad" required>
+        <option value="">-- Elegir --</option>
+        <!-- Opciones se cargarán dinámicamente desde temas.js -->
+      </select>
+
+      <label for="modo">Selecciona el tipo de sorteo:</label>
+      <select id="modo" required>
+        <option value="">-- Elegir --</option>
+        <option value="completo">Temario completo </option>
+        <option value="intermedia">Preparación intermedia</option>
+      </select>
+
+      <div id="intermedia-opciones" style="display:none">
+        <label for="cantidad">Número de temas a extraer:</label>
+        <input type="number" id="cantidad" min="1" max="71">
+
+        <label for="rango">Lista de temas disponibles (comas e intervalos con guiones):</label>
+        <input type="text" id="rango" placeholder="Ej: 1,2,3,6,7-12,17,19,20-40">
+      </div>
+
+      <button type="submit">Generar números</button>
+    </form>
+
+    <div id="resultado" class="result" style="display:none"></div>
+
+    <!-- Botón para pasar a la pantalla de prueba -->
+    <button id="btn-continuar" class="boton-rojo" style="display:none; margin-top: 1em;">Seleccionar tema</button>
+
+    <!-- Contenedor donde se cargará dinámicamente el temporizador de Parte 1 -->
+    <div id="contenedor-prueba-a" style="margin-top: 2em;"></div>
+  </div>
+
+  <script src="temas.js"></script>
+  <script src="script.js"></script>
+  <script src="temporizador-parte1.js"></script>
+  <script src="Prueba-A.js"></script>
+  <script src="Prueba-B.js"></script>
+</body>
+</html>
