@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia: Aves del Mediterráneo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+        .trivia-container {
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);
+            border-radius: 20px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 30px; max-width: 800px; width: 100%; text-align: center;
+        }
+        h1 { color: #2c3e50; margin-bottom: 10px; font-size: 2.5em; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .subtitle { color: #7f8c8d; margin-bottom: 30px; font-size: 1.2em; }
+        .game-info { display: flex; justify-content: space-between; margin-bottom: 30px; background: #ecf0f1; padding: 15px; border-radius: 10px; }
+        .info-item { text-align: center; }
+        .info-label { color: #7f8c8d; font-size: 0.9em; margin-bottom: 5px; }
+        .info-value { color: #2c3e50; font-size: 1.5em; font-weight: bold; }
+        .question-container { margin-bottom: 30px; text-align: left; }
+        .question-number { color: #3498db; font-weight: bold; margin-bottom: 10px; }
+        .question-text {
+            color: #2c3e50; font-size: 1.3em; line-height: 1.6; margin-bottom: 20px;
+            padding: 20px; background: #f8f9fa; border-radius: 10px; border-left: 5px solid #3498db;
+        }
+        .options {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 15px; margin-bottom: 20px;
+        }
+        .option {
+            background: #fff; border: 2px solid #bdc3c7; border-radius: 10px; padding: 15px;
+            cursor: pointer; transition: all 0.3s ease; text-align: center; font-weight: 500;
+        }
+        .option:hover {
+            border-color: #3498db; background: #ebf3fd; transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52,152,219,0.2);
+        }
+        .option.selected { border-color: #3498db; background: #3498db; color: #fff; }
+        .option.correct  { border-color: #27ae60; background: #27ae60; color: #fff; }
+        .option.incorrect{ border-color: #e74c3c; background: #e74c3c; color: #fff; }
+        .buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        button {
+            background: linear-gradient(45deg, #3498db, #2980b9); color: #fff; border: none;
+            padding: 15px 30px; border-radius: 25px; font-size: 1.1em; font-weight: bold;
+            cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
+        }
+        button:hover {
+            transform: translateY(-2px); box-shadow: 0 10px 20px rgba(52,152,219,0.3);
+        }
+        button:disabled {
+            background: #bdc3c7; cursor: not-allowed; transform: none; box-shadow: none;
+        }
+        .start-screen, .end-screen { text-align: center; }
+        .start-screen h2, .end-screen h2 { color: #2c3e50; margin-bottom: 20px; font-size: 2em; }
+        .start-screen p, .end-screen p {
+            color: #7f8c8d; font-size: 1.2em; line-height: 1.6; margin-bottom: 30px;
+        }
+        .score-display { font-size: 3em; font-weight: bold; margin: 20px 0; }
+        .score-excellent { color: #27ae60; }
+        .score-good      { color: #3498db; }
+        .score-average   { color: #f39c12; }
+        .score-poor      { color: #e74c3c; }
+        .hidden { display: none; }
+        .progress-bar {
+            width: 100%; height: 8px; background: #ecf0f1; border-radius: 4px;
+            margin-bottom: 20px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, #3498db, #2980b9);
+            border-radius: 4px; transition: width 0.3s ease;
+        }
+        .explanation {
+            background: #e8f8f5; border-left: 5px solid #27ae60;
+            padding: 15px; margin: 20px 0; border-radius: 5px; text-align: left; line-height: 1.6;
+        }
+        @media (max-width:600px) {
+            .trivia-container { padding:20px; margin:10px; }
+            h1 { font-size:2em; }
+            .game-info { flex-direction:column; gap:10px; }
+            .options { grid-template-columns:1fr; }
+            .buttons { flex-direction:column; align-items:center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="trivia-container">
+        <h1>🦅 Trivia de Aves del Mediterráneo 🦅</h1>
+        <p class="subtitle">Descubre las fascinantes aves de nuestro mar</p>
+        <div id="startScreen" class="start-screen">
+            <h2>¡Bienvenido al Trivia!</h2>
+            <p>Pon a prueba tus conocimientos sobre las aves del Mediterráneo. Te presentaremos descripciones físicas y conductuales, y tendrás que identificar la especie correcta.</p>
+            <p><strong>Características:</strong></p>
+            <p>• Selección aleatoria de 15 preguntas cada partida<br>
+            • Descripciones detalladas de comportamiento y apariencia<br>
+            • Explicaciones educativas después de cada respuesta<br>
+            • Sistema de puntuación y rachas</p>
+            <button id="startButton">Comenzar Trivia</button>
+        </div>
+        <div id="gameScreen" class="hidden">
+            <div class="game-info">
+                <div class="info-item">
+                    <div class="info-label">Pregunta</div>
+                    <div class="info-value"><span id="currentQuestion">1</span>/<span id="totalQuestions">15</span></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Puntuación</div>
+                    <div class="info-value" id="score">0</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Racha</div>
+                    <div class="info-value" id="streak">0</div>
+                </div>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="question-container">
+                <div class="question-number" id="questionNumber">Pregunta 1 de 15</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="options"></div>
+                <div id="explanation" class="explanation hidden"></div>
+            </div>
+            <div class="buttons">
+                <button id="nextButton" disabled>Siguiente Pregunta</button>
+                <button id="resetButton1">Reiniciar</button>
+            </div>
+        </div>
+        <div id="endScreen" class="end-screen hidden">
+            <h2>¡Trivia Completado!</h2>
+            <div class="score-display" id="finalScore"></div>
+            <div id="scoreMessage"></div>
+            <p id="finalStats"></p>
+            <div class="buttons">
+                <button id="resetButton2">Jugar de Nuevo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carga de preguntas y lógica -->
+    <script defer src="questions.js"></script>
+    <script defer src="trivia.js"></script>
+</body>
+</html>
