@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -245,7 +246,7 @@
                 </div>
                 <div class="ejemplos ejemplos-negativos">
                     <div class="ejemplos-titulo">Sin tilde (otras consonantes):</div>
-                    <div class="ejemplos-lista">reloj, comer, digital, pixel</div>
+                    <div class="ejemplos-lista">reloj, comer, digital, perdiz</div>
                 </div>
             </div>
 
@@ -345,6 +346,18 @@
 
     <script src="textos.js"></script>
     <script>
+        // --- Nueva función: normaliza guiones, espacios y paréntesis ---
+        function obtenerRutaAudio(titulo) {
+            return 'audio/' +
+                titulo
+                    .replace(/[\u2013\u2014]/g, '-')   // en-/em-dash → guión medio
+                    .replace(/\s+/g, '-')             // espacios → guión medio
+                    .replace(/[()]/g, '')             // quita paréntesis
+                    .replace(/-+/g, '-')              // varios guiones → uno solo
+                    .replace(/^-|-$/g, '')            // quita guiones al inicio/final
+                + '.wav';
+        }
+
         function irADictado() {
             document.getElementById('pantallaReglas').classList.remove('activa');
             document.getElementById('pantallaDictado').classList.add('activa');
@@ -373,7 +386,7 @@
                     area.value = '';
                     return;
                 }
-                audio.src = obtenerRutaAudio(titulo);
+                audio.src = rutasAudio[titulo];
                 audio.load();
                 area.value = '';
             });
@@ -410,3 +423,4 @@
     </script>
 </body>
 </html>
+```

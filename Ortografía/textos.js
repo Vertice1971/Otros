@@ -1,63 +1,37 @@
 // Base de datos de textos para dictado
-// Cada entrada tiene un título (que será el nombre del archivo .wav) y el texto correspondiente
+// Cada entrada tiene un título y el texto correspondiente
 
 const textos = {
-  "HACHE-1": "La historia registra el hecho incontestable de un héroe solitario que ha dejado una profunda huella en la memoria colectiva. Aquel hombre había vivido en el hotel abandonado durante años, envuelto en el humo de las hogueras que encendía cada noche para combatir el frío. Su herida, oculta bajo vendas improvisadas, había seguido sangrando a pesar del hielo aplicado con urgencia. El habitante, que había habitado la colina desde hacía décadas, decidió hablar sin rodeos, con una voz ronca pero firme, como quien ha reflexionado largo tiempo antes de pronunciar palabra.",
-
-  "HACHE-2": "Ha dicho hola con un gesto de honor y dignidad, y ha contado con detalle cómo había tenido que hilar redes bajo la hiedra venenosa que cubría la entrada del cobertizo. En su relato, no faltó la hoja rota que cayó al suelo con un crujido seco, ni la hora exacta en que el hambre comenzó a pesarle más que el miedo. Había hallado pan duro y unas habas secas en la alacena, suficientes para sobrevivir.",
-
-  "HACHE-3": "Se notaba que había sufrido mucho, pero no había perdido la costumbre de hacer las cosas con hábito y con humildad. Hablaba con serenidad, sin odio, y aunque el hedor del moho llenaba la estancia, su historia imponía respeto. Habíamos escuchado muchos relatos antes, pero ninguno como ese. Había sido capaz de hacer visible, a través de cada palabra con h, la hondura de una vida marcada por el esfuerzo y la resistencia. Y aunque hubiera podido callar, eligió hablar. Esa fue, sin duda, su última hazaña.",
-
-  "MEZCLA-1": "En esta mañana lluviosa he hablado con el héroe que había vivido en la vieja granja. Él ha bebido café en el jardín mientras la vaca bravía pastaba junto al zorro que zigzagueó entre zanjas llenas de ceniza. Hemos visto cómo el jarrón se ha roto al caer sobre el azulejo agrietado y cómo la sonrisa del gitano se ha tornado seria al oír el crujir de cada gajo seco bajo la bota. Ya habíais llegado al vértice del cerro cuando la llave oxidada giró sin ceder en la cerradura de la casa; yo he descrito con precisión científica la esencia de cada sonido y habré reunido los datos en un informe breve.",
-
-  "MEZCLA-2": "Habrá existido un gesto de alivio al sentir el calor del hogar y habríamos ignorado el viento helado del invierno si no fuera por el raglán húmedo que goteaba sobre el sombrero. Tú habías llevado al pollo vivo y la yema del huevo reventó con un crujido sutil. Habrán concluido las sesiones de caza furtiva cuando el rayo iluminó el valle y habías logrado salvar al colibrí atrapado entre espinas. He aprovechado cada instante para hilar un texto que recoja el hábito de usar bemoles y bemoles, de vivir con vértigo y de hallar el honor en lo más breve.",
-
-  "LL-Y-1": "La lluvia cayó sin clemencia sobre la vieja maya trenzada; no parecía que haya tregua mientras cada hilo saturado crujía bajo el peso del agua. La yema del dedo quedó adolorida junto al callo resistente, fruto de quien halla consuelo en el trabajo manual. La llama del candil osciló en lo alto del cerro cuando un rayo iluminó la calle desierta y el lamento lejano de un joven viajero hizo dudar si habría llegado a la playa cercana o si debía yacer junto al yugo del recuerdo.",
-
-  "LL-Y-2": "El orgulloso pescador vio su yate llegar al muelle y empezó a llorar al comprobar que, contra todo pronóstico, haya abundancia de pesca tras la mala temporada. Tuvo que llevar el pollo vivo bajo el poncho sobre el lomo del asno, y al final halló refugio en la choza donde la llave giró sin fallar. Cada leyenda y cada hallazgo en aquel valle yermo reflejaron el choque entre la ley del pasado y la promesa de un mañana lleno de esperanza, mientras la joya de la experiencia brillaba más que el brillo húmedo de la hojarasca.",
-
-  "G-J-1": "El gitano llegó al jardín de la granja al amanecer, envuelto en una chaqueta de lana gruesa que le protegía del gélido viento que bajaba de la sierra. Caminaba despacio, como quien juzga con cautela cada paso, y al llegar al porche observó el girasol erguido junto al jarrón roto que alguien había dejado caer la noche anterior. Su gesto calmado contrastaba con el murmullo nervioso de los gansos, y aunque fingía indiferencia, en su interior hervía el juicio que venía rumiando desde días atrás.",
-
-  "G-J-2": "El jinete gigante, que había galopado hasta la verja con su alforja llena de legajos, bajó del caballo y soltó el globo que llevaba atado al arzón tras untar jabón en la ventana empañada del cobertizo. Había garabateado un mensaje con el dedo en el cristal, como si quisiera dejar huella de su paso. Cada gajo seco que pisaba crujía bajo la bota de cuero gastado. El graznido de una garza cruzó el aire.",
-
-  "G-J-3": "En el muro de piedra, una jirafa pintada con precisión infantil parecía una joya de exposición, ajena al desgaste de la intemperie. Allí, donde convergían los juegos antiguos y los juramentos olvidados, la gesta cobró sentido. El gitano recogió una granada caída y comenzó a girarla entre los dedos mientras gemía una melodía baja. Había gestionado todo con astucia: desde el lenguaje ambiguo de los tratos hasta la logística de aquel encuentro. Fue una jornada larga, pero genuina, llena de giros, juegos de palabras, gestos significativos y una profunda jerarquía de silencios.",
-
-  "B-V-1": "El barco surcó el valle tempestuoso en pleno invierno, batiéndose contra las olas con bravura mientras el viento silbaba entre las velas. A lo lejos, una vaca brava vagaba junto al barranco, cerca del viejo muelle de madera barnizada. El marinero bajó a la bodega en busca de una botella de agua, dispuesto a beber y reponerse tras la vigilia. Soplar en el cuerno al amanecer era una vieja costumbre del barco, que marcaba el inicio de cada jornada y avisaba a los vecinos del puerto.",
-
-  "B-V-2": "Vivir aquella singladura fue breve, pero bastó para revelar la verdadera belleza del paisaje: brumas sobre el bosque, barcas varadas junto a la bahía, y aves volando bajo el cielo gris. El barrio costero despertó con el rugido del oleaje golpeando los bolardos. La bicicleta del grumete quedó varada tras la niebla, abandonada sobre el barro. Algunos bajaron con bolsas a ver los daños en la bodega y a revisar las bisagras del portón.",
-
-  "B-V-3": "La tripulación supo labrar la calma con bravura, sin elevar la voz, confiando en su habilidad para resolver imprevistos. Uno buscó vendas para curar una brecha, otro barrió la cubierta con vigor. Mientras tanto, las banderas del barco ondeaban bajo la brisa salobre. A pesar del vaivén y la espuma, supieron brillar con entereza y conservar el vínculo que los unía desde la primera vez que compartieron embarque. Fue una vivencia breve, pero verdadera, que valía por muchas batallas.",
-
-  "AGUDAS-N-S-PRETERITOS-1": "Anoche volé en avión hasta la estación central. Llegué con pasión a la misión de mis amigos; celebré cada canción y sentí cómo mi corazón retumbó con el compás del bajo. Observé la construcción del escenario y luego analicé cada elemento; destacó una excepción en la combustión de los efectos. El técnico revisó el arnés y dedicó concentración plena. Compré menús variados y bebí cafés con limón mientras descansé en los sofás.",
-
-  "AGUDAS-N-S-PRETERITOS-2": "Después de la sesión principal, sentí tensión y estrés; se inició una discusión sobre la razón del retraso y la acción se reactivó con un estruendo poderoso. El equipo proyectó visión de un juego que recreó una prisión futurista; admiré la revolución del pixel art y comprendí el inglés del narrador. Mis bíceps descansaron mientras me relajé con los bebés que jugaron cerca. El festival brilló y supe que amé esta ocasión irrepetible.",
-
-  "AGUDAS-CON-VOCAL-1": "Aquel día, el grupo salió al campo y preparó el equipo. El guía explicó el itinerario y señaló el lugar donde empezó la expedición. Cada integrante cargó su mochila, ajustó el calzado y respiró hondo. El más joven tropezó con una raíz, pero se levantó sin quejarse. Al llegar al claro, uno de ellos encontró un nido vacío. Otro escuchó un canto lejano y comentó que el eco amplificó el sonido. El profesor anotó cada hallazgo y fotografió el paisaje. El cielo brilló con fuerza y el calor apretó hasta que el sol bajó.",
-
-  "AGUDAS-CON-VOCAL-2": "Durante el descanso, el grupo compartió pan y queso. Alguien contó una anécdota y otro rió con naturalidad. Un estudiante observó el vuelo de un halcón y dibujó lo que vio. Nadie interrumpió, todos guardaron respeto. Después, el guía retomó la marcha y condujo al grupo por un sendero que descendió hacia un arroyo. El terreno resbaló un poco, pero ninguno cayó. Al cruzar el puente, un tronco crujió y una rama se quebró. Aun así, la caminata continuó sin incidentes.",
-
-  "AGUDAS-CON-VOCAL-3": "En la cabaña, cada cual eligió un lugar para dormir. Uno preparó té, otro encendió el fuego y una tercera persona escribió en su diario. La lluvia golpeó el tejado con ritmo suave. Nadie habló. Todos escucharon. En ese silencio, alguien pensó en su hogar y sintió que algo cambió. Al amanecer, el gallo cantó. Uno bostezó. Otro se estiró. Todos despertaron con calma. El viaje concluyó al mediodía. El autobús llegó puntual. Nadie protestó. Todos agradecieron. El guía saludó y partió. La experiencia dejó huella. Nadie la olvidó.",
-
-  "SOBREESDRUJULAS-1": "Al iniciar la partida, pidió dígamelo sin rodeos y exigió explícamelo bien antes de continuar. Luego, cómetelo sin protestar —dijo—, mientras señalaba la pantalla. En el primer evento, regálaselo al líder del clan y tráemelo rápido. Si aparece otra misión, pídeselo al bot. Cuando cargues el ítem, véndemelo en cuanto puedas. Si no sirve, devuélvemelo sin demora.",
-
-  "SOBREESDRUJULAS-2": "Antes de seguir, escríbeselo en el canal general y mándaselo también por privado. Si hay confusión, tradúcetelo tú mismo y compruébamelo en la wiki oficial. Al detectar un error, muéstramelo en el informe y resúmemelo por voz. En cuanto lo tengas claro, cuéntaselo al resto del equipo y acláramelo todo.",
-
-  "SOBREESDRUJULAS-3": "Para acceder al segundo nivel, entrégaselo al guardián y prográmaselo al NPC sin fallos. El narrador narró el origen del ítem y comentó que prestémoselo al sabio del templo. Cuando avance el combate, róbaselo al enemigo si se distrae y tómaselo sin dudar. Si te lo niegan, exígeselo con firmeza. Si el código falla, copiáselo otra vez al servidor y confirmáselo al técnico.",
-
-  "ESDRUJULAS-1": "Las palabras esdrújulas son aquellas cuya sílaba tónica es la antepenúltima, y siempre llevan tilde según las reglas del español. Abundan en el lenguaje culto, científico y técnico, pero también aparecen en contextos cotidianos y narrativos.",
-
-  "ESDRUJULAS-2": "Aquel miércoles, mientras el médico revisaba el síntoma de un paciente, un pájaro eléctrico surcó el cielo sobre el océano. El sonido de la música clásica que salía del teléfono del técnico se mezclaba con el murmullo del público que esperaba. El ambiente era lógico y, a pesar del calor climático, el grupo mantenía un ánimo óptimo. El héroe del día, un biólogo orgánico, expuso un análisis práctico sobre una especie mítica recientemente descubierta.",
-
-  "ESDRUJULAS-3": "El prólogo de su charla, breve pero intenso, introdujo la estructura biológica del animal, señalando una mínima mutación genética con gran impacto económico. En su exposición, desglosó cada sílaba con claridad y explicó cada ángulo del fenómeno desde un enfoque mecánico. El auditorio valoró su enfoque histórico, ya que conectó el hallazgo con registros del siglo XIX.",
-
-  "AGUDAS-EN-GENERAL-1": "Registré canción, compás y razón en mi diario digital. Capturé corazón y visión en un screenshot borroso tras la vibración del móvil. Compartí acción, análisis y región con mis amigos en el canal del torneo. Acepté menú y pedí café y bebé en el chat de mediodía. Guardé una foto del sofá azul, de varios sofás en fila, y otra de París iluminada al anochecer. Etiqueté avión y camión en el reto de la semana. Bebí agua con limón y carbón activado, como recomendó un influencer. Solicité perdón tras un error de cálculo. Sufrí un pico de estrés al revisar la presión en pantalla y al medir mis bíceps frente al espejo.",
-
-  "AGUDAS-EN-GENERAL-2": "Envié un video corto donde aparecía un colibrí flotando junto a una flor, un rubí en forma de corazón, un ritual hindú y un urubú planeando en silencio. Anoté el número de bisturís en el inventario y observé una reacción cortés del equipo. Escribí adiós en la historia del perfil. Después marqué mi ubicación actual: estación central, junto a la región de más tensión. A lo largo del día también leí un ensayo sobre la revolución y su relación con la opresión. Analicé una sesión sobre educación y escuché una canción dedicada a la población indígena. Comprendí por qué la juventud sintió indignación y repitió sin cesar su oposición. Organicé una reunión sobre la situación actual y señalé con convicción la necesidad de acción directa.",
-
-  "AGUDAS-EN-GENERAL-3": "Al llegar a casa, añadí mesa y vida a mi collage visual. Exploré el parque desde el balcón y sintonicé una radio escolar en la web. Envié un mensaje rápido a mi amigo, luego saludé a madre y padre por videollamada. Compartí una foto del aula de clase, donde un estudiante leyó sobre migración. Reaccioné a publicaciones sobre deporte y escuela. Resolvió una tarea sobre cultura global. Observó el planeta desde la app del satélite y reflexionó sobre el sistema mundial. Creó un tema nuevo y propuso un problema distinto. Después, pulsó botón y cerró sesión."
+  "HACHE-1": "...",
+  "HACHE-2": "...",
+  "HACHE-3": "...",
+  "MEZCLA-1": "...",
+  "MEZCLA-2": "...",
+  "LL-Y-1": "...",
+  "LL-Y-2": "...",
+  "G-J-1": "...",
+  "G-J-2": "...",
+  "G-J-3": "...",
+  "B-V-1": "...",
+  "B-V-2": "...",
+  "B-V-3": "...",
+  "AGUDAS-N-S-PRETERITOS-1": "...",
+  "AGUDAS-N-S-PRETERITOS-2": "...",
+  "AGUDAS-CON-VOCAL-1": "...",
+  "AGUDAS-CON-VOCAL-2": "...",
+  "AGUDAS-CON-VOCAL-3": "...",
+  "SOBREESDRUJULAS-1": "...",
+  "SOBREESDRUJULAS-2": "...",
+  "SOBREESDRUJULAS-3": "...",
+  "ESDRUJULAS-1": "...",
+  "ESDRUJULAS-2": "...",
+  "ESDRUJULAS-3": "...",
+  "AGUDAS-EN-GENERAL-1": "...",
+  "AGUDAS-EN-GENERAL-2": "...",
+  "AGUDAS-EN-GENERAL-3": "..."
 };
 
-// Array con los títulos para facilitar la creación del selector
+// Títulos disponibles
 const titulosTextos = Object.keys(textos);
 
 // Función para obtener un texto por su título
@@ -65,7 +39,33 @@ function obtenerTexto(titulo) {
   return textos[titulo] || null;
 }
 
-// Función para obtener la ruta del audio correspondiente
-function obtenerRutaAudio(titulo) {
-  return `audio/${titulo}.wav`;
-}
+// Diccionario con las rutas exactas de cada archivo de audio
+const rutasAudio = {
+  "HACHE-1": "audio/HACHE-1.wav",
+  "HACHE-2": "audio/HACHE-2.wav",
+  "HACHE-3": "audio/HACHE-3.wav",
+  "MEZCLA-1": "audio/MEZCLA -1.wav",
+  "MEZCLA-2": "audio/MEZCLA -2.wav",
+  "LL-Y-1": "audio/LL – Y (1).wav",
+  "LL-Y-2": "audio/LL – Y (2).wav",
+  "G-J-1": "audio/G-J-1.wav",
+  "G-J-2": "audio/G-J-2.wav",
+  "G-J-3": "audio/G-J-3.wav",
+  "B-V-1": "audio/B-V-1.wav",
+  "B-V-2": "audio/B-V-2.wav",
+  "B-V-3": "audio/B-V-3.wav",
+  "AGUDAS-N-S-PRETERITOS-1": "audio/AGUDAS-N-S-PRETERITOS-1.wav",
+  "AGUDAS-N-S-PRETERITOS-2": "audio/AGUDAS-N-S-PRETERITOS-2.wav",
+  "AGUDAS-CON-VOCAL-1": "audio/AGUDAS-CON-VOCAL-1.wav",
+  "AGUDAS-CON-VOCAL-2": "audio/AGUDAS-CON-VOCAL-2.wav",
+  "AGUDAS-CON-VOCAL-3": "audio/AGUDAS-CON-VOCAL-3.wav",
+  "SOBREESDRUJULAS-1": "audio/SOBREDESDRÚJULAS (1).wav",
+  "SOBREESDRUJULAS-2": "audio/SOBREDESDRÚJULAS (2).wav",
+  "SOBREESDRUJULAS-3": "audio/SOBREDESDRÚJULAS (3).wav",
+  "ESDRUJULAS-1": "audio/ESDRUJULAS-1.wav",
+  "ESDRUJULAS-2": "audio/ESDRUJULAS-2.wav",
+  "ESDRUJULAS-3": "audio/ESDRUJULAS-3.wav",
+  "AGUDAS-EN-GENERAL-1": "audio/AGUDAS-EN-GENERAL-1.wav",
+  "AGUDAS-EN-GENERAL-2": "audio/AGUDAS-EN-GENERAL-2.wav",
+  "AGUDAS-EN-GENERAL-3": "audio/AGUDAS-EN-GENERAL-3.wav"
+};
