@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dictado Interactivo - Práctica de Ortografía</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pantalla {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 100%;
+            animation: fadeIn 0.5s ease-in;
+        }
+        .pantalla.activa { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #4a5568;
+            font-weight: 300;
+        }
+        .subtitulo {
+            font-size: 1.2em;
+            color: #4a5568;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .info-adicional {
+            font-size: 0.9em;
+            text-align: center;
+            margin-top: 25px;
+        }
+        .info-adicional a {
+            color: #5a67d8;
+            text-decoration: underline;
+        }
+        h2 {
+            color: #5a67d8;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #5a67d8;
+            padding-bottom: 10px;
+        }
+        .regla {
+            background: #f7fafc;
+            border-left: 5px solid #5a67d8;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+            transition: transform 0.2s ease;
+        }
+        .regla:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .regla-titulo {
+            font-weight: bold;
+            color: #2d3748;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .regla-descripcion {
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+        .regla-condicion {
+            background: #e2e8f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: 500;
+            color: #2d3748;
+        }
+        .ejemplos {
+            background: #f0fff4;
+            border: 1px solid #9ae6b4;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .ejemplos-titulo {
+            font-weight: bold;
+            color: #2f855a;
+            margin-bottom: 8px;
+        }
+        .ejemplos-lista {
+            color: #276749;
+            font-style: italic;
+        }
+        .ejemplos-negativos {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            color: #c53030;
+        }
+        .ejemplos-negativos .ejemplos-titulo {
+            color: #c53030;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            font-weight: 500;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+        .navegacion {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .destacado {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .acento-ejemplo {
+            font-weight: bold;
+            color: #5a67d8;
+            text-decoration: underline;
+        }
+        .dictado-controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        select {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+        audio {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 15px;
+        }
+        .speed-control {
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        .speed-control input {
+            vertical-align: middle;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            font-size: 1em;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            resize: vertical;
+        }
+        #btnEvaluar,
+        #btnPausa {
+            margin-top: 15px;
+            margin-right: 10px;
+        }
+        #resultado {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .incorrecto {
+            background: #ffe5e5;
+            border-bottom: 2px solid #e53e3e;
+        }
+        @media (max-width: 768px) {
+            .container { padding: 10px; }
+            .pantalla { padding: 20px; }
+            .header h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- PANTALLA 1: REGLAS DE ACENTUACIÓN -->
+        <div class="pantalla activa" id="pantallaReglas">
+            <div class="header">
+                <h1>📚 Ortografía para la Generación Z</h1>
+                <p class="subtitulo">
+                    Antes de comenzar con los ejercicios de dictado, repasemos las reglas fundamentales de acentuación en español. Estas reglas te ayudarán a identificar dónde colocar las tildes correctamente.
+                </p>
+                <div class="info-adicional">
+                    <p>tomcue@iesjuandelacierva.com</p>
+                    <a href="https://www.amazon.es/dp/B0F61P4TXK" target="_blank">Puedes aprender a programarlo tú</a>
+                </div>
+            </div>
+
+            <h2>Reglas de tildes según la sílaba tónica</h2>
+
+            <div class="regla">
+                <div class="regla-titulo">1. Palabras Agudas</div>
+                <div class="regla-descripcion">
+                    Son las que se acentúan en la <span class="destacado">última sílaba</span>.
+                </div>
+                <div class="regla-condicion">
+                    ✅ Llevan tilde <strong>solo si terminan en vocal, -n o -s</strong>
+                </div>
+                <div class="ejemplos">
+                    <div class="ejemplos-titulo">Ejemplos con tilde:</div>
+                    <div class="ejemplos-lista">
+                        <span class="acento-ejemplo">avión</span>, <span class="acento-ejemplo">compás</span>, <span class="acento-ejemplo">razón</span>, <span class="acento-ejemplo">canción</span>, <span class="acento-ejemplo">tensión</span>, <span class="acento-ejemplo">cayó</span>, <span class="acento-ejemplo">gritó</span>, <span class="acento-ejemplo">pasó</span>, <span class="acento-ejemplo">llegó</span>, <span class="acento-ejemplo">amé</span>, <span class="acento-ejemplo">vivió</span>
+                    </div>
+                </div>
+                <div class="ejemplos ejemplos-negativos">
+                    <div class="ejemplos-titulo">Sin tilde (otras consonantes):</div>
+                    <div class="ejemplos-lista">reloj, comer, digital, pixel</div>
+                </div>
+            </div>
+
+            <div class="regla">
+                <div class="regla-titulo">2. Palabras Llanas (o Graves)</div>
+                <div class="regla-descripcion">
+                    Se acentúan en la <span class="destacado">penúltima sílaba</span>.
+                </div>
+                <div class="regla-condicion">
+                    ✅ Llevan tilde <strong>solo si terminan en consonante que no sea -n, -s ni vocal</strong>
+                </div>
+                <div class="ejemplos">
+                    <div class="ejemplos-titulo">Ejemplos:</div>
+                    <div class="ejemplos-lista">
+                        <span class="acento-ejemplo">árbol</span> (lleva tilde), joven (no lleva), casa (no lleva), <span class="acento-ejemplo">cárcel</span> (lleva tilde)
+                    </div>
+                </div>
+            </div>
+
+            <div class="regla">
+                <div class="regla-titulo">3. Palabras Esdrújulas</div>
+                <div class="regla-descripcion">
+                    Se acentúan en la <span class="destacado">antepenúltima sílaba</span>.
+                </div>
+                <div class="regla-condicion">
+                    ✅ <strong>Siempre llevan tilde</strong>, sin excepción
+                </div>
+                <div class="ejemplos">
+                    <div class="ejemplos-titulo">Ejemplos:</div>
+                    <div class="ejemplos-lista">
+                        <span class="acento-ejemplo">médico</span>, <span class="acento-ejemplo">público</span>, <span class="acento-ejemplo">técnico</span>, <span class="acento-ejemplo">clásico</span>, <span class="acento-ejemplo">óptimo</span>, <span class="acento-ejemplo">lógico</span>, <span class="acento-ejemplo">orgánico</span>, <span class="acento-ejemplo">histórico</span>, <span class="acento-ejemplo">práctico</span>, <span class="acento-ejemplo">químico</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="regla">
+                <div class="regla-titulo">4. Palabras Sobresdrújulas</div>
+                <div class="regla-descripcion">
+                    Se acentúan en la <span class="destacado">anterior a la antepenúltima sílaba</span>.
+                </div>
+                <div class="regla-condicion">
+                    ✅ <strong>Siempre llevan tilde</strong>, sin excepción
+                </div>
+                <div class="regla-descripcion">
+                    Suelen ser verbos con pronombres añadidos.
+                </div>
+                <div class="ejemplos">
+                    <div class="ejemplos-titulo">Ejemplos:</div>
+                    <div class="ejemplos-lista">
+                        <span class="acento-ejemplo">cómetelo</span>, <span class="acento-ejemplo">explícaselo</span>, <span class="acento-ejemplo">muéstramelo</span>, <span class="acento-ejemplo">recógemelo</span>, <span class="acento-ejemplo">dígamelo</span>, <span class="acento-ejemplo">véndemelo</span>, <span class="acento-ejemplo">considéramelo</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="navegacion">
+                <button class="btn" onclick="irADictado()">Comenzar Práctica de Dictado →</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA 2: PRÁCTICA DE DICTADO -->
+        <div class="pantalla" id="pantallaDictado">
+            <div class="header">
+                <h1>🎧 Práctica de Dictado</h1>
+                <p class="subtitulo">Elige un texto, escucha y escribe para luego comprobar tus acentos.</p>
+                <div class="info-adicional">
+                    <p>tomcue@iesjuandelacierva.com</p>
+                    <a href="https://www.amazon.es/dp/B0F61P4TXK" target="_blank">Puedes aprender a programarlo tú</a>
+                </div>
+            </div>
+
+            <div class="dictado-controls">
+                <select id="selectorTexto">
+                    <option value="">-- Selecciona texto --</option>
+                </select>
+                <audio id="audioControl" controls>
+                    Tu navegador no soporta audio.
+                </audio>
+                <button class="btn" id="btnPausa">Pausar</button>
+                <div class="speed-control">
+                    Velocidad:
+                    <input type="range" id="velocidad" min="0.5" max="2" step="0.01" value="1">
+                    <span id="velocidadValor">100%</span>
+                </div>
+            </div>
+
+            <textarea id="areaDictado" placeholder="Escribe aquí lo que escuchas..."></textarea>
+
+            <div class="navegacion">
+                <button class="btn" id="btnEvaluar">Evaluar Dictado</button>
+                <button class="btn" onclick="volverAReglas()">← Volver a Reglas</button>
+            </div>
+
+            <div id="resultado"></div>
+        </div>
+
+    </div>
+
+    <script src="textos.js"></script>
+    <script>
+        function irADictado() {
+            document.getElementById('pantallaReglas').classList.remove('activa');
+            document.getElementById('pantallaDictado').classList.add('activa');
+        }
+        function volverAReglas() {
+            document.getElementById('pantallaDictado').classList.remove('activa');
+            document.getElementById('pantallaReglas').classList.add('activa');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const selector = document.getElementById('selectorTexto');
+            titulosTextos.forEach(t => {
+                const o = document.createElement('option');
+                o.value = t;
+                o.textContent = t;
+                selector.appendChild(o);
+            });
+
+            selector.addEventListener('change', function() {
+                const titulo = this.value;
+                const audio = document.getElementById('audioControl');
+                const area  = document.getElementById('areaDictado');
+                document.getElementById('resultado').innerHTML = '';
+                if (!titulo) {
+                    audio.src = '';
+                    area.value = '';
+                    return;
+                }
+                audio.src = obtenerRutaAudio(titulo);
+                audio.load();
+                area.value = '';
+            });
+
+            document.getElementById('btnPausa').addEventListener('click', function() {
+                document.getElementById('audioControl').pause();
+            });
+
+            const velocidadInput = document.getElementById('velocidad');
+            const velocidadValor = document.getElementById('velocidadValor');
+            velocidadInput.addEventListener('input', function() {
+                const v = parseFloat(this.value);
+                document.getElementById('audioControl').playbackRate = v;
+                velocidadValor.textContent = Math.round(v * 100) + '%';
+            });
+
+            document.getElementById('btnEvaluar').addEventListener('click', function() {
+                const titulo = selector.value;
+                const escrito = document.getElementById('areaDictado').value.trim();
+                if (!titulo || !escrito) return;
+                const original = textos[titulo].trim().split(/\s+/);
+                const usuario  = escrito.split(/\s+/);
+                let salida = '';
+                original.forEach((pal, i) => {
+                    if (usuario[i] === pal) {
+                        salida += pal + ' ';
+                    } else {
+                        salida += '<span class="incorrecto">' + pal + '</span> ';
+                    }
+                });
+                document.getElementById('resultado').innerHTML = salida;
+            });
+        });
+    </script>
+</body>
+</html>
