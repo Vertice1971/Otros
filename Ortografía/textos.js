@@ -15,20 +15,20 @@ const textos = {
   "B-V-1": "El barco surcó el valle tempestuoso …",
   "B-V-2": "Vivir aquella singladura fue breve …",
   "B-V-3": "La tripulación supo labrar la calma …",
-  "AGUDAS-N-S-PRETERITOS-1": "Anoche volé en avión hasta la estación …",
-  "AGUDAS-N-S-PRETERITOS-2": "Después de la sesión principal, sentí tensión …",
+  "AGUDAS-N-S-PRETÉRITOS-1": "Anoche volé en avión hasta la estación …",
+  "AGUDAS-N-S-PRETÉRITOS-2": "Después de la sesión principal, sentí tensión …",
   "AGUDAS-CON-VOCAL-1": "Aquel día, el grupo salió al campo …",
   "AGUDAS-CON-VOCAL-2": "Durante el descanso, el grupo compartió …",
   "AGUDAS-CON-VOCAL-3": "En la cabaña, cada cual eligió un lugar …",
   "AGUDAS-EN-GENERAL-1": "Registré canción, compás y razón en mi diario …",
   "AGUDAS-EN-GENERAL-2": "Envié un video corto donde aparecía un colibrí …",
   "AGUDAS-EN-GENERAL-3": "Al llegar a casa, añadí mesa y vida a mi collage visual …",
-  "SOBREESDRUJULAS-1": "Al iniciar la partida, pidió dígamelo sin rodeos …",
-  "SOBREESDRUJULAS-2": "Antes de seguir, escríbeselo en el canal general …",
-  "SOBREESDRUJULAS-3": "Para acceder al segundo nivel, entrégaselo al guardián …",
-  "ESDRUJULAS-1": "Las palabras esdrújulas son aquellas cuya sílaba tónica …",
-  "ESDRUJULAS-2": "Aquel miércoles, mientras el médico revisaba …",
-  "ESDRUJULAS-3": "El prólogo de su charla, breve pero intenso …"
+  "SOBREESDRÚJULAS-1": "Al iniciar la partida, pidió dígamelo sin rodeos …",
+  "SOBREESDRÚJULAS-2": "Antes de seguir, escríbeselo en el canal general …",
+  "SOBREESDRÚJULAS-3": "Para acceder al segundo nivel, entrégaselo al guardián …",
+  "ESDRÚJULAS-1": "Las palabras esdrújulas son aquellas cuya sílaba tónica …",
+  "ESDRÚJULAS-2": "Aquel miércoles, mientras el médico revisaba …",
+  "ESDRÚJULAS-3": "El prólogo de su charla, breve pero intenso …"
 };
 
 // Array con los títulos para crear el selector
@@ -54,25 +54,20 @@ const rutasAudio = {
   "B-V-1":             "audio/B-V (1).wav",
   "B-V-2":             "audio/B-V (2).wav",
   "B-V-3":             "audio/B-V (3).wav",
-  "AGUDAS-N-S-PRETERITOS-1": "audio/AGUDAS N-S Y PRETÉRITOS (1).wav",
-  "AGUDAS-N-S-PRETERITOS-2": "audio/AGUDAS N-S Y PRETÉRITOS (2).wav",
+  "AGUDAS-N-S-PRETÉRITOS-1": "audio/AGUDAS N-S Y PRETÉRITOS (1).wav",
+  "AGUDAS-N-S-PRETÉRITOS-2": "audio/AGUDAS N-S Y PRETÉRITOS (2).wav",
   "AGUDAS-CON-VOCAL-1":      "audio/AGUDAS CON VOCAL (1).wav",
   "AGUDAS-CON-VOCAL-2":      "audio/AGUDAS CON VOCAL (2).wav",
   "AGUDAS-CON-VOCAL-3":      "audio/AGUDAS CON VOCAL (3).wav",
   "AGUDAS-EN-GENERAL-1":     "audio/AGUDAS EN GENERAL 1.wav",
   "AGUDAS-EN-GENERAL-2":     "audio/AGUDAS EN GENERAL 2.wav",
   "AGUDAS-EN-GENERAL-3":     "audio/AGUDAS EN GENERAL 3.wav",
-  "ESDRUJULAS-1":            "audio/ESDRÚJULAS 1.wav",
-  "ESDRUJULAS-2":            "audio/ESDRÚJULAS 2.wav",
-  "ESDRUJULAS-3":            "audio/ESDRÚJULAS 3.wav",
-  "SOBREESDRUJULAS-1":       "audio/SOBREDESDRÚJULAS (1).wav",
-  "SOBREESDRUJULAS-2":       "audio/SOBREDESDRÚJULAS (2).wav",
-  "SOBREESDRUJULAS-3":       "audio/SOBREDESDRÚJULAS (3).wav"
+  "ESDRÚJULAS-1":            "audio/ESDRÚJULAS 1.wav",
+  "ESDRÚJULAS-2":            "audio/ESDRÚJULAS 2.wav",
+  "ESDRÚJULAS-3":            "audio/ESDRÚJULAS 3.wav",
+  "SOBREESDRÚJULAS-1":       "audio/SOBREESDRÚJULAS (1).wav",
+  "SOBREESDRÚJULAS-2":       "audio/SOBREESDRÚJULAS (2).wav",
+  "SOBREESDRÚJULAS-3":       "audio/SOBREESDRÚJULAS (3).wav"
 };
 
-// Ya no necesitas ninguna función `obtenerRutaAudio`.
-//
-// En tu HTML, basta con hacer:
-//     audio.src = rutasAudio[titulo];
-//
-// y así cada archivo se cargará con su nombre exacto.
+
