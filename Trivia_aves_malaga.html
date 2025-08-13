@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia: Aves Mediterráneas de Málaga</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .trivia-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .game-area {
+            padding: 40px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            border-left: 5px solid #2196F3;
+        }
+
+        .question-number {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            line-height: 1.4;
+            color: #333;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-button {
+            padding: 18px 25px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            font-size: 1rem;
+            line-height: 1.4;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .option-button:hover {
+            border-color: #2196F3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.2);
+        }
+
+        .option-button.selected {
+            border-color: #2196F3;
+            background: linear-gradient(45deg, #E3F2FD, #BBDEFB);
+        }
+
+        .option-button.correct {
+            border-color: #4CAF50;
+            background: linear-gradient(45deg, #E8F5E8, #C8E6C9);
+        }
+
+        .option-button.incorrect {
+            border-color: #F44336;
+            background: linear-gradient(45deg, #FFEBEE, #FFCDD2);
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .next-button {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .next-button.show {
+            display: inline-block;
+        }
+
+        .next-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        .results {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            color: #4CAF50;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .restart-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .restart-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .game-area {
+                padding: 20px;
+            }
+            
+            .question-card {
+                padding: 20px;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="trivia-container">
+        <div class="header">
+            <h1>🐦 Aves de Málaga 🐦</h1>
+            <p>Descubre las aves mediterráneas de interior y costa</p>
+        </div>
+
+        <div class="game-area" id="gameArea">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="question-card" id="questionCard">
+                <div class="question-number" id="questionNumber">Pregunta 1 de 10</div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="options"></div>
+            </div>
+
+            <div class="controls">
+                <button class="next-button" id="nextButton" onclick="nextQuestion()">Siguiente Pregunta</button>
+            </div>
+        </div>
+
+        <div class="results" id="results">
+            <h2>🎉 ¡Trivia Completado! 🎉</h2>
+            <div class="score-display" id="scoreDisplay">0/10</div>
+            <p id="resultMessage"></p>
+            <button class="restart-button" onclick="startTrivia()">Jugar de Nuevo</button>
+        </div>
+    </div>
+
+    <script>
+        const PREGUNTAS = [
+            {
+                enunciado: "¿Qué conducta típica del abejaruco europeo facilita la excavación de su nido?",
+                correcta: "Excava túneles largos en taludes arenosos formando colonias ruidosas",
+                incorrectas: [
+                    "Ocupa cavidades de árboles viejos que amplía con el pico",
+                    "Construye nidos colgantes con fibras vegetales sobre el agua"
+                ]
+            },
+            {
+                enunciado: "¿Qué rasgo del cernícalo vulgar permite que 'se quede quieto' en el aire sobre un mismo punto?",
+                correcta: "Un aleteo rápido con vuelo cernido que compensa el viento para otear presas",
+                incorrectas: [
+                    "El uso de bolsas de aire en el plumaje que lo sostienen sin aletear",
+                    "Un planeo circular continuo que siempre lo desplaza respecto al suelo"
+                ]
+            },
+            {
+                enunciado: "En la costa de Málaga, ¿cuándo es más fácil ver alcatraces desde tierra?",
+                correcta: "En invierno, cuando migran y se alimentan frente al litoral",
+                incorrectas: [
+                    "En primavera, durante la incubación en acantilados malagueños",
+                    "Solo en verano, cuando siguen a los bancos de atunes costeros"
+                ]
+            },
+            {
+                enunciado: "¿Qué adaptación del chorlitejo patinegro le ayuda a camuflarse en las playas?",
+                correcta: "Plumaje críptico y comportamiento agachado entre guijarros y dunas",
+                incorrectas: [
+                    "Coloración brillante para confundir a los depredadores",
+                    "Construcción de nidos en arbustos altos fuera de la vista"
+                ]
+            },
+            {
+                enunciado: "¿Qué estrategia de alimentación usa el vuelvepiedras común en el litoral?",
+                correcta: "Voltea piedras y algas para capturar invertebrados ocultos",
+                incorrectas: [
+                    "Se zambulle en aguas profundas para pescar peces",
+                    "Caza insectos al vuelo como los vencejos"
+                ]
+            },
+            {
+                enunciado: "¿Por qué el flamenco común cambia de tono rosado a más pálido a veces?",
+                correcta: "Por variación en la dieta de crustáceos y algas ricas en carotenoides",
+                incorrectas: [
+                    "Porque muda cada mes el plumaje completo",
+                    "Por la exposición directa al sol que 'blanquea' las plumas"
+                ]
+            },
+            {
+                enunciado: "¿Qué rasgo permite al martín pescador detectar presas pese a los reflejos del agua?",
+                correcta: "Visión con filtro natural y ajuste binocular para calcular la refracción",
+                incorrectas: [
+                    "Bigotes sensoriales que detectan vibraciones a distancia",
+                    "Capacidad de emitir ultrasonidos para localizar peces"
+                ]
+            },
+            {
+                enunciado: "En la Serranía de Ronda, ¿qué conducta del roquero solitario delata su territorio?",
+                correcta: "Canta desde cortados rocosos expuestos, realizando vuelos de exhibición",
+                incorrectas: [
+                    "Construye arcos de piedras brillantes frente a la hembra",
+                    "Excava galerías profundas en el suelo donde canta oculto"
+                ]
+            },
+            {
+                enunciado: "¿Qué técnica de caza caracteriza a la garceta común en aguas someras?",
+                correcta: "Corre y agita los pies para levantar pequeñas presas",
+                incorrectas: [
+                    "Se sumerge completamente como un cormorán",
+                    "Caza exclusivamente de noche con visión infrarroja"
+                ]
+            },
+            {
+                enunciado: "¿Cuál es el comportamiento más habitual del cormorán grande tras pescar?",
+                correcta: "Seca las alas abiertas sobre rocas o postes",
+                incorrectas: [
+                    "Se tumba en la arena para regular la temperatura",
+                    "Sacude la cabeza para expulsar agua de la cavidad nasal frontal"
+                ]
+            },
+            {
+                enunciado: "¿Qué hace el alcaraván común cuando se siente amenazado en los llanos agrícolas?",
+                correcta: "Se agacha inmóvil confiando en su camuflaje pardo",
+                incorrectas: [
+                    "Se sube a los árboles y emite cantos de alarma agudos",
+                    "Se lanza al agua cercana y nada bajo la superficie"
+                ]
+            },
+            {
+                enunciado: "¿Qué rasgo del búho real le permite localizar presas en la oscuridad?",
+                correcta: "Audición direccional muy precisa por la asimetría de los oídos",
+                incorrectas: [
+                    "Un radar biológico en el pico que detecta ondas",
+                    "Bioluminiscencia en los ojos que ilumina el entorno"
+                ]
+            },
+            {
+                enunciado: "¿Qué peculiaridad muestra la cogujada común al cantar?",
+                correcta: "Canto prolongado desde el suelo o en vuelos cortos con cresta erguida",
+                incorrectas: [
+                    "Canto solo nocturno y exclusivamente desde perchas altas",
+                    "Silencio total en época de cría para no delatar el nido"
+                ]
+            },
+            {
+                enunciado: "¿Qué comportamiento social es típico del gorrión moruno en zonas agrícolas malagueñas?",
+                correcta: "Forma colonias mixtas en edificaciones y arboledas",
+                incorrectas: [
+                    "Cría solitaria en huecos de acantilados costeros",
+                    "Construye nidos colgantes en carrizales lejos de poblaciones"
+                ]
+            },
+            {
+                enunciado: "¿Qué hace la abubilla con su cresta en situaciones de alerta o cortejo?",
+                correcta: "La despliega en abanico mostrando manchas negras",
+                incorrectas: [
+                    "La vibra produciendo zumbidos audibles",
+                    "La usa para almacenar alimento temporalmente"
+                ]
+            },
+            {
+                enunciado: "¿Qué técnica utiliza la tarabilla europea al alimentarse en matorral?",
+                correcta: "Sale al vuelo desde posaderos bajos para atrapar insectos y regresa al mismo punto",
+                incorrectas: [
+                    "Excava galerías para capturar larvas subterráneas",
+                    "Se alimenta buceando en charcas"
+                ]
+            },
+            {
+                enunciado: "¿Cómo localiza la culebrera europea a sus presas favoritas?",
+                correcta: "Planea alto y detecta serpientes y lagartos a plena luz del día",
+                incorrectas: [
+                    "Caza solo al amanecer entre juncos",
+                    "Se zambulle desde el aire para capturar peces"
+                ]
+            },
+            {
+                enunciado: "¿Qué estrategia de nidificación muestra el charrán patinegro en nuestras costas?",
+                correcta: "Cría en colonias en playas o islas con nidos simples en el suelo",
+                incorrectas: [
+                    "Ocupa cavidades profundas en acantilados terrestres",
+                    "Anida en árboles altos sobre estuarios"
+                ]
+            },
+            {
+                enunciado: "¿Para qué usa el pico el pico picapinos más allá de alimentarse?",
+                correcta: "Tamborilea contra troncos para marcar territorio y atraer pareja",
+                incorrectas: [
+                    "Produce sonidos con la lengua para comunicarse bajo tierra",
+                    "Corta ramitas para construir nidos aéreos colgantes"
+                ]
+            },
+            {
+                enunciado: "¿Qué ventaja le da al vencejo común su morfología alar en forma de hoz?",
+                correcta: "Un vuelo rapidísimo y maniobrable que le permite pasar casi toda la vida en el aire",
+                incorrectas: [
+                    "Un planeo estático sin gasto energético indefinido",
+                    "Capacidad de volar hacia atrás como un colibrí"
+                ]
+            },
+            {
+                enunciado: "¿Cómo se alimenta el abejaruco sin dañarse con los aguijones?",
+                correcta: "Golpea y frota al insecto contra una rama para expulsar el aguijón y las toxinas",
+                incorrectas: [
+                    "Traga las abejas vivas porque es inmune al veneno",
+                    "Saca el aguijón con la lengua prensil"
+                ]
+            },
+            {
+                enunciado: "¿Qué conducta del alcaudón común es inconfundible en setos y espinos?",
+                correcta: "Empala presas en espinas o alambres para almacenarlas",
+                incorrectas: [
+                    "Construye 'hornos' de barro para secar insectos",
+                    "Guarda alimento en bolsas membranosas del buche visibles"
+                ]
+            },
+            {
+                enunciado: "¿Qué comportamiento cooperativo se observa a veces en el milano negro durante la migración?",
+                correcta: "Aprovecha térmicas en grupos y forma amplios bandos planeando juntos",
+                incorrectas: [
+                    "Caza en jaurías organizadas que acorralan presas grandes",
+                    "Se turna para incubar huevos con individuos ajenos a la pareja"
+                ]
+            },
+            {
+                enunciado: "¿Cómo encuentra alimento el cernícalo primilla en paisajes agrarios?",
+                correcta: "Caza grandes insectos desde postes y vuelos a baja altura sobre barbechos",
+                incorrectas: [
+                    "Persigue peces en charcas costeras a nado",
+                    "Busca bellotas enterradas para consumirlas en invierno"
+                ]
+            },
+            {
+                enunciado: "¿Qué conducta oportunista exhibe la gaviota patiamarilla en zonas urbanas?",
+                correcta: "Aprovecha descartes y basuras, y roba alimento a otras aves (cleptoparasitismo)",
+                incorrectas: [
+                    "Se alimenta solo de peces vivos capturados mar adentro",
+                    "Consume exclusivamente algas y plantas marinas"
+                ]
+            },
+            {
+                enunciado: "¿Cómo cazan los charranes sus presas principales?",
+                correcta: "Se lanzan en picado al agua desde cierta altura para capturar peces",
+                incorrectas: [
+                    "Persiguen presas bajo el agua nadando con las patas",
+                    "Aguantan el pescado con las garras como las rapaces"
+                ]
+            },
+            {
+                enunciado: "¿Qué distingue al ruiseñor común al amanecer en sotos y parques ribereños?",
+                correcta: "Un canto muy potente y variado, incluso oculto entre la vegetación",
+                incorrectas: [
+                    "Un reclamo metálico continuo mientras vuela alto en grupos",
+                    "Silencio total en primavera para no delatar el nido"
+                ]
+            },
+            {
+                enunciado: "¿Qué patrón de movimiento estacional sigue el alcatraz en el mar de Alborán?",
+                correcta: "Entrada otoñal–invernal con máximos entre octubre y febrero",
+                incorrectas: [
+                    "Residencia todo el año con cría en acantilados locales",
+                    "Paso exclusivo en junio durante la muda de vuelo"
+                ]
+            },
+            {
+                enunciado: "¿Cómo usa la espátula su pico en forma de cuchara al alimentarse?",
+                correcta: "Lo mueve de lado a lado cribando pequeños organismos en aguas someras",
+                incorrectas: [
+                    "Perfora el lodo con golpes verticales para atrapar cangrejos",
+                    "Corta plantas acuáticas que luego tritura con molares córneos"
+                ]
+            },
+            {
+                enunciado: "¿Qué destaca del vuelo del halcón peregrino cuando caza palomas?",
+                correcta: "Picados a gran velocidad y golpes con las garras para derribar a la presa",
+                incorrectas: [
+                    "Planeo lento con patas extendidas como una cometa",
+                    "Captura de presas ocultas entre arbustos a pie"
+                ]
+            },
+            {
+                enunciado: "¿Cómo pesca el somormujo lavanco en embalses malagueños?",
+                correcta: "Bucea y persigue peces bajo el agua con el cuerpo estilizado",
+                incorrectas: [
+                    "Lanza el pico como arpón desde la orilla",
+                    "Atrapa peces en vuelo como los charranes"
+                ]
+            },
+            {
+                enunciado: "¿Qué comportamiento invernal muestra el bisbita costero en roquedos del litoral?",
+                correcta: "Se mueve pegado a las rompientes buscando invertebrados entre algas",
+                incorrectas: [
+                    "Caza mariposas al vuelo en dunas altas",
+                    "Se posa en árboles altos para cantar de noche"
+                ]
+            }
+        ];
+
+        let preguntasSeleccionadas = [];
+        let preguntaActual = 0;
+        let puntuacion = 0;
+        let respondida = false;
+
+        function mezclarArray(array) {
+            const arrayMezclado = [...array];
+            for (let i = arrayMezclado.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arrayMezclado[i], arrayMezclado[j]] = [arrayMezclado[j], arrayMezclado[i]];
+            }
+            return arrayMezclado;
+        }
+
+        function seleccionarPreguntasAleatorias() {
+            const preguntasMezcladas = mezclarArray(PREGUNTAS);
+            preguntasSeleccionadas = preguntasMezcladas.slice(0, 10);
+        }
+
+        function mostrarPregunta() {
+            if (preguntaActual >= preguntasSeleccionadas.length) {
+                mostrarResultados();
+                return;
+            }
+
+            const pregunta = preguntasSeleccionadas[preguntaActual];
+            document.getElementById('questionNumber').textContent = `Pregunta ${preguntaActual + 1} de 10`;
+            document.getElementById('questionText').textContent = pregunta.enunciado;
+            
+            const opciones = [pregunta.correcta, ...pregunta.incorrectas];
+            const opcionesMezcladas = mezclarArray(opciones);
+            
+            const contenedorOpciones = document.getElementById('options');
+            contenedorOpciones.innerHTML = '';
+            
+            opcionesMezcladas.forEach(opcion => {
+                const button = document.createElement('button');
+                button.className = 'option-button';
+                button.textContent = opcion;
+                button.onclick = () => seleccionarOpcion(button, opcion, pregunta.correcta);
+                contenedorOpciones.appendChild(button);
+            });
+
+            // Actualizar barra de progreso
+            const progreso = ((preguntaActual) / 10) * 100;
+            document.getElementById('progressFill').style.width = progreso + '%';
+            
+            respondida = false;
+            document.getElementById('nextButton').classList.remove('show');
+        }
+
+        function seleccionarOpcion(botonSeleccionado, opcionSeleccionada, respuestaCorrecta) {
+            if (respondida) return;
+            
+            respondida = true;
+            
+            const botones = document.querySelectorAll('.option-button');
+            botones.forEach(boton => {
+                boton.style.pointerEvents = 'none';
+                if (boton.textContent === respuestaCorrecta) {
+                    boton.classList.add('correct');
+                } else if (boton === botonSeleccionado && opcionSeleccionada !== respuestaCorrecta) {
+                    boton.classList.add('incorrect');
+                }
+            });
+            
+            if (opcionSeleccionada === respuestaCorrecta) {
+                puntuacion++;
+            }
+            
+            document.getElementById('nextButton').classList.add('show');
+        }
+
+        function nextQuestion() {
+            preguntaActual++;
+            if (preguntaActual < preguntasSeleccionadas.length) {
+                mostrarPregunta();
+            } else {
+                mostrarResultados();
+            }
+        }
+
+        function mostrarResultados() {
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('results').classList.add('show');
+            document.getElementById('scoreDisplay').textContent = `${puntuacion}/10`;
+            
+            let mensaje;
+            if (puntuacion === 10) {
+                mensaje = "¡Increíble! Eres un experto en aves de Málaga 🦅";
+            } else if (puntuacion >= 8) {
+                mensaje = "¡Excelente! Conoces muy bien las aves mediterráneas 🌟";
+            } else if (puntuacion >= 6) {
+                mensaje = "¡Bien hecho! Tienes buenos conocimientos ornitológicos 👏";
+            } else if (puntuacion >= 4) {
+                mensaje = "No está mal, pero puedes mejorar observando más aves 🔍";
+            } else {
+                mensaje = "¡Hora de salir al campo a observar aves! 🌿";
+            }
+            
+            document.getElementById('resultMessage').textContent = mensaje;
+        }
+
+        function startTrivia() {
+            preguntaActual = 0;
+            puntuacion = 0;
+            seleccionarPreguntasAleatorias();
+            document.getElementById('gameArea').style.display = 'block';
+            document.getElementById('results').classList.remove('show');
+            mostrarPregunta();
+        }
+
+        // Iniciar el trivia al cargar la página
+        window.onload = function() {
+            startTrivia();
+        };
+    </script>
+</body>
+</html>
