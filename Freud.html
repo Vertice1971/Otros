@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Teoría de Freud</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-y: auto; height: auto; min-height: 100vh;
+        }
+
+        /* Identificación fija superior para todas las pantallas */
+        .branding {
+            position: fixed;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            background: rgba(255,255,255,0.92);
+            padding: 6px 12px;
+            border-radius: 999px;
+            text-align: center;
+            line-height: 1.15;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+        .branding small { display: block; font-size: 12px; color: #5b5b5b; }
+        .branding small + small { margin-top: 2px; }
+
+        .presentation { position: relative; width: 100%; height: 100vh; }
+        .slide {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.5s ease-in-out; padding: 40px;
+            pointer-events: none; visibility: hidden;
+        }
+        .slide.active { opacity: 1; pointer-events: auto; visibility: visible; z-index: 1; }
+
+        .slide-content {
+            background: white; border-radius: 20px; padding: 60px;
+            max-width: 1000px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-height: 85vh; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch;
+        }
+        .slide-content::-webkit-scrollbar { width: 10px; }
+        .slide-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .slide-content::-webkit-scrollbar-thumb { background: #667eea; border-radius: 10px; }
+        .slide-content::-webkit-scrollbar-thumb:hover { background: #764ba2; }
+
+        h1 { color: #667eea; margin-bottom: 30px; font-size: 2.5em; text-align: center; }
+        h2 { color: #764ba2; margin-top: 25px; margin-bottom: 15px; font-size: 1.8em; }
+        h3 { color: #667eea; margin-top: 20px; margin-bottom: 10px; font-size: 1.3em; }
+        p, li { color: #333; line-height: 1.8; margin-bottom: 15px; font-size: 1.1em; }
+
+        .example-box {
+            background: #f0f4ff; border-left: 4px solid #667eea;
+            padding: 20px; margin: 20px 0; border-radius: 8px;
+        }
+        .practice-box {
+            background: #fff4e6; border-left: 4px solid #ff9800;
+            padding: 20px; margin: 20px 0; border-radius: 8px;
+        }
+
+        .structure-diagram { display: flex; justify-content: space-around; margin: 30px 0; flex-wrap: wrap; }
+        /* Amarillo oscuro sobrio para los tres bloques */
+        .part {
+            background: linear-gradient(135deg, #b38600 0%, #e6c300 100%);
+            color: #2b1f00;
+            padding: 25px; border-radius: 15px; flex: 1; margin: 10px; min-width: 200px; text-align: center;
+        }
+        .part h3 { color: #2b1f00; }
+
+        .controls {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 20px; z-index: 150;
+        }
+        button {
+            background: white; border: none; padding: 15px 30px; border-radius: 50px;
+            cursor: pointer; font-size: 1.1em; font-weight: bold; color: #667eea;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .counter {
+            position: fixed; top: 30px; right: 30px; background: white;
+            padding: 10px 20px; border-radius: 50px; color: #667eea; font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 150;
+        }
+        ul { margin-left: 25px; }
+        strong { color: #764ba2; }
+
+        /* Soluciones ocultas */
+        .reveal-btn { margin-top: 10px; }
+        .solution { display: none; margin-top: 12px; font-style: italic; }
+        .solution.visible { display: block; }
+    </style>
+</head>
+<body>
+    <!-- Identificación visible en todas las pantallas -->
+    <div class="branding">
+        <small>Tomás Cuesta</small>
+        <small>IES Juan de la Cierva</small>
+    </div>
+
+    <div class="presentation">
+        <div class="counter">
+            <span id="current">1</span> / <span id="total">10</span>
+        </div>
+
+        <!-- 1 -->
+        <div class="slide active">
+            <div class="slide-content">
+                <h1>Teoría de la Personalidad de Sigmund Freud</h1>
+                <h2 style="text-align: center; color: #764ba2; margin-top: 40px;">Y Mecanismos de Defensa</h2>
+                <p style="text-align: center; margin-top: 40px; font-size: 1.2em;">
+                    Una exploración de la estructura de la personalidad y los mecanismos psicológicos de protección
+                </p>
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>El Ello (Id)</h1>
+                <h2>La Parte Primitiva e Instintiva</h2>
+                <p><strong>Características:</strong></p>
+                <ul>
+                    <li>Presente desde el nacimiento</li>
+                    <li>Totalmente inconsciente</li>
+                    <li>Opera bajo el principio del placer (gratificación inmediata)</li>
+                    <li>Contiene impulsos biológicos: hambre, sed, sexualidad, agresión</li>
+                    <li>No entiende de moral, lógica ni tiempo</li>
+                </ul>
+                <div class="example-box">
+                    <h3>Ejemplo</h3>
+                    <p>Un bebé que llora cuando tiene hambre sin importar la hora o el lugar. Su Ello demanda satisfacción inmediata.</p>
+                    <p>En adultos: sentir hambre intensa durante una reunión importante y tener el impulso de comer de inmediato.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>El Superyó (Superego)</h1>
+                <h2>La Parte Moral y Ética</h2>
+                <p><strong>Características:</strong></p>
+                <ul>
+                    <li>Se desarrolla alrededor de los 3-5 años</li>
+                    <li>Parcialmente consciente e inconsciente</li>
+                    <li>Contiene valores morales, normas sociales e ideales</li>
+                    <li>Ideal del yo y conciencia</li>
+                    <li>Genera culpa cuando violamos nuestros valores</li>
+                </ul>
+                <div class="example-box">
+                    <h3>Ejemplo</h3>
+                    <p>Encuentras una billetera con dinero. El Ello dice “quédate con ella”, el Superyó dice “devuélvela”, y el Yo busca contactar al dueño.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>El Yo (Ego)</h1>
+                <h2>La Parte Racional y Ejecutiva</h2>
+                <p><strong>Características:</strong></p>
+                <ul>
+                    <li>Se desarrolla en la infancia temprana</li>
+                    <li>Parcialmente consciente e inconsciente</li>
+                    <li>Opera bajo el principio de realidad</li>
+                    <li>Mediador entre Ello, Superyó y realidad</li>
+                    <li>Pensamiento lógico y toma de decisiones</li>
+                </ul>
+                <div class="example-box">
+                    <h3>Ejemplo</h3>
+                    <p>Hambre en una reunión: el Yo pospone la gratificación y planifica comer después.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Las Tres Partes en Interacción</h1>
+                <div class="structure-diagram">
+                    <div class="part">
+                        <h3>ELLO</h3>
+                        <p>Deseos e impulsos</p>
+                        <p>“Lo quiero ya”</p>
+                    </div>
+                    <div class="part">
+                        <h3>YO</h3>
+                        <p>Razón y realidad</p>
+                        <p>“¿Cómo consigo algo parecido?”</p>
+                    </div>
+                    <div class="part">
+                        <h3>SUPERYÓ</h3>
+                        <p>Moral y valores</p>
+                        <p>“¡Eso NO!”</p>
+                    </div>
+                </div>
+                <p style="margin-top: 30px;"><strong>Personalidad saludable:</strong> equilibrio donde el Yo gestiona Ello, Superyó y realidad.</p>
+                <div class="example-box">
+                    <h3>Ejemplo integrado</h3>
+                    <p><strong>Situación:</strong> te atrae la pareja de tu mejor amigo.</p>
+                    <p><strong>Ello:</strong> “Acércate”.</p>
+                    <p><strong>Superyó:</strong> “Traicionarías”.</p>
+                    <p><strong>Yo:</strong> “Mantén distancia y preserva el vínculo”.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Mecanismos de Defensa</h1>
+                <h2>Protección ante la frustración y la ansiedad</h2>
+                <p><strong>Concepto:</strong> estrategias inconscientes del Yo para reducir ansiedad, conflicto o amenaza a la autoestima.</p>
+                <ul>
+                    <li>Surgen ante frustración de deseos</li>
+                    <li>Conflictos Ello–Yo–Superyó</li>
+                    <li>Amenazas externas o internas</li>
+                    <li>Protección de la autoestima</li>
+                </ul>
+                <p style="margin-top: 20px;"><strong>Nota:</strong> adaptativos con uso flexible; problemáticos si son rígidos o excesivos.</p>
+            </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Mecanismos de Defensa Validados</h1>
+                <h2>1. Represión</h2>
+                <p>Bloqueo inconsciente de contenidos dolorosos fuera de la conciencia.</p>
+                <div class="example-box">
+                    <h3>Ejemplo</h3>
+                    <p>No recordar un evento traumático infantil pese a efectos actuales.</p>
+                </div>
+
+                <h2>2. Negación</h2>
+                <p>Rehusar aceptar una realidad amenazante.</p>
+                <div class="example-box">
+                    <h3>Ejemplo</h3>
+                    <p>Minimizar un diagnóstico grave y seguir como si nada.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Mecanismos de Defensa Validados</h1>
+                <h2>3. Proyección</h2>
+                <p>Atribuir a otros nuestros propios impulsos o sentimientos inaceptables.</p>
+                <div class="example-box">
+                    <h3>Ejemplo</h3>
+                    <p>Acusar de infidelidad a la pareja por la propia atracción hacia terceros.</p>
+                </div>
+
+                <h2>4. Racionalización</h2>
+                <p>Justificar con razones aceptables conductas o emociones inaceptables.</p>
+                <div class="example-box">
+                    <h3>Ejemplo</h3>
+                    <p>Tras no conseguir un empleo, descalificar a la empresa para proteger la autoestima.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Mecanismos de Defensa Validados</h1>
+                <h2>5. Desplazamiento</h2>
+                <p>Redirigir emociones hacia un blanco más seguro o accesible.</p>
+                <div class="example-box">
+                    <h3>Ejemplo</h3>
+                    <p>Ser reprendido por el jefe y descargar la irritación en casa por un detalle menor.</p>
+                </div>
+
+                <h2>6. Sublimación</h2>
+                <p>Canalizar impulsos hacia metas socialmente valiosas.</p>
+                <div class="example-box">
+                    <h3>Ejemplo</h3>
+                    <p>Transformar agresividad en entrenamiento deportivo o creación artística.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>Práctica: Identifica los mecanismos</h1>
+
+                <div class="practice-box">
+                    <h3>Ejercicio 1</h3>
+                    <p><strong>Situación:</strong> María suspende un examen importante.</p>
+                    <p><strong>Reacción:</strong> “El profesor me tiene manía y las preguntas eran trampa”.</p>
+                    <button class="reveal-btn">Ver solución</button>
+                    <div class="solution"><strong>Solución:</strong> Racionalización y/o Proyección.</div>
+                </div>
+
+                <div class="practice-box">
+                    <h3>Ejercicio 2</h3>
+                    <p><strong>Situación:</strong> Juan siente atracción por su compañera de trabajo y está casado.</p>
+                    <p><strong>Reacción:</strong> Se vuelca en el running y compite cada fin de semana.</p>
+                    <button class="reveal-btn">Ver solución</button>
+                    <div class="solution"><strong>Solución:</strong> Sublimación.</div>
+                </div>
+
+                <div class="practice-box">
+                    <h3>Ejercicio 3</h3>
+                    <p><strong>Situación:</strong> Ana sospecha que tiene un problema de adicción al trabajo.</p>
+                    <p><strong>Reacción:</strong> “No trabajo tanto; todos en mi empresa hacen lo mismo”.</p>
+                    <button class="reveal-btn">Ver solución</button>
+                    <div class="solution"><strong>Solución:</strong> Negación.</div>
+                </div>
+
+                <div class="practice-box">
+                    <h3>Ejercicio 4</h3>
+                    <p><strong>Situación:</strong> Pedro recibe una reprimenda injusta del jefe.</p>
+                    <p><strong>Reacción:</strong> Llega a casa y discute airadamente por algo trivial.</p>
+                    <button class="reveal-btn">Ver solución</button>
+                    <div class="solution"><strong>Solución:</strong> Desplazamiento.</div>
+                </div>
+
+                <div class="practice-box">
+                    <h3>Ejercicio 5</h3>
+                    <p><strong>Situación:</strong> Laura ya no desea continuar su relación.</p>
+                    <p><strong>Reacción:</strong> Acusa repetidamente a su pareja de querer dejarla.</p>
+                    <button class="reveal-btn">Ver solución</button>
+                    <div class="solution"><strong>Solución:</strong> Proyección.</div>
+                </div>
+
+                <div class="practice-box">
+                    <h3>Ejercicio 6</h3>
+                    <p><strong>Situación:</strong> Tras un accidente, Carlos evita hablar del tema.</p>
+                    <p><strong>Reacción:</strong> No recuerda detalles clave aunque testigos confirman que estaba consciente.</p>
+                    <button class="reveal-btn">Ver solución</button>
+                    <div class="solution"><strong>Solución:</strong> Represión.</div>
+                </div>
+
+                <div class="practice-box">
+                    <h3>Ejercicio 7</h3>
+                    <p><strong>Situación:</strong> No seleccionan a Sofía en un proceso.</p>
+                    <p><strong>Reacción:</strong> “Mejor así; esa empresa no tiene futuro”.</p>
+                    <button class="reveal-btn">Ver solución</button>
+                    <div class="solution"><strong>Solución:</strong> Racionalización.</div>
+                </div>
+
+                <div class="practice-box">
+                    <h3>Ejercicio 8</h3>
+                    <p><strong>Situación:</strong> Diagnóstico de una dolencia que requiere tratamiento.</p>
+                    <p><strong>Reacción:</strong> “No es para tanto; no voy a cambiar nada”.</p>
+                    <button class="reveal-btn">Ver solución</button>
+                    <div class="solution"><strong>Solución:</strong> Negación.</div>
+                </div>
+
+                <div class="practice-box">
+                    <h3>Ejercicio 9</h3>
+                    <p><strong>Situación:</strong> Impulsos agresivos recurrentes.</p>
+                    <p><strong>Reacción:</strong> Se inscribe en boxeo y colabora como monitor deportivo.</p>
+                    <button class="reveal-btn">Ver solución</button>
+                    <div class="solution"><strong>Solución:</strong> Sublimación.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="prev" onclick="previousSlide()">← Anterior</button>
+        <button id="next" onclick="nextSlide()">Siguiente →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('current').textContent = currentSlide + 1;
+            document.getElementById('prev').disabled = currentSlide === 0;
+            document.getElementById('next').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) showSlide(currentSlide + 1);
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) showSlide(currentSlide - 1);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') { e.preventDefault(); nextSlide(); }
+            if (e.key === 'ArrowLeft')  { e.preventDefault(); previousSlide(); }
+        });
+
+        function wireRevealButtons(root=document) {
+            const btns = root.querySelectorAll('.reveal-btn');
+            btns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const sol = this.nextElementSibling;
+                    const visible = sol.classList.toggle('visible');
+                    this.textContent = visible ? 'Ocultar solución' : 'Ver solución';
+                }, { passive: true });
+            });
+        }
+        wireRevealButtons();
+
+        showSlide(0);
+    </script>
+</body>
+</html>
