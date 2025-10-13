@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repaso de Filosofía - Unidad 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .setup-screen, .quiz-screen, .results-screen {
+            display: none;
+        }
+
+        .setup-screen.active, .quiz-screen.active, .results-screen.active {
+            display: block;
+        }
+
+        .slider-container {
+            margin: 30px 0;
+        }
+
+        .slider-container label {
+            display: block;
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .slider-value {
+            display: block;
+            text-align: center;
+            font-size: 2em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #764ba2;
+            transform: scale(1.2);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            transition: 0.3s;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            display: block;
+            margin: 30px auto;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .question-counter {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .question {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .question h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #e8ecff;
+        }
+
+        .option.correct {
+            border-color: #28a745;
+            background: #d4edda;
+            font-weight: bold;
+        }
+
+        .option.incorrect {
+            border-color: #dc3545;
+            background: #f8d7da;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.9;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            animation: slideIn 0.5s ease;
+        }
+
+        .feedback.correct-feedback {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+
+        .feedback.incorrect-feedback {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .option input[type="radio"] {
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .results-screen {
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 30px auto;
+            color: white;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .score-circle .score {
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .score-circle .label {
+            font-size: 1.2em;
+            margin-top: 5px;
+        }
+
+        .results-message {
+            font-size: 1.5em;
+            color: #333;
+            margin: 20px 0;
+        }
+
+        .results-details {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .results-details p {
+            margin: 10px 0;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .score-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .score-circle .score {
+                font-size: 2.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Repaso de Filosofía</h1>
+        <p class="subtitle">Unidad 1: ¿Qué es filosofía?</p>
+
+        <!-- Pantalla de configuración -->
+        <div class="setup-screen active">
+            <div class="slider-container">
+                <label for="numQuestions">Selecciona el número de preguntas:</label>
+                <div class="slider-value" id="sliderValue">10</div>
+                <input type="range" id="numQuestions" min="5" max="20" value="10" step="1">
+            </div>
+            <button onclick="startQuiz()">Comenzar Test</button>
+        </div>
+
+        <!-- Pantalla del cuestionario -->
+        <div class="quiz-screen">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="question-counter" id="questionCounter"></div>
+            <div id="questionContainer"></div>
+            <button onclick="nextQuestion()" id="nextBtn">Siguiente</button>
+        </div>
+
+        <!-- Pantalla de resultados -->
+        <div class="results-screen">
+            <h2>¡Test Completado!</h2>
+            <div class="score-circle">
+                <div class="score" id="finalScore">0/0</div>
+                <div class="label">Aciertos</div>
+            </div>
+            <div class="results-message" id="resultsMessage"></div>
+            <div class="results-details">
+                <p><strong>Total de preguntas:</strong> <span id="totalQuestions">0</span></p>
+                <p><strong>Respuestas correctas:</strong> <span id="correctAnswers">0</span></p>
+                <p><strong>Respuestas incorrectas:</strong> <span id="incorrectAnswers">0</span></p>
+                <p><strong>Porcentaje:</strong> <span id="percentage">0%</span></p>
+            </div>
+            <button onclick="resetQuiz()">Volver a empezar</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { q: "La palabra 'filosofía' proviene del griego y significa:", options: ["Amor a la sabiduría", "Estudio de la naturaleza", "Ciencia de la religión"], correct: 0 },
+            { q: "Según Kant, no se aprende filosofía sino:", options: ["A discutir", "A filosofar", "A enseñar"], correct: 1 },
+            { q: "El filósofo que decía 'solo sé que no sé nada' fue:", options: ["Aristóteles", "Sócrates", "Platón"], correct: 1 },
+            { q: "El pensamiento racional surgió históricamente en:", options: ["Grecia", "Roma", "Egipto"], correct: 0 },
+            { q: "El paso del mito al logos se produjo en torno al siglo:", options: ["IX a.C.", "VII a.C.", "V a.C."], correct: 1 },
+            { q: "'Logos' significa principalmente:", options: ["Palabra, razón y ley", "Emoción y sentimiento", "Tradición y costumbre"], correct: 0 },
+            { q: "La explicación mítica se caracteriza por:", options: ["Ser racional y empírica", "Ser imaginaria y sobrenatural", "Basarse en experimentos"], correct: 1 },
+            { q: "Un mito cosmogónico explica:", options: ["El origen de los dioses", "El origen del mundo", "El origen de una costumbre"], correct: 1 },
+            { q: "La Teogonía de Hesíodo narra:", options: ["El origen del mundo", "El origen de los dioses", "El mito de Eros"], correct: 1 },
+            { q: "Un mito etiológico explica:", options: ["El nacimiento de un héroe", "La aparición de una parte de la realidad", "Las leyes naturales"], correct: 1 },
+            { q: "En el mito de Prometeo se explica:", options: ["La creación del alma", "El origen del fuego", "El nacimiento de Atenea"], correct: 1 },
+            { q: "La filosofía como actitud se llama:", options: ["Filosofar", "Pensamiento", "Teoría"], correct: 0 },
+            { q: "La filosofía como visión del mundo se denomina:", options: ["Mito", "Filosofía(s)", "Ciencia"], correct: 1 },
+            { q: "La capacidad de admiración fue destacada por:", options: ["Platón y Aristóteles", "Descartes y Kant", "Hume y Locke"], correct: 0 },
+            { q: "El reconocimiento de la propia ignorancia aparece en:", options: ["La República", "El Banquete", "La Ética a Nicómaco"], correct: 1 },
+            { q: "En el mito del nacimiento de Eros, sus padres son:", options: ["Zeus y Hera", "Poros y Penia", "Ares y Afrodita"], correct: 1 },
+            { q: "Eros simboliza el punto intermedio entre:", options: ["Amor y odio", "Sabiduría e ignorancia", "Vida y muerte"], correct: 1 },
+            { q: "La filosofía surge en Grecia por un conjunto de factores:", options: ["Económicos, sociales y políticos", "Militares y religiosos", "Culturales y mágicos"], correct: 0 },
+            { q: "El comercio influyó porque:", options: ["Cerró a Grecia al exterior", "Permitió conocer otros mitos y culturas", "Provocó crisis económicas"], correct: 1 },
+            { q: "El surgimiento de la democracia favoreció:", options: ["El pensamiento racional", "El dogmatismo religioso", "El aislamiento político"], correct: 0 },
+            { q: "Según Aristóteles, el origen de la filosofía fue:", options: ["La necesidad", "La admiración", "El miedo"], correct: 1 },
+            { q: "El término 'logos' implica una comprensión:", options: ["Sensorial", "Racional", "Mítica"], correct: 1 },
+            { q: "La explicación mítica es:", options: ["Extratemporal y alegórica", "Rigurosa y empírica", "Matemática y experimental"], correct: 0 },
+            { q: "La filosofía es un saber:", options: ["Dogmático", "Reflexivo", "Empírico"], correct: 1 },
+            { q: "La filosofía teórica busca:", options: ["Explicar lo real", "Modificar leyes", "Organizar la sociedad"], correct: 0 },
+            { q: "La filosofía práctica busca:", options: ["Explicaciones científicas", "Orientar la acción humana", "Conocer el cosmos"], correct: 1 },
+            { q: "Según Kant, las cuatro preguntas filosóficas son:", options: ["¿Qué puedo conocer? ¿Qué debo hacer? ¿Qué me cabe esperar? ¿Qué es el ser humano?", "¿Qué es el alma? ¿Qué es Dios? ¿Qué es la naturaleza? ¿Qué es la sociedad?", "¿Qué pienso? ¿Qué deseo? ¿Qué sueño? ¿Qué hago?"], correct: 0 },
+            { q: "La ética estudia:", options: ["El conocimiento", "El bien y el mal", "El arte y la belleza"], correct: 1 },
+            { q: "'Ética' proviene del griego 'ethos', que significa:", options: ["Razón", "Carácter", "Conducta"], correct: 1 },
+            { q: "La política se ocupa del:", options: ["Bien común", "Amor al saber", "Estudio del alma"], correct: 0 },
+            { q: "La polis era:", options: ["Una asamblea militar", "La ciudad-estado griega", "El conjunto de filósofos"], correct: 1 },
+            { q: "La ontología estudia:", options: ["El ser en cuanto ser", "El conocimiento científico", "Las leyes naturales"], correct: 0 },
+            { q: "La palabra 'onto' significa:", options: ["Sabiduría", "Ser o entidad", "Conocimiento"], correct: 1 },
+            { q: "La epistemología significa:", options: ["Teoría del conocimiento", "Ciencia del ser", "Estudio del lenguaje"], correct: 0 },
+            { q: "'Episteme' significa:", options: ["Conocimiento", "Belleza", "Orden"], correct: 0 },
+            { q: "La lógica se define como la ciencia que estudia:", options: ["Los valores morales", "Las leyes del pensamiento", "El alma humana"], correct: 1 },
+            { q: "La estética se ocupa de:", options: ["Lo bello y el arte", "Lo verdadero", "La moral"], correct: 0 },
+            { q: "El método dialógico o socrático consiste en:", options: ["La observación empírica", "El diálogo argumentado", "La introspección silenciosa"], correct: 1 },
+            { q: "Sócrates no escribió libros, sino que:", options: ["Fundó una escuela", "Dialogaba con sus alumnos", "Rechazaba la enseñanza"], correct: 1 },
+            { q: "Los diálogos socráticos fueron redactados por:", options: ["Aristóteles", "Platón", "Kant"], correct: 1 },
+            { q: "El 'milagro griego' fue defendido por:", options: ["Burnet", "Cornford", "Vernant"], correct: 0 },
+            { q: "La teoría del 'milagro griego' hoy se considera:", options: ["Vigente", "Superada", "Empíricamente probada"], correct: 1 },
+            { q: "Según Marvin Harris, los mitos cumplen una función:", options: ["Política exclusivamente", "Social y material", "Meramente estética"], correct: 1 },
+            { q: "En el ejemplo de la vaca sagrada, la prohibición de comer carne:", options: ["Es irracional", "Tiene sentido económico y social", "Proviene del islam"], correct: 1 },
+            { q: "El filósofo que redujo la filosofía a cuatro preguntas fue:", options: ["Kant", "Aristóteles", "Hegel"], correct: 0 },
+            { q: "Para Aristóteles, se filosofa para:", options: ["Ganar poder", "Librarse de la ignorancia", "Obtener placer"], correct: 1 },
+            { q: "Para Kant, la filosofía debe:", options: ["Dignificar a la humanidad", "Rechazar la razón", "Negar la moral"], correct: 0 },
+            { q: "La filosofía como práctica actual incluye:", options: ["Café filosófico y diálogo socrático", "Matemáticas aplicadas", "Observación científica"], correct: 0 },
+            { q: "La 'filosofía para niños' es un ejemplo de:", options: ["Lógica formal", "Práctica filosófica", "Ontología aplicada"], correct: 1 },
+            { q: "Según Adela Cortina, el filósofo debe:", options: ["Aislarse del mundo", "Pensar para la sociedad", "Rechazar la acción"], correct: 1 }
+        ];
+
+        let selectedQuestions = [];
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+        let answered = false;
+
+        const slider = document.getElementById('numQuestions');
+        const sliderValue = document.getElementById('sliderValue');
+
+        slider.addEventListener('input', function() {
+            sliderValue.textContent = this.value;
+        });
+
+        function startQuiz() {
+            const numQuestions = parseInt(slider.value);
+            selectedQuestions = getRandomQuestions(numQuestions);
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            answered = false;
+            
+            document.querySelector('.setup-screen').classList.remove('active');
+            document.querySelector('.quiz-screen').classList.add('active');
+            
+            showQuestion();
+        }
+
+        function getRandomQuestions(num) {
+            const shuffled = [...questions].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, num);
+        }
+
+        function showQuestion() {
+            answered = false;
+            const question = selectedQuestions[currentQuestion];
+            const progress = ((currentQuestion) / selectedQuestions.length) * 100;
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('questionCounter').textContent = `Pregunta ${currentQuestion + 1} de ${selectedQuestions.length}`;
+            
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.textContent = currentQuestion === selectedQuestions.length - 1 ? 'Ver Resultados' : 'Siguiente';
+            nextBtn.disabled = false;
+            
+            const container = document.getElementById('questionContainer');
+            container.innerHTML = `
+                <div class="question">
+                    <h3>${question.q}</h3>
+                    <div class="options">
+                        ${question.options.map((option, index) => `
+                            <label class="option" onclick="selectOption(${index})">
+                                <input type="radio" name="answer" value="${index}">
+                                <span>${option}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedbackContainer"></div>
+                </div>
+            `;
+        }
+
+        function selectOption(index) {
+            if (answered) return;
+            
+            const options = document.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                opt.classList.remove('selected');
+                if (i === index) {
+                    opt.classList.add('selected');
+                    opt.querySelector('input').checked = true;
+                }
+            });
+        }
+
+        function nextQuestion() {
+            const selected = document.querySelector('input[name="answer"]:checked');
+            
+            if (!selected && !answered) {
+                alert('Por favor, selecciona una respuesta');
+                return;
+            }
+
+            const question = selectedQuestions[currentQuestion];
+
+            if (!answered) {
+                // Primera vez que se presiona el botón: verificar respuesta
+                const answer = parseInt(selected.value);
+                userAnswers.push(answer);
+                answered = true;
+
+                const isCorrect = answer === question.correct;
+                if (isCorrect) {
+                    score++;
+                }
+
+                // Marcar visualmente las opciones
+                const options = document.querySelectorAll('.option');
+                options.forEach((opt, i) => {
+                    opt.classList.add('disabled');
+                    if (i === question.correct) {
+                        opt.classList.add('correct');
+                    } else if (i === answer && !isCorrect) {
+                        opt.classList.add('incorrect');
+                    }
+                });
+
+                // Mostrar feedback
+                const feedbackContainer = document.getElementById('feedbackContainer');
+                if (isCorrect) {
+                    feedbackContainer.innerHTML = `
+                        <div class="feedback correct-feedback">
+                            ✓ ¡Correcto! Muy bien
+                        </div>
+                    `;
+                } else {
+                    feedbackContainer.innerHTML = `
+                        <div class="feedback incorrect-feedback">
+                            ✗ Incorrecto. La respuesta correcta es: <br><strong>${question.options[question.correct]}</strong>
+                        </div>
+                    `;
+                }
+
+                // Cambiar texto del botón
+                const nextBtn = document.getElementById('nextBtn');
+                nextBtn.textContent = currentQuestion === selectedQuestions.length - 1 ? 'Ver Resultados' : 'Continuar';
+            } else {
+                // Segunda vez: pasar a la siguiente pregunta
+                currentQuestion++;
+
+                if (currentQuestion < selectedQuestions.length) {
+                    showQuestion();
+                } else {
+                    showResults();
+                }
+            }
+        }
+
+        function showResults() {
+            document.querySelector('.quiz-screen').classList.remove('active');
+            document.querySelector('.results-screen').classList.add('active');
+            
+            const percentage = Math.round((score / selectedQuestions.length) * 100);
+            
+            document.getElementById('finalScore').textContent = `${score}/${selectedQuestions.length}`;
+            document.getElementById('totalQuestions').textContent = selectedQuestions.length;
+            document.getElementById('correctAnswers').textContent = score;
+            document.getElementById('incorrectAnswers').textContent = selectedQuestions.length - score;
+            document.getElementById('percentage').textContent = percentage + '%';
+            
+            let message = '';
+            if (percentage >= 90) {
+                message = '¡Excelente! Dominas el tema perfectamente 🌟';
+            } else if (percentage >= 70) {
+                message = '¡Muy bien! Tienes un buen conocimiento 👏';
+            } else if (percentage >= 50) {
+                message = 'Bien, pero puedes mejorar 📚';
+            } else {
+                message = 'Necesitas repasar más el tema 💪';
+            }
+            
+            document.getElementById('resultsMessage').textContent = message;
+        }
+
+        function resetQuiz() {
+            document.querySelector('.results-screen').classList.remove('active');
+            document.querySelector('.setup-screen').classList.add('active');
+        }
+    </script>
+</body>
+</html>
