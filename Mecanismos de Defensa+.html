@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mecanismos de Defensa Psicológicos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            height: 100vh;
+        }
+        .container { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+        .slide {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 20px; opacity: 0; transform: translateX(100%); transition: all 0.5s ease-in-out;
+        }
+        .slide.active { opacity: 1; transform: translateX(0); }
+        .slide.prev { transform: translateX(-100%); }
+        .card {
+            background: white; border-radius: 20px; padding: 30px; max-width: 500px; width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: slideIn 0.6s ease-out;
+        }
+        @keyframes slideIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1); } }
+        h1 { color: #667eea; font-size: 2em; margin-bottom: 15px; text-align: center; }
+        h2 { color: #764ba2; font-size: 1.5em; margin-bottom: 15px; text-align: center; }
+        .emoji { font-size: 3em; text-align: center; margin-bottom: 15px; }
+        p, li { color: #333; line-height: 1.6; margin-bottom: 10px; font-size: 1em; }
+        .example { background: #f0f4ff; padding: 15px; border-radius: 10px; margin: 15px 0; border-left: 4px solid #667eea; }
+        .quiz-option {
+            background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 10px; padding: 15px; margin: 10px 0;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .quiz-option:hover { background: #e8eeff; border-color: #667eea; transform: translateX(5px); }
+        .quiz-option.correct { background: #d4edda; border-color: #28a745; }
+        .quiz-option.incorrect { background: #f8d7da; border-color: #dc3545; }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 15px 30px;
+            border-radius: 25px; font-size: 1.1em; cursor: pointer; margin-top: 20px; transition: transform 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .navigation { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; }
+        .nav-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.3s; }
+        .nav-dot.active { background: white; width: 30px; border-radius: 5px; }
+        .score-display {
+            position: fixed; top: 20px; right: 20px; background: white; padding: 10px 20px; border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); font-weight: bold; color: #667eea;
+        }
+        .progress-bar { width: 100%; height: 8px; background: #e0e0e0; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); transition: width 0.5s ease; }
+        ul { margin-left: 20px; }
+        .final-score { text-align: center; font-size: 3em; color: #667eea; margin: 20px 0; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-10px);} }
+
+        /* Cabecera fija centrada con nombre y centro */
+        .brand-top {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            font-size: 12px;
+            line-height: 1.2;
+            color: black;
+            pointer-events: none;
+            user-select: none;
+            text-align: center;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+            padding: 2px 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="score-display" id="scoreDisplay">🏆 Puntos: 0/15</div>
+
+    <!-- Cabecera fija centrada -->
+    <div class="brand-top">
+        Tomás Cuesta<br>IES Juan de la Cierva
+    </div>
+    
+    <div class="container" id="container">
+        <!-- 0: Bienvenida -->
+        <div class="slide active" data-index="0">
+            <div class="card">
+                <div class="emoji">🧠✨</div>
+                <h1>Mecanismos de Defensa</h1>
+                <p style="text-align: center;">Descubre cómo tu mente se protege del estrés y la ansiedad de formas sorprendentes.</p>
+                <p style="text-align: center; margin-top: 15px;">Aprenderás 9 mecanismos con ejemplos y ejercicios interactivos.</p>
+                <button class="btn" onclick="nextSlide()">¡Comenzar! 🚀</button>
+            </div>
+        </div>
+
+        <!-- 1: Represión -->
+        <div class="slide" data-index="1">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 6%"></div></div>
+                <div class="emoji">🔒</div>
+                <h2>1. Represión</h2>
+                <p><strong>¿Qué es?</strong> Exclusión inconsciente de contenidos (recuerdos, deseos, ideas) inaceptables para la conciencia. La energía afectiva se mantiene pero el contenido queda fuera de lo consciente.</p>
+                <div class="example"><strong>Ejemplo:</strong> No recordar un abuso infantil o una humillación intensa pese a existir señales indirectas del suceso.</div>
+                <ul>
+                    <li><strong>Función:</strong> Reducir la ansiedad primaria evitando la irrupción del conflicto.</li>
+                    <li><strong>Riesgo:</strong> Retornos disfrazados (sueños, lapsus, síntomas).</li>
+                </ul>
+                <button class="btn" onclick="nextSlide()">Siguiente ➡️</button>
+            </div>
+        </div>
+
+        <!-- 1: Quiz Represión -->
+        <div class="slide" data-index="2">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 12%"></div></div>
+                <h2>🎯 Ejercicio: Represión</h2>
+                <p>¿Cuál de estos casos es un ejemplo de represión?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">A) Olvidar una cita por no apuntarla</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">B) No recordar un accidente grave vivido</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">C) Evitar pensar en un examen distrayéndose con videojuegos</div>
+                <button class="btn" id="btn2" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <!-- 2: Negación -->
+        <div class="slide" data-index="3">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 18%"></div></div>
+                <div class="emoji">🙈</div>
+                <h2>2. Negación</h2>
+                <p><strong>¿Qué es?</strong> Rehusar reconocer percepciones o hechos dolorosos de la realidad externa o interna (“esto no está pasando”).</p>
+                <div class="example"><strong>Ejemplo:</strong> Tras un diagnóstico grave, insistir en que “todo está perfecto” y actuar como si no existiera problema alguno.</div>
+                <ul>
+                    <li><strong>Función:</strong> Amortiguar el impacto inicial de una amenaza.</li>
+                    <li><strong>Riesgo:</strong> Retrasar decisiones o tratamientos necesarios.</li>
+                </ul>
+                <button class="btn" onclick="nextSlide()">Siguiente ➡️</button>
+            </div>
+        </div>
+
+        <!-- 2: Quiz Negación -->
+        <div class="slide" data-index="4">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 24%"></div></div>
+                <h2>🎯 Ejercicio: Negación</h2>
+                <p>Identifica la negación:</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">A) “Tengo miedo; lo hablaré con alguien”</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">B) “No pasa nada, los médicos exageran”</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">C) “Sé que me duele, pero puedo afrontarlo”</div>
+                <button class="btn" id="btn4" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <!-- 3: Proyección -->
+        <div class="slide" data-index="5">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 30%"></div></div>
+                <div class="emoji">🪞</div>
+                <h2>3. Proyección</h2>
+                <p><strong>¿Qué es?</strong> Atribuir a otros impulsos, deseos o afectos propios que resultan inaceptables.</p>
+                <div class="example"><strong>Ejemplo:</strong> Sentir hostilidad y afirmar que “los demás me odian”.</div>
+                <ul>
+                    <li><strong>Función:</strong> Mantener la autoimagen limpia desplazando la fuente del conflicto.</li>
+                    <li><strong>Riesgo:</strong> Distorsión de relaciones y conflictos interpersonales.</li>
+                </ul>
+                <button class="btn" onclick="nextSlide()">Siguiente ➡️</button>
+            </div>
+        </div>
+
+        <!-- 3: Quiz Proyección -->
+        <div class="slide" data-index="6">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 36%"></div></div>
+                <h2>🎯 Ejercicio: Proyección</h2>
+                <p>¿Qué frase muestra proyección?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">A) “Estoy nervioso, necesito respirar”</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">B) “Todos aquí son hostiles conmigo”</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">C) “Hoy me siento vulnerable”</div>
+                <button class="btn" id="btn6" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <!-- 4: Introyección/Identificación -->
+        <div class="slide" data-index="7">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 42%"></div></div>
+                <div class="emoji">🎭</div>
+                <h2>4. Introyección/Identificación</h2>
+                <p><strong>¿Qué es?</strong> Incorporar rasgos, normas o valores de otra persona para manejar ansiedad o pérdida y fortalecer el yo.</p>
+                <div class="example"><strong>Ejemplo:</strong> Adoptar la disciplina de un mentor exigente para sentirse capaz ante retos.</div>
+                <ul>
+                    <li><strong>Función:</strong> Regulación de autoestima y pertenencia.</li>
+                    <li><strong>Riesgo:</strong> Rigidez o pérdida de autenticidad si se exagera.</li>
+                </ul>
+                <button class="btn" onclick="nextSlide()">Siguiente ➡️</button>
+            </div>
+        </div>
+
+        <!-- 4: Quiz Introyección -->
+        <div class="slide" data-index="8">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 48%"></div></div>
+                <h2>🎯 Ejercicio: Introyección</h2>
+                <p>¿Cuál es un caso de introyección?</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">A) Un alumno adopta el rigor de su profesora y replica sus frases</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">B) Evitar a alguien que recuerda a otra persona</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">C) Acusar a otros de los propios fallos</div>
+                <button class="btn" id="btn8" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <!-- 5: Desplazamiento -->
+        <div class="slide" data-index="9">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 54%"></div></div>
+                <div class="emoji">🎯</div>
+                <h2>5. Desplazamiento</h2>
+                <p><strong>¿Qué es?</strong> Transferir una emoción o impulso desde un objeto/figura amenazante a otro más seguro o accesible.</p>
+                <div class="example"><strong>Ejemplo:</strong> Tras una bronca con el jefe, enfadarse con la pareja o con el perro.</div>
+                <ul>
+                    <li><strong>Función:</strong> Descarga afectiva sin afrontar la fuente real.</li>
+                    <li><strong>Riesgo:</strong> Injusticia con terceros, mantenimiento del conflicto original.</li>
+                </ul>
+                <button class="btn" onclick="nextSlide()">Siguiente ➡️</button>
+            </div>
+        </div>
+
+        <!-- 5: Quiz Desplazamiento -->
+        <div class="slide" data-index="10">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 60%"></div></div>
+                <h2>🎯 Ejercicio: Desplazamiento</h2>
+                <p>Elige el mejor ejemplo:</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">A) Criticar a un amigo tras ser rechazado por alguien con poder</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">B) Reconocer el enfado y hablar con el jefe</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">C) Evitar pensar en el problema viendo una serie</div>
+                <button class="btn" id="btn10" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <!-- 6: Racionalización -->
+        <div class="slide" data-index="11">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 66%"></div></div>
+                <div class="emoji">🧩</div>
+                <h2>6. Racionalización</h2>
+                <p><strong>¿Qué es?</strong> Ofrecer explicaciones lógicas y aceptables para conductas o resultados motivados por causas que generan malestar.</p>
+                <div class="example"><strong>Ejemplo:</strong> “No quería ese puesto; por eso no me importa haberlo perdido”.</div>
+                <ul>
+                    <li><strong>Función:</strong> Proteger la autoestima con narrativas coherentes.</li>
+                    <li><strong>Riesgo:</strong> Autoengaño que impide aprender de los errores.</li>
+                </ul>
+                <button class="btn" onclick="nextSlide()">Siguiente ➡️</button>
+            </div>
+        </div>
+
+        <!-- 6: Quiz Racionalización -->
+        <div class="slide" data-index="12">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 72%"></div></div>
+                <h2>🎯 Ejercicio: Racionalización</h2>
+                <p>Señala la racionalización:</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">A) “Suspendí porque el examen no valía la pena”</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">B) “No estudié; asumiré las consecuencias”</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">C) “Necesito planificar mejor la próxima vez”</div>
+                <button class="btn" id="btn12" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <!-- 7: Regresión -->
+        <div class="slide" data-index="13">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 78%"></div></div>
+                <div class="emoji">🧸</div>
+                <h2>7. Regresión</h2>
+                <p><strong>¿Qué es?</strong> Retorno a patrones conductuales más infantiles o primitivos ante el estrés (búsqueda de seguridad conocida).</p>
+                <div class="example"><strong>Ejemplo:</strong> Un adulto que, tras una discusión, llora y demanda consuelo como un niño.</div>
+                <ul>
+                    <li><strong>Función:</strong> Alivio inmediato de tensión.</li>
+                    <li><strong>Riesgo:</strong> Deterioro de afrontamiento adulto si se cronifica.</li>
+                </ul>
+                <button class="btn" onclick="nextSlide()">Siguiente ➡️</button>
+            </div>
+        </div>
+
+        <!-- 7: Quiz Regresión -->
+        <div class="slide" data-index="14">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 84%"></div></div>
+                <h2>🎯 Ejercicio: Regresión</h2>
+                <p>Escoge el ejemplo de regresión:</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">A) Hacer deporte para liberar tensión</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">B) Tirarse al suelo y patalear tras una crítica</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">C) Analizar el problema con calma</div>
+                <button class="btn" id="btn14" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <!-- 8: Fantasía -->
+        <div class="slide" data-index="15">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 90%"></div></div>
+                <div class="emoji">💭</div>
+                <h2>8. Fantasía</h2>
+                <p><strong>¿Qué es?</strong> Retiro a escenarios imaginarios para satisfacer deseos, reparar frustraciones o ensayar soluciones sin afrontamiento real.</p>
+                <div class="example"><strong>Ejemplo:</strong> Fantasear con reconocimiento masivo para aliviar sentimientos de inferioridad.</div>
+                <ul>
+                    <li><strong>Función:</strong> Regulación emocional momentánea, creatividad.</li>
+                    <li><strong>Riesgo:</strong> Evitación de la realidad si sustituye la acción.</li>
+                </ul>
+                <button class="btn" onclick="nextSlide()">Siguiente ➡️</button>
+            </div>
+        </div>
+
+        <!-- 8: Quiz Fantasía -->
+        <div class="slide" data-index="16">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 94%"></div></div>
+                <h2>🎯 Ejercicio: Fantasía</h2>
+                <p>Marca el uso de fantasía:</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">A) Imaginar entrevistas de éxito en lugar de prepararlas</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">B) Escribir un plan de estudio paso a paso</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">C) Pedir feedback para mejorar</div>
+                <button class="btn" id="btn16" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <!-- 9: Sublimación -->
+        <div class="slide" data-index="17">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 97%"></div></div>
+                <div class="emoji">🎨</div>
+                <h2>9. Sublimación</h2>
+                <p><strong>¿Qué es?</strong> Redirigir impulsos potencialmente problemáticos hacia actividades socialmente valiosas (arte, ciencia, deporte, estudio).</p>
+                <div class="example"><strong>Ejemplo:</strong> Canalizar agresividad en entrenamiento deportivo exigente o en composición musical intensa.</div>
+                <ul>
+                    <li><strong>Función:</strong> Transformación creativa del impulso.</li>
+                    <li><strong>Riesgo:</strong> Perfeccionismo extremo si se usa como única vía de regulación.</li>
+                </ul>
+                <button class="btn" onclick="nextSlide()">Siguiente ➡️</button>
+            </div>
+        </div>
+
+        <!-- 9: Quiz Sublimación -->
+        <div class="slide" data-index="18">
+            <div class="card">
+                <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+                <h2>🎯 Ejercicio: Sublimación</h2>
+                <p>Señala la sublimación:</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">A) Criticar a un compañero tras sentirse humillado</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">B) Volcar la tensión en preparar un concierto solidario</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">C) Fingir que no pasó nada</div>
+                <button class="btn" id="btn18" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <!-- Resumen -->
+        <div class="slide" data-index="19">
+            <div class="card">
+                <div class="emoji">⚡</div>
+                <h2>Resumen Express</h2>
+                <p style="font-size: 0.9em;"><strong>1 Represión:</strong> Excluir de la conciencia contenidos inaceptables.</p>
+                <p style="font-size: 0.9em;"><strong>2 Negación:</strong> Rechazar hechos/percepciones dolorosas.</p>
+                <p style="font-size: 0.9em;"><strong>3 Proyección:</strong> Atribuir a otros los propios impulsos.</p>
+                <p style="font-size: 0.9em;"><strong>4 Introyección/Identificación:</strong> Incorporar rasgos/normas de otra persona.</p>
+                <p style="font-size: 0.9em;"><strong>5 Desplazamiento:</strong> Transferir la emoción a un blanco seguro.</p>
+                <p style="font-size: 0.9em;"><strong>6 Racionalización:</strong> Justificar con argumentos aceptables.</p>
+                <p style="font-size: 0.9em;"><strong>7 Regresión:</strong> Volver a pautas infantiles bajo estrés.</p>
+                <p style="font-size: 0.9em;"><strong>8 Fantasía:</strong> Refugio imaginario que reduce malestar.</p>
+                <p style="font-size: 0.9em;"><strong>9 Sublimación:</strong> Canalizar impulsos en metas valiosas.</p>
+                <button class="btn" onclick="nextSlide()">Ejercicio Final 🎓</button>
+            </div>
+        </div>
+
+        <!-- Desafío Final: 6 casos -->
+        <div class="slide" data-index="20">
+            <div class="card">
+                <h2>🏆 Desafío Final (1/6)</h2>
+                <p><strong>Situación:</strong> Roberto está furioso con su jefe, pero al llegar a casa critica duramente a su hijo por dejar juguetes en el suelo.</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Proyección</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Desplazamiento</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Racionalización</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Negación</div>
+                <button class="btn" id="btn20" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <div class="slide" data-index="21">
+            <div class="card">
+                <h2>🏆 Desafío Final (2/6)</h2>
+                <p><strong>Situación:</strong> Sofía siente atracción por un compañero pero lo considera inapropiado; se vuelca en escribir poesía romántica y en un taller literario.</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Fantasía</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Sublimación</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Represión</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Desplazamiento</div>
+                <button class="btn" id="btn21" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <div class="slide" data-index="22">
+            <div class="card">
+                <h2>🏆 Desafío Final (3/6)</h2>
+                <p><strong>Situación:</strong> Tras suspender un examen, Diego dice: “De todas formas esa carrera no tiene futuro y el profesor explica fatal”.</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Racionalización</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Negación</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Proyección</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Regresión</div>
+                <button class="btn" id="btn22" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <div class="slide" data-index="23">
+            <div class="card">
+                <h2>🏆 Desafío Final (4/6)</h2>
+                <p><strong>Situación:</strong> Laura siente envidia del ascenso de una compañera y afirma: “Ella me tiene manía y va hablando mal de mí”.</p>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Proyección</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Negación</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Represión</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Desplazamiento</div>
+                <button class="btn" id="btn23" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <div class="slide" data-index="24">
+            <div class="card">
+                <h2>🏆 Desafío Final (5/6)</h2>
+                <p><strong>Situación:</strong> Tras recibir un aviso de suspensión, alguien insiste: “No puede ser, seguro que es un error, yo estoy aprobado”.</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Racionalización</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Negación</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Fantasía</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Sublimación</div>
+                <button class="btn" id="btn24" onclick="nextSlide()" disabled>Continuar</button>
+            </div>
+        </div>
+
+        <div class="slide" data-index="25">
+            <div class="card">
+                <h2>🏆 Desafío Final (6/6)</h2>
+                <p><strong>Situación:</strong> Tras varios días de estrés, un adulto abraza su peluche de infancia, habla en diminutivos y se niega a tomar decisiones.</p>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Represión</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Proyección</div>
+                <div class="quiz-option" onclick="checkAnswer(this, true)">Regresión</div>
+                <div class="quiz-option" onclick="checkAnswer(this, false)">Desplazamiento</div>
+                <button class="btn" id="btn25" onclick="nextSlide()" disabled>Ver Resultados</button>
+            </div>
+        </div>
+
+        <!-- Resultados -->
+        <div class="slide" data-index="26">
+            <div class="card">
+                <div class="emoji">🎉</div>
+                <h1>¡Completado!</h1>
+                <div class="final-score" id="finalScore">0/15</div>
+                <p id="resultMessage" style="text-align: center; font-size: 1.2em;"></p>
+                <div style="margin-top: 20px; padding: 15px; background: #f0f4ff; border-radius: 10px;">
+                    <strong>💡 Recuerda:</strong> Los mecanismos de defensa son respuestas naturales de nuestra mente. No son "buenos" o "malos", pero reconocerlos ayuda a comprendernos mejor.
+                </div>
+                <button class="btn" onclick="restartQuiz()">Reiniciar 🔄</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation" id="navigation"></div>
+
+    <script>
+        let currentSlide = 0;
+        let score = 0;
+        const totalQuestions = 15; // 9 ejercicios por mecanismo + 6 finales
+        const slides = document.querySelectorAll('.slide');
+        const navigation = document.getElementById('navigation');
+
+        // Puntos de navegación
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.className = 'nav-dot';
+            if (index === 0) dot.classList.add('active');
+            dot.onclick = () => goToSlide(index);
+            navigation.appendChild(dot);
+        });
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                slides[currentSlide].classList.remove('active');
+                slides[currentSlide].classList.add('prev');
+                currentSlide++;
+                slides[currentSlide].classList.add('active');
+                updateNavigation();
+            }
+        }
+
+        function goToSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = index;
+            slides.forEach(s => s.classList.remove('prev'));
+            slides[currentSlide].classList.add('active');
+            updateNavigation();
+        }
+
+        function updateNavigation() {
+            document.querySelectorAll('.nav-dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function checkAnswer(element, isCorrect) {
+            const parent = element.parentElement;
+            const options = parent.querySelectorAll('.quiz-option');
+            options.forEach(opt => { opt.style.pointerEvents = 'none'; });
+
+            if (isCorrect) {
+                element.classList.add('correct');
+                score++;
+                updateScore();
+            } else {
+                element.classList.add('incorrect');
+                options.forEach(opt => {
+                    if (opt.onclick && opt.onclick.toString().includes('true')) opt.classList.add('correct');
+                });
+            }
+
+            const slideIndex = element.closest('.slide').dataset.index;
+            const button = document.getElementById('btn' + slideIndex);
+            if (button) button.disabled = false;
+        }
+
+        function updateScore() {
+            document.getElementById('scoreDisplay').textContent = `🏆 Puntos: ${score}/${totalQuestions}`;
+        }
+
+        // --------- Barajar opciones (todas las preguntas) ----------
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function shuffleAllOptions() {
+            // Para cada tarjeta con opciones, reordena las .quiz-option conservando su onclick
+            document.querySelectorAll('.card').forEach(card => {
+                const options = Array.from(card.querySelectorAll('.quiz-option'));
+                if (options.length === 0) return;
+
+                const button = card.querySelector('.btn[id^="btn"]'); // botón de continuar (si existe)
+                const shuffled = shuffleArray(options.slice());
+                shuffled.forEach(opt => {
+                    if (button) {
+                        card.insertBefore(opt, button);
+                    } else {
+                        card.appendChild(opt);
+                    }
+                });
+            });
+        }
+        // -----------------------------------------------------------
+
+        function restartQuiz() {
+            score = 0;
+            currentSlide = 0;
+            updateScore();
+
+            // Resetear estado visual y reactivar opciones
+            document.querySelectorAll('.quiz-option').forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                opt.style.pointerEvents = 'auto';
+            });
+
+            // Deshabilitar botones de quiz
+            document.querySelectorAll('[id^="btn"]').forEach(btn => { if (btn.id !== 'btn0') btn.disabled = true; });
+
+            // Reordenar opciones para nueva partida
+            shuffleAllOptions();
+
+            // Volver a la primera slide
+            slides.forEach(s => { s.classList.remove('active', 'prev'); });
+            slides[0].classList.add('active');
+            updateNavigation();
+        }
+
+        window.addEventListener('load', () => {
+            // Barajar opciones al iniciar
+            shuffleAllOptions();
+
+            const observer = new MutationObserver(() => {
+                if (currentSlide === slides.length - 1) {
+                    const finalScore = document.getElementById('finalScore');
+                    const resultMessage = document.getElementById('resultMessage');
+                    finalScore.textContent = `${score}/${totalQuestions}`;
+                    if (score === totalQuestions) {
+                        resultMessage.textContent = "Perfecto: dominio total.";
+                    } else if (score >= Math.ceil(totalQuestions * 0.75)) {
+                        resultMessage.textContent = "Nivel alto: muy buen manejo.";
+                    } else if (score >= Math.ceil(totalQuestions * 0.5)) {
+                        resultMessage.textContent = "Nivel medio: sigue practicando.";
+                    } else {
+                        resultMessage.textContent = "Repite: afianza definiciones y ejemplos.";
+                    }
+                }
+            });
+            observer.observe(document.getElementById('container'), { attributes: true, subtree: true });
+        });
+    </script>
+</body>
+</html>
