@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Unidad 2: La Reflexión Filosófica sobre el Ser Humano</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        h2 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .input-group {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        input[type="number"] {
+            width: 120px;
+            padding: 12px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 18px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .progress-bar {
+            background: #f0f0f0;
+            height: 8px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+            border-radius: 10px;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 10px;
+        }
+        
+        .question-number {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        #question {
+            font-size: 20px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .option {
+            background: #f8f9fa;
+            margin: 12px 0;
+            padding: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 12px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .option label {
+            cursor: pointer;
+            font-size: 16px;
+            color: #555;
+        }
+        
+        .option.selected {
+            background: #667eea15;
+            border-color: #667eea;
+        }
+        
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        #result.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        #result.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        #error {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+        
+        .final-score {
+            text-align: center;
+        }
+        
+        .score-display {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 30px 0;
+        }
+        
+        .score-message {
+            font-size: 20px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="start-section">
+            <h1>🧠 Test de Filosofía</h1>
+            <p class="subtitle">La Reflexión Filosófica sobre el Ser Humano</p>
+            <div class="input-group">
+                <label>Selecciona el número de preguntas (1-50):</label>
+                <input type="number" id="num-questions" min="1" max="50" value="10">
+            </div>
+            <button onclick="startQuiz()">Iniciar Test</button>
+            <p id="error"></p>
+        </div>
+        
+        <div id="quiz-section" class="hidden">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <div class="question-header">
+                <span class="question-number">Pregunta <span id="current-num"></span> de <span id="total-num"></span></span>
+                <span class="question-number">Puntuación: <span id="current-score">0</span></span>
+            </div>
+            <p id="question"></p>
+            <div id="options"></div>
+            <div class="button-group">
+                <button id="submit-btn" onclick="submitAnswer()">Enviar Respuesta</button>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden">Siguiente</button>
+            </div>
+            <p id="result"></p>
+        </div>
+        
+        <div id="final-score" class="hidden">
+            <div class="final-score">
+                <h2>🎉 ¡Test Completado!</h2>
+                <div class="score-display"><span id="score"></span></div>
+                <p class="score-message" id="score-message"></p>
+                <button onclick="restartQuiz()">Volver a Intentar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "¿Qué estudia la antropología?", options: ["El ser humano en todas sus facetas", "Solo la evolución biológica", "Solo las sociedades modernas"], correct: 0 },
+            { question: "¿Quién es considerado el padre de la historia en el mundo occidental?", options: ["Heródoto de Halicarnaso", "Hipócrates de Cos", "Galeno de Pérgamo"], correct: 0 },
+            { question: "¿En qué año publicó Buffon su Historia natural del hombre?", options: ["1749", "1758", "1859"], correct: 0 },
+            { question: "¿Quién introdujo la expresión Homo sapiens en su clasificación?", options: ["Carl von Linné", "Charles Darwin", "Jean-Baptiste Lamarck"], correct: 0 },
+            { question: "¿Qué distingue la antropología filosófica de la científica?", options: ["Método y objeto de estudio", "Solo el objeto", "Solo el método"], correct: 0 },
+            { question: "¿Qué estudia la antropología física?", options: ["Aspectos biológicos del ser humano", "Estructuras políticas y sociales", "Mitos y rituales religiosos"], correct: 0 },
+            { question: "¿Qué proceso estudia la antropología física para conclusiones biológicas?", options: ["Hominización", "Humanización", "Antropogénesis"], correct: 0 },
+            { question: "¿Qué proceso estudia la antropología cultural como factor humanizador?", options: ["Humanización", "Hominización", "Evolución"], correct: 0 },
+            { question: "¿Qué suponían las explicaciones preevolucionistas sobre las especies?", options: ["Permanecen inamovibles", "Cambian gradualmente", "Surgen por mutaciones"], correct: 0 },
+            { question: "¿Qué teoría explica el origen del ser humano por creación divina?", options: ["Creacionismo", "Evolucionismo", "Mutacionismo"], correct: 0 },
+            { question: "¿Quién publicó El origen de las especies en 1859?", options: ["Charles Darwin", "Jean-Baptiste Lamarck", "Gregor Mendel"], correct: 0 },
+            { question: "¿Cuál es una tesis fundamental de Darwin?", options: ["Selección natural", "Generación espontánea", "Fijismo"], correct: 0 },
+            { question: "¿Quién formuló una teoría de la herencia con genes?", options: ["Gregor Mendel", "Niles Eldredge", "Stephen Jay Gould"], correct: 0 },
+            { question: "¿Qué propone la teoría del equilibrio puntuado?", options: ["Evolución a saltos", "Evolución gradual", "Evolución uniforme"], correct: 0 },
+            { question: "¿Cuántos millones de años se produjo la bifurcación de hominoideos?", options: ["5 o 10", "1 o 2", "20 o 30"], correct: 0 },
+            { question: "¿Cuál es el homínido más antiguo conocido?", options: ["Ardipithecus ramidus", "Homo habilis", "Homo sapiens"], correct: 0 },
+            { question: "¿Qué teoría afirma origen multirregional del ser humano?", options: ["Teoría del candelabro", "Teoría del arca de Noé", "Teoría de Darwin"], correct: 0 },
+            { question: "¿Qué cambio morfológico es la posición erguida?", options: ["Bipedestación", "Liberación de manos", "Desarrollo cerebral"], correct: 0 },
+            { question: "¿Qué permitió la liberación de extremidades superiores?", options: ["Manipulación de objetos", "Marcha cuadrupeda", "Pérdida de prensión"], correct: 0 },
+            { question: "¿Qué triplicó su tamaño en la evolución humana?", options: ["Cerebro", "Columna vertebral", "Extremidades"], correct: 0 },
+            { question: "¿Qué capacidad cognitiva es asombrosa en humanos?", options: ["Lenguaje articulado", "Instintos básicos", "Señales gestuales"], correct: 0 },
+            { question: "¿Qué hipótesis explica el origen del lenguaje?", options: ["Mutación genética", "Solo inteligencia general", "Solo señales gestuales"], correct: 0 },
+            { question: "¿Qué son los instintos en animales?", options: ["Tendencias programadas", "Conductas adquiridas", "Aprendizaje social"], correct: 0 },
+            { question: "¿Qué es innato en humanos?", options: ["Tendencia a aprender", "Todas las conductas", "Ninguna conducta"], correct: 0 },
+            { question: "¿Qué diferencia la cultura humana de animal?", options: ["Transmisión por lenguaje", "Solo imitación", "No hay diferencia"], correct: 0 },
+            { question: "¿Qué es la cultura?", options: ["Comportamiento aprendido socialmente", "Solo instintos", "Herencia genética"], correct: 0 },
+            { question: "¿Qué son artefactos en cultura?", options: ["Objetos físicos", "Normas obligatorias", "Opiniones importantes"], correct: 0 },
+            { question: "¿Qué son procedimientos en cultura?", options: ["Forma de usar artefactos", "Sanciones formales", "Creencias no demostradas"], correct: 0 },
+            { question: "¿Qué son normas en cultura?", options: ["Comportamientos obligatorios", "Costumbres no obligatorias", "Conocimientos contrastados"], correct: 0 },
+            { question: "¿Qué sanción por no cumplir normas?", options: ["Formal", "Informal", "Ninguna"], correct: 0 },
+            { question: "¿Qué son costumbres en cultura?", options: ["Conductas consideradas normales", "Obligatorias por ley", "Conocimientos científicos"], correct: 0 },
+            { question: "¿Qué son creencias en cultura?", options: ["Ideas consideradas verdaderas sin demostración", "Conocimientos contrastados", "Valores importantes"], correct: 0 },
+            { question: "¿Qué son valores en cultura?", options: ["Opiniones sobre lo importante", "Símbolos con significado", "Procedimientos técnicos"], correct: 0 },
+            { question: "¿Qué es el lenguaje en cultura?", options: ["Principal símbolo", "Artefacto material", "Norma obligatoria"], correct: 0 },
+            { question: "¿Qué es diversidad cultural?", options: ["Pluralidad de culturas", "Una sola cultura", "Ausencia de cultura"], correct: 0 },
+            { question: "¿Qué es etnocentrismo?", options: ["Juzgar con criterios propios", "Aceptar todas prácticas", "Universalismo cultural"], correct: 0 },
+            { question: "¿Qué es relativismo cultural?", options: ["Aceptar cualquier costumbre", "Juzgar con criterios propios", "Intercambio cultural"], correct: 0 },
+            { question: "¿Qué es multiculturalismo?", options: ["Convivencia de culturas", "Imposición de una cultura", "Aislamiento cultural"], correct: 0 },
+            { question: "¿Qué es convergencia cultural?", options: ["Contacto y proximidad cultural", "Diversidad extrema", "Pérdida total de cultura"], correct: 0 },
+            { question: "¿Qué es altruismo genético?", options: ["Comportamientos favorecidos evolutivamente", "Agresividad innata", "Instinto de muerte"], correct: 0 },
+            { question: "¿Quién propuso pulsión de muerte (Thanatos)?", options: ["Sigmund Freud", "Konrad Lorenz", "Jean-Jacques Rousseau"], correct: 0 },
+            { question: "¿Quién defendió instinto agresivo?", options: ["Konrad Lorenz", "Irenäus Eibl-Eibesfeldt", "Edward Osborne Wilson"], correct: 0 },
+            { question: "¿Quién inauguró la sociobiología?", options: ["Edward Osborne Wilson", "Richard Dawkins", "Sigmund Freud"], correct: 0 },
+            { question: "¿Qué es meme según Dawkins?", options: ["Unidad de información cultural", "Gen egoísta", "Instinto agresivo"], correct: 0 },
+            { question: "¿Qué mostró Víctor de Aveyron en sentidos?", options: ["Inhibición inicial", "Desarrollo completo", "Ninguna sensibilidad"], correct: 0 },
+            { question: "¿Qué no aprendió Víctor?", options: ["Hablar", "Reconocer objetos", "Sentir afecto"], correct: 0 },
+            { question: "¿Qué hipótesis sobre Víctor?", options: ["Retraso por aislamiento", "Deficiencia innata", "Ambas"], correct: 0 },
+            { question: "¿Qué edad tenía Genie al descubrirla?", options: ["13 años", "12 años", "4 años"], correct: 0 },
+            { question: "¿Qué caso es Marcos Rodríguez Pantoja?", options: ["Niño lobo", "Niño salvaje francés", "Niña feral"], correct: 0 },
+            { question: "¿Qué enfatiza la sociobiología?", options: ["Altruismo por genes", "Cultura sobre biología", "Instintos morales"], correct: 0 }
+        ];
+
+        let selectedQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function startQuiz() {
+            const num = parseInt(document.getElementById('num-questions').value);
+            if (isNaN(num) || num < 1 || num > 50) {
+                document.getElementById('error').textContent = 'Por favor, ingresa un número entre 1 y 50.';
+                return;
+            }
+            document.getElementById('error').textContent = '';
+            
+            // Seleccionar preguntas aleatorias y barajar opciones
+            const shuffledQuestions = shuffleArray(questions).slice(0, num);
+            selectedQuestions = shuffledQuestions.map(q => {
+                const shuffledOptions = shuffleArray(q.options.map((opt, idx) => ({ text: opt, isCorrect: idx === q.correct })));
+                return {
+                    question: q.question,
+                    options: shuffledOptions.map(o => o.text),
+                    correct: shuffledOptions.findIndex(o => o.isCorrect)
+                };
+            });
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('start-section').classList.add('hidden');
+            document.getElementById('quiz-section').classList.remove('hidden');
+            document.getElementById('current-score').textContent = '0';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = selectedQuestions[currentQuestionIndex];
+            const progress = ((currentQuestionIndex) / selectedQuestions.length) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('current-num').textContent = currentQuestionIndex + 1;
+            document.getElementById('total-num').textContent = selectedQuestions.length;
+            document.getElementById('question').textContent = q.question;
+            
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            q.options.forEach((opt, i) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.innerHTML = `
+                    <input type="radio" name="answer" value="${i}" id="opt${i}">
+                    <label for="opt${i}">${opt}</label>
+                `;
+                optionDiv.onclick = function() {
+                    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+                    this.classList.add('selected');
+                    document.getElementById(`opt${i}`).checked = true;
+                };
+                optionsDiv.appendChild(optionDiv);
+            });
+            
+            document.getElementById('result').textContent = '';
+            document.getElementById('result').className = '';
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('submit-btn').classList.remove('hidden');
+        }
+
+        function submitAnswer() {
+            const selected = document.querySelector('input[name="answer"]:checked');
+            if (!selected) {
+                alert('Por favor, selecciona una respuesta');
+                return;
+            }
+            
+            const answer = parseInt(selected.value);
+            const q = selectedQuestions[currentQuestionIndex];
+            const resultDiv = document.getElementById('result');
+            
+            if (answer === q.correct) {
+                resultDiv.textContent = '✓ ¡Correcto! ' + q.options[q.correct];
+                resultDiv.className = 'correct';
+                score++;
+                document.getElementById('current-score').textContent = score;
+            } else {
+                resultDiv.textContent = '✗ Incorrecto. La respuesta correcta es: ' + q.options[q.correct];
+                resultDiv.className = 'incorrect';
+            }
+            
+            document.getElementById('next-btn').classList.remove('hidden');
+            document.getElementById('submit-btn').classList.add('hidden');
+            document.querySelectorAll('input[name="answer"]').forEach(input => input.disabled = true);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < selectedQuestions.length) {
+                loadQuestion();
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function showFinalScore() {
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('final-score').classList.remove('hidden');
+            
+            const percentage = Math.round((score / selectedQuestions.length) * 100);
+            document.getElementById('score').textContent = `${score} / ${selectedQuestions.length}`;
+            
+            let message = '';
+            if (percentage === 100) {
+                message = '¡Perfecto! 🌟 Dominas completamente el tema.';
+            } else if (percentage >= 80) {
+                message = '¡Excelente! 🎯 Tienes un gran conocimiento del tema.';
+            } else if (percentage >= 60) {
+                message = '¡Bien hecho! 👍 Buen nivel de comprensión.';
+            } else if (percentage >= 40) {
+                message = 'Vas por buen camino 📚 Sigue estudiando.';
+            } else {
+                message = 'Necesitas repasar más 📖 ¡No te rindas!';
+            }
+            
+            document.getElementById('score-message').textContent = message + ` (${percentage}%)`;
+        }
+
+        function restartQuiz() {
+            document.getElementById('final-score').classList.add('hidden');
+            document.getElementById('start-section').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
