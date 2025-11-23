@@ -71,6 +71,12 @@ select, input[type="text"] {
     font-size: 1rem;
 }
 
+select:focus, input:focus {
+    outline: none;
+    border-color: var(--acento);
+    box-shadow: 0 0 0 3px rgba(91,124,214,0.15);
+}
+
 button {
     padding: 12px 24px;
     border: none;
@@ -83,13 +89,40 @@ button {
     transition: 0.2s ease;
 }
 
+button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    filter: brightness(0.9);
+}
+
+button:disabled {
+    background: #5c7494;
+    opacity: 0.55;
+    cursor: default;
+}
+
 button.secondary {
     background: linear-gradient(135deg, #47c1ff, #5f78ff);
+}
+button.secondary:hover:not(:disabled) {
+    filter: brightness(0.9);
 }
 
 button.ready {
     background: var(--ok) !important;
     color: #fff !important;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 30px 0;
+}
+
+.btn-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
 }
 
 #barraWrap {
@@ -165,9 +198,7 @@ button.ready {
 
 <div id="panel">
     <h2>Dictado Ortográfico Interactivo</h2>
-    <h3>tomcue@iesjuandelacierva.com - versión beta <h3>
-
-    <div id="instruccionSO" class="instruccion"></div>
+    <h3>tomcue@iesjuandelacierva.com - versión beta</h3>
 
     <label>Tema ortográfico</label>
     <select id="selector">
@@ -196,9 +227,9 @@ button.ready {
         <button id="comprobar" class="secondary" disabled>Comprobar</button>
     </div>
 
-    <input id="respuesta" type="text" placeholder="Escribe la palabra" disabled autocomplete="off">
+    <input id="respuesta" type="text" placeholder="Escribe la palabra…" disabled autocomplete="off">
 
-    <div class="instruccion" id="instruccion">Escribe la palabra primero a mano para practicar.</div>
+    <div class="instruccion" id="instruccion">Pulsa «Escuchar» para comenzar.</div>
 
     <div id="resultado" class="resultado"></div>
     <div id="marcador"></div>
@@ -206,39 +237,6 @@ button.ready {
 
 
 <script>
-/* ============================================================
-   1. DETECCIÓN DEL SISTEMA OPERATIVO
-============================================================ */
-
-function detectarSO() {
-    const ua = navigator.userAgent;
-    if (/iPhone|iPad|iPod/i.test(ua)) return "ios";
-    if (/Android/i.test(ua)) return "android";
-    if (/Windows/i.test(ua)) return "windows";
-    if (/Macintosh/i.test(ua)) return "mac";
-    if (/Linux/i.test(ua)) return "linux";
-    return "otro";
-}
-
-const SO = detectarSO();
-const instruccionSO = document.getElementById("instruccionSO");
-
-const mensajesSO = {
-    ios: "Tu dispositivo es iOS. Para activar la voz es necesario pulsar una vez un botón del programa. La primera reproducción desbloquea el audio.",
-    android: "Sistema detecado: Android. La voz se activará solo tras pulsar cualquier botón.",
-    windows: "Sistema detectado: Windows. Puedes usar el dictado directamente.",
-    linux: "Sistema detectado: Linux. Si faltan voces, el navegador usará voces estándar.",
-    mac: "Sistema detectado: Mac. La voz se activará al pulsar un botón.",
-    otro: "Plataforma no identificada. La voz se activará al pulsar un botón."
-};
-
-instruccionSO.textContent = mensajesSO[SO];
-instruccionSO.style.display = "block";
-
-/* ============================================================
-   2. VARIABLES Y ESTADO
-============================================================ */
-
 const selector=document.getElementById("selector");
 const cantidad=document.getElementById("cantidad");
 const cargar=document.getElementById("cargar");
@@ -258,47 +256,15 @@ let palabraActual=null;
 let usadas=[];
 let aciertos=0;
 let intentos=0;
-
 let voz=null;
 let listaCargada = {};
 let totalSerie = 0;
 let bloqueado = false;
-let vozActivada = false;
 
-/* ============================================================
-   3. ACTIVACIÓN SEGÚN SO
-============================================================ */
-
-function activarVozInicial() {
-    if (vozActivada) return;
-
-    const voces = speechSynthesis.getVoices();
-    voz = voces.find(v => v.lang.startsWith("es")) || null;
-
-    if (SO === "ios") {
-        const u = new SpeechSynthesisUtterance("inicio");
-        u.voice = voz;
-        speechSynthesis.speak(u);
-    }
-
-    vozActivada = true;
-}
-
-escuchar.addEventListener("click", activarVozInicial);
-cargar.addEventListener("click", activarVozInicial);
-
-/* ============================================================
-   4. CARGA DE VOCES
-============================================================ */
-
-speechSynthesis.onvoiceschanged = () => {
-    const v = speechSynthesis.getVoices();
-    voz = v.find(x => x.lang.startsWith("es")) || null;
+speechSynthesis.onvoiceschanged=()=>{
+    const v=speechSynthesis.getVoices();
+    voz=v.find(x=>x.lang.startsWith("es"))||null;
 };
-
-/* ============================================================
-   5. RELLENAR SELECT DE TEMAS
-============================================================ */
 
 selector.innerHTML="";
 if(typeof archivosDisponibles !== 'undefined') {
@@ -316,16 +282,12 @@ selector.onchange = cantidad.onchange = () => {
 
 cargar.disabled = true;
 
-/* ============================================================
-   6. LÓGICA PRINCIPAL DEL DICTADO
-============================================================ */
-
 cargar.onclick=async()=>{
     bloqueado = false;
 
     const archivo=selector.value;
     totalSerie = parseInt(cantidad.value);
-
+    
     if(!listaCargada[archivo]) {
         await new Promise((resolve, reject) => {
             const script = document.createElement('script');
@@ -336,7 +298,7 @@ cargar.onclick=async()=>{
         });
         listaCargada[archivo] = true;
     }
-
+    
     if(typeof lista !== 'undefined') {
         palabras = lista;
     }
@@ -359,6 +321,7 @@ cargar.onclick=async()=>{
 
     escuchar.disabled=false;
     comprobar.disabled=true;
+    comprobar.classList.remove("ready");
     respuesta.disabled=false;
     instruccion.style.display="block";
 };
@@ -385,6 +348,7 @@ function elegirPalabra(){
     resultado.textContent="";
     resultado.className="resultado";
     comprobar.disabled=true;
+    comprobar.classList.remove("ready");
 }
 
 function finalizarSerie(){
@@ -405,7 +369,7 @@ function pronunciar(t){
     if(!voz || bloqueado) return;
     const u=new SpeechSynthesisUtterance(t);
     u.voice=voz;
-    u.rate=0.5;
+    u.rate=0.5; 
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
 }
@@ -420,8 +384,11 @@ respuesta.oninput=()=>{
     if(bloqueado) return;
     const vacio = respuesta.value.trim().length === 0;
     comprobar.disabled = vacio;
-    if(!vacio) comprobar.classList.add("ready");
-    else comprobar.classList.remove("ready");
+    if(vacio){
+        comprobar.classList.remove("ready");
+    } else {
+        comprobar.classList.add("ready");
+    }
 };
 
 respuesta.addEventListener("keydown", e=>{
@@ -466,4 +433,3 @@ comprobar.onclick=()=>{
 
 </body>
 </html>
-
