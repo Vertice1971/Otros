@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dictado Ortográfico Interactivo</title>
+
+<style>
+:root {
+    --bg1: #4a7bb7;
+    --bg2: #6ba3d8;
+    --panel: #f8f9fc;
+    --panel-light: #e8ecf4;
+    --panel-hover: #d4dae8;
+    --acento: #5b7cd6;
+    --acento-oscuro: #4a64b0;
+    --texto: #2c3e5a;
+    --texto-sec: #5a6b82;
+    --border: #d0d7e3;
+    --ok: #0f9d6e;
+    --err: #d84545;
+    --warn: #d68f29;
+    --input-bg: #ffffff;
+    --input-border: #c4cdd9;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    font-family: "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
+    color: var(--texto);
+    padding: 40px 20px;
+    min-height: 100vh;
+}
+
+#panel {
+    max-width: 830px;
+    margin: auto;
+    background: var(--panel);
+    padding: 38px 44px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+}
+
+h2 {
+    margin-top: 0;
+    margin-bottom: 28px;
+    font-size: 1.85rem;
+    font-weight: 600;
+    color: var(--texto);
+    letter-spacing: -0.3px;
+}
+
+label {
+    font-size: 0.92rem;
+    color: var(--texto-sec);
+    margin-bottom: 8px;
+    display: block;
+}
+
+select, input[type="text"] {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: 1.5px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--texto);
+    font-size: 1rem;
+}
+
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #ff8a47, #ff5f5f);
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+button.secondary {
+    background: linear-gradient(135deg, #47c1ff, #5f78ff);
+}
+
+button.ready {
+    background: var(--ok) !important;
+    color: #fff !important;
+}
+
+#barraWrap {
+    width: 100%;
+    background: var(--panel-light);
+    border-radius: 10px;
+    margin-top: 35px;
+    margin-bottom: 25px;
+    height: 16px;
+    overflow: hidden;
+    display: none;
+}
+
+#barra {
+    height: 100%;
+    width: 0%;
+    background: var(--acento);
+    transition: width 0.25s ease;
+}
+
+#respuesta {
+    margin-top: 10px;
+    padding: 14px;
+    font-size: 1.06rem;
+}
+
+.resultado {
+    margin-top: 24px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    min-height: 50px;
+    font-size: 1rem;
+}
+
+.resultado.ok {
+    background: rgba(15,157,110,0.08);
+    border: 1px solid var(--ok);
+    color: var(--ok);
+}
+
+.resultado.err {
+    background: rgba(216,69,69,0.08);
+    border: 1px solid var(--err);
+    color: var(--err);
+}
+
+#marcador {
+    margin-top: 18px;
+    padding: 14px;
+    background: rgba(91,124,214,0.08);
+    border: 1px solid rgba(91,124,214,0.22);
+    border-radius: 10px;
+    text-align: center;
+    display: none;
+    font-weight: 600;
+}
+
+.instruccion {
+    margin-top: 12px;
+    padding: 12px;
+    background: rgba(214,143,41,0.08);
+    border-left: 4px solid var(--warn);
+    color: var(--texto-sec);
+    border-radius: 6px;
+    display: none;
+}
+</style>
+
+<script src="./listas/manifest.js"></script>
+
+</head>
+<body>
+
+<div id="panel">
+    <h2>Dictado Ortográfico Interactivo</h2>
+    <h3>tomcue@iesjuandelacierva.com - versión beta <h3>
+
+    <label>Tema ortográfico</label>
+    <select id="selector">
+        <option value="">Selecciona un tema...</option>
+    </select>
+
+    <label>Cantidad de palabras</label>
+    <select id="cantidad">
+        <option value="">Selecciona cantidad...</option>
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25">25</option>
+        <option value="30">30</option>
+    </select>
+
+    <button id="cargar">Cargar tema</button>
+
+    <hr>
+
+    <div id="barraWrap"><div id="barra"></div></div>
+
+    <div class="btn-row">
+        <button id="escuchar" disabled>Escuchar palabra</button>
+        <button id="comprobar" class="secondary" disabled>Comprobar</button>
+    </div>
+
+    <input id="respuesta" type="text" placeholder="Escribe la palabra" disabled autocomplete="off">
+
+    <div class="instruccion" id="instruccion">Escribe la palabra primero a mano para practicar.</div>
+
+    <div id="resultado" class="resultado"></div>
+    <div id="marcador"></div>
+</div>
+
+
+<script>
+/* ============================================================
+   DESBLOQUEO UNIVERSAL DE AUDIO (iOS + resto de sistemas)
+============================================================ */
+
+let vozActivada = false;
+let voz = null;
+
+function desbloqueoAudio() {
+    if (vozActivada) return;
+
+    const voces = speechSynthesis.getVoices();
+    voz = voces.find(v => v.lang.startsWith("es")) || null;
+
+    const u = new SpeechSynthesisUtterance("a");
+    u.voice = voz;
+    speechSynthesis.speak(u);
+
+    vozActivada = true;
+}
+
+document.body.addEventListener("click", desbloqueoAudio, { once: true });
+
+speechSynthesis.onvoiceschanged = () => {
+    const v = speechSynthesis.getVoices();
+    voz = v.find(x => x.lang.startsWith("es")) || null;
+};
+
+/* ============================================================
+   VARIABLES Y ESTADO
+============================================================ */
+
+const selector=document.getElementById("selector");
+const cantidad=document.getElementById("cantidad");
+const cargar=document.getElementById("cargar");
+const escuchar=document.getElementById("escuchar");
+const comprobar=document.getElementById("comprobar");
+const respuesta=document.getElementById("respuesta");
+const resultado=document.getElementById("resultado");
+const marcador=document.getElementById("marcador");
+const instruccion=document.getElementById("instruccion");
+
+const barraWrap=document.getElementById("barraWrap");
+const barra=document.getElementById("barra");
+
+let palabras=[];
+let subconjunto=[];
+let palabraActual=null;
+let usadas=[];
+let aciertos=0;
+let intentos=0;
+
+let listaCargada = {};
+let totalSerie = 0;
+let bloqueado = false;
+
+/* ============================================================
+   RELLENAR TEMAS
+============================================================ */
+
+selector.innerHTML="";
+if(typeof archivosDisponibles !== 'undefined') {
+    archivosDisponibles.forEach(nombre=>{
+        const op=document.createElement("option");
+        op.value=nombre;
+        op.textContent=nombre.replace(".js","");
+        selector.appendChild(op);
+    });
+}
+
+selector.onchange = cantidad.onchange = () => {
+    cargar.disabled = !selector.value || !cantidad.value;
+};
+
+cargar.disabled = true;
+
+/* ============================================================
+   LÓGICA PRINCIPAL
+============================================================ */
+
+cargar.onclick=async()=>{
+    bloqueado = false;
+
+    const archivo=selector.value;
+    totalSerie = parseInt(cantidad.value);
+
+    if(!listaCargada[archivo]) {
+        await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = `./listas/${archivo}`;
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+        listaCargada[archivo] = true;
+    }
+
+    if(typeof lista !== 'undefined') {
+        palabras = lista;
+    }
+
+    const numPalabras = Math.min(totalSerie, palabras.length);
+
+    subconjunto=crearSubconjunto(numPalabras);
+    usadas=[];
+    aciertos=0;
+    intentos=0;
+    palabraActual=null;
+
+    marcador.style.display="none";
+    resultado.textContent="";
+    resultado.className="resultado";
+    respuesta.value="";
+
+    barraWrap.style.display="block";
+    barra.style.width="0%";
+
+    escuchar.disabled=false;
+    comprobar.disabled=true;
+    respuesta.disabled=false;
+    instruccion.style.display="block";
+};
+
+function crearSubconjunto(n){
+    const copia=[...palabras];
+    for(let i=copia.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [copia[i],copia[j]]=[copia[j],copia[i]];
+    }
+    return copia.slice(0,n);
+}
+
+function elegirPalabra(){
+    if(bloqueado) return;
+    if(usadas.length===subconjunto.length) {
+        finalizarSerie();
+        return;
+    }
+    const disp=subconjunto.filter(p=>!usadas.includes(p));
+    palabraActual=disp[Math.floor(Math.random()*disp.length)];
+    usadas.push(palabraActual);
+    respuesta.value="";
+    resultado.textContent="";
+    resultado.className="resultado";
+    comprobar.disabled=true;
+}
+
+function finalizarSerie(){
+    bloqueado = true;
+    palabraActual = null;
+    escuchar.disabled = true;
+    comprobar.disabled = true;
+    respuesta.disabled = true;
+
+    const p=Math.round(aciertos/intentos*100);
+    resultado.className="resultado ok";
+    resultado.textContent=`Serie completada. Resultado final: ${aciertos}/${intentos} (${p}%).`;
+
+    barra.style.width="100%";
+}
+
+function pronunciar(t){
+    if(!voz || bloqueado) return;
+    const u=new SpeechSynthesisUtterance(t);
+    u.voice=voz;
+    u.rate=0.5;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+}
+
+escuchar.onclick=()=>{
+    if(bloqueado) return;
+    if(!palabraActual) elegirPalabra();
+    pronunciar(palabraActual);
+};
+
+respuesta.oninput=()=>{
+    if(bloqueado) return;
+    const vacio = respuesta.value.trim().length === 0;
+    comprobar.disabled = vacio;
+    if(!vacio) comprobar.classList.add("ready");
+    else comprobar.classList.remove("ready");
+};
+
+respuesta.addEventListener("keydown", e=>{
+    if(e.key === "Enter" && !comprobar.disabled && !bloqueado){
+        e.preventDefault();
+        comprobar.click();
+    }
+});
+
+comprobar.onclick=()=>{
+    if(bloqueado) return;
+    if(!palabraActual) return;
+
+    const r=respuesta.value.trim().toLowerCase();
+    const sol=palabraActual.toLowerCase();
+
+    intentos++;
+
+    if(r===sol){
+        aciertos++;
+        resultado.textContent="Correcto.";
+        resultado.className="resultado ok";
+    } else {
+        resultado.textContent="Incorrecto. La palabra correcta era: "+palabraActual;
+        resultado.className="resultado err";
+    }
+
+    barra.style.width = (intentos/totalSerie*100) + "%";
+
+    const p=Math.round(aciertos/intentos*100);
+    marcador.textContent=`Aciertos: ${aciertos}/${intentos} (${p}%)`;
+    marcador.style.display="block";
+
+    palabraActual=null;
+    comprobar.classList.remove("ready");
+
+    if(intentos === totalSerie){
+        finalizarSerie();
+    }
+};
+</script>
+
+</body>
+</html>
