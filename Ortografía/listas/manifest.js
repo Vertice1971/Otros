@@ -5,5 +5,6 @@ const archivosDisponibles = [
     "ce_ci_ze_zi.js",
     "ge_gi_je_ji.js",
     "filosofía.js",
-    "esdrújulas.js"
+    "esdrújulas.js",
+    "ll_y.js"
 ];
