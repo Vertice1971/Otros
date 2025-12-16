@@ -1,0 +1,1033 @@
+<!doctype html>
+<html lang="es-ES">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inferencia y validez · Cuestionario aleatorio</title>
+  <style>
+    :root{
+      --bg:#0f1220;
+      --panel:#161a2f;
+      --panel2:#1c2140;
+      --text:#e8ebff;
+      --muted:#b8bde6;
+      --ok:#39d98a;
+      --bad:#ff5c7a;
+      --warn:#ffd166;
+      --line:rgba(255,255,255,.12);
+      --shadow: 0 14px 38px rgba(0,0,0,.35);
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(94,114,235,.18), transparent 60%),
+                  radial-gradient(900px 500px at 100% 10%, rgba(255,92,122,.12), transparent 55%),
+                  radial-gradient(800px 600px at 60% 100%, rgba(57,217,138,.10), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.35;
+      padding:18px;
+    }
+    .wrap{max-width:980px;margin:0 auto}
+    header{
+      padding:18px 18px 14px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    h1{margin:0 0 6px;font-size:20px;letter-spacing:.2px}
+    .sub{margin:0;color:var(--muted);font-size:13px}
+    .bar{
+      display:flex; gap:10px; flex-wrap:wrap;
+      margin-top:14px;
+      align-items:center;
+    }
+    button{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      transition: transform .05s ease, border-color .15s ease, background .15s ease;
+      font-weight:600;
+      font-size:13px;
+    }
+    button:hover{transform: translateY(-1px); border-color: rgba(255,255,255,.22)}
+    button:active{transform: translateY(0px)}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background: rgba(255,255,255,.04);
+      color:var(--muted);
+      font-size:13px;
+    }
+    .pill strong{color:var(--text);font-weight:700}
+    main{margin-top:14px}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:16px;
+      margin-bottom:12px;
+    }
+    .qhead{
+      display:flex; gap:12px; align-items:flex-start; justify-content:space-between;
+      margin-bottom:10px;
+    }
+    .qid{
+      min-width:44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:8px 10px;
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+      font-weight:800;
+      font-size:12px;
+    }
+    .qtitle{
+      flex:1;
+      margin:0;
+      font-size:15px;
+    }
+    .tag{
+      font-size:11px;
+      color:var(--muted);
+      border:1px solid var(--line);
+      padding:6px 8px;
+      border-radius:999px;
+      background: rgba(255,255,255,.03);
+      white-space:nowrap;
+    }
+    .opts{display:grid;gap:8px;margin-top:10px}
+    label.opt{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:10px 10px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background: rgba(255,255,255,.03);
+      cursor:pointer;
+    }
+    label.opt:hover{border-color: rgba(255,255,255,.22)}
+    input[type="radio"]{margin-top:2px}
+    .short{
+      width:100%;
+      margin-top:10px;
+      background: rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      color:var(--text);
+      font-size:14px;
+      outline:none;
+    }
+    .short:focus{border-color: rgba(255,255,255,.28)}
+    .feedback{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+      display:none;
+    }
+    .feedback.ok{border-color: rgba(57,217,138,.35); background: rgba(57,217,138,.08); color: rgba(232,255,244,.95)}
+    .feedback.bad{border-color: rgba(255,92,122,.35); background: rgba(255,92,122,.08); color: rgba(255,232,238,.95)}
+    .feedback .ex{margin-top:6px;color:var(--muted)}
+    .results{
+      display:none;
+      margin-top:14px;
+      padding:14px 16px;
+      border-radius: var(--radius);
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      box-shadow: var(--shadow);
+    }
+    .score{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;
+    }
+    .score h2{margin:0;font-size:16px}
+    .score .meta{color:var(--muted);font-size:13px}
+    .kpi{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+    .kpi .box{
+      flex:1;
+      min-width:180px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      background: rgba(255,255,255,.03);
+      color:var(--muted);
+      font-size:13px;
+    }
+    .kpi .box strong{color:var(--text)}
+    .note{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:10px;
+    }
+    .footer-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .danger{border-color: rgba(255,92,122,.28)}
+    .primary{border-color: rgba(94,114,235,.30)}
+    .hidden{display:none !important}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Inferencia y validez · Entimemas · Deducción e inducción</h1>
+    <p class="sub">Cada intento genera un test distinto: 10 preguntas aleatorias de un banco de 40. Corrección inmediata con explicación.</p>
+    <div class="bar">
+      <button id="btnNew" class="primary">Generar nuevo test</button>
+      <button id="btnGrade">Corregir</button>
+      <button id="btnReset" class="danger">Reiniciar respuestas</button>
+      <span class="pill">Preguntas: <strong id="countQ">10</strong> / Banco: <strong id="countBank">40</strong></span>
+      <span class="pill">Semilla: <strong id="seedView">—</strong></span>
+    </div>
+  </header>
+
+  <div id="results" class="results"></div>
+  <main id="quiz"></main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // Banco de 40 preguntas (teóricas y prácticas)
+  // Tipos:
+  //  - mcq: opción múltiple (una correcta)
+  //  - short: respuesta corta (se aceptan variantes)
+  const BANK = [
+    // 1–10: Validez, casillas, criterio de invalidez
+    {
+      id: 1,
+      type: "mcq",
+      topic: "Validez",
+      q: "Una inferencia deductiva es inválida únicamente cuando…",
+      options: [
+        "las premisas son falsas y la conclusión es falsa",
+        "las premisas son verdaderas y la conclusión es falsa",
+        "las premisas son falsas y la conclusión es verdadera",
+        "las premisas son verdaderas y la conclusión es verdadera"
+      ],
+      answer: 1,
+      explain: "En deducción, la única combinación que garantiza invalidez es: premisas verdaderas y conclusión falsa. En cualquier otra, no queda demostrado el fallo lógico."
+    },
+    {
+      id: 2,
+      type: "mcq",
+      topic: "Validez",
+      q: "Si un argumento tiene premisas falsas y conclusión falsa, ¿qué se puede afirmar de su validez?",
+      options: [
+        "Es inválido.",
+        "Es válido.",
+        "No se puede decidir sin más información.",
+        "Depende de si la conclusión parece razonable."
+      ],
+      answer: 1,
+      explain: "La validez no depende de que las premisas sean verdaderas. Con premisas falsas, la forma puede seguir siendo válida."
+    },
+    {
+      id: 3,
+      type: "mcq",
+      topic: "Validez",
+      q: "Marca el criterio correcto: la validez de una inferencia depende de…",
+      options: [
+        "si la conclusión es verdadera en la realidad",
+        "si el argumento suena convincente",
+        "si es imposible que premisas verdaderas lleven a conclusión falsa",
+        "si las premisas son moralmente aceptables"
+      ],
+      answer: 2,
+      explain: "Validez = imposibilidad de pasar de premisas verdaderas a conclusión falsa (por la estructura del razonamiento)."
+    },
+    {
+      id: 4,
+      type: "mcq",
+      topic: "Validez",
+      q: "Un argumento con premisas verdaderas y conclusión verdadera…",
+      options: [
+        "siempre es válido",
+        "siempre es inválido",
+        "puede ser válido o inválido",
+        "solo es válido si es científico"
+      ],
+      answer: 2,
+      explain: "Premisas y conclusión verdaderas no garantizan validez. Puede existir una estructura inválida que, por casualidad, llegue a una conclusión verdadera."
+    },
+    {
+      id: 5,
+      type: "short",
+      topic: "Validez",
+      q: "Indica la única combinación (premisas / conclusión) que hace inválida una inferencia deductiva.",
+      accepts: [
+        "premisas verdaderas y conclusion falsa",
+        "premisas verdaderas y conclusión falsa",
+        "premisas verdaderas / conclusión falsa",
+        "premisas verdaderas con conclusion falsa",
+        "premisas verdaderas con conclusión falsa"
+      ],
+      explain: "La invalidez exige que no haya ‘escapatoria’: premisas verdaderas y conclusión falsa."
+    },
+    {
+      id: 6,
+      type: "mcq",
+      topic: "Validez",
+      q: "Ejemplo: Premisa: 'Todos los perros hablan'. Premisa: 'Max es un perro'. Conclusión: 'Max habla'. Según la definición de validez, este razonamiento es…",
+      options: ["inválido", "válido", "inductivo", "una opinión"],
+      answer: 1,
+      explain: "Aunque las premisas sean falsas, la forma ‘Todos A son B; x es A; luego x es B’ es válida."
+    },
+    {
+      id: 7,
+      type: "mcq",
+      topic: "Validez",
+      q: "¿Qué frase describe mejor el error típico sobre la validez?",
+      options: [
+        "Creer que si la conclusión es falsa, el argumento siempre es inválido.",
+        "Creer que si el argumento tiene forma clara, es inductivo.",
+        "Creer que si las premisas son verdaderas, la conclusión no importa.",
+        "Creer que todo argumento con ‘si… entonces…’ es inválido."
+      ],
+      answer: 0,
+      explain: "La conclusión falsa no vuelve inválido un argumento si las premisas también son falsas. La invalidez requiere premisas verdaderas y conclusión falsa."
+    },
+    {
+      id: 8,
+      type: "mcq",
+      topic: "Validez",
+      q: "Un argumento puede ser válido aunque…",
+      options: [
+        "no tenga conclusión",
+        "tenga premisas falsas",
+        "no tenga premisas",
+        "sea una pregunta"
+      ],
+      answer: 1,
+      explain: "La validez evalúa la estructura: puede ser correcta aunque las premisas no sean verdaderas."
+    },
+    {
+      id: 9,
+      type: "short",
+      topic: "Validez",
+      q: "Completa: Validez no es lo mismo que verdad. Validez evalúa la ______ del razonamiento.",
+      accepts: ["estructura", "forma", "estructura logica", "estructura lógica", "forma logica", "forma lógica"],
+      explain: "La validez mira la forma/estructura: si la conclusión se sigue necesariamente de las premisas."
+    },
+    {
+      id: 10,
+      type: "mcq",
+      topic: "Validez",
+      q: "Si un argumento es inválido, entonces necesariamente…",
+      options: [
+        "sus premisas son falsas",
+        "su conclusión es falsa",
+        "es posible que tenga premisas verdaderas y conclusión falsa",
+        "no puede usarse en la vida real"
+      ],
+      answer: 2,
+      explain: "Invalidez significa que existe al menos un caso en el que premisas verdaderas llevan a conclusión falsa."
+    },
+
+    // 11–18: Entimemas
+    {
+      id: 11,
+      type: "mcq",
+      topic: "Entimema",
+      q: "Un entimema es…",
+      options: [
+        "un argumento con una premisa oculta",
+        "un argumento sin conclusión",
+        "un tipo de inducción completa",
+        "una falacia por definición"
+      ],
+      answer: 0,
+      explain: "En un entimema falta algo (normalmente una premisa) que se da por supuesto."
+    },
+    {
+      id: 12,
+      type: "short",
+      topic: "Entimema",
+      q: "Completa el entimema: “El conductor fue multado porque conducía a más de 120 km/h”. Premisa oculta: “La ____ prohíbe conducir a más de 120 km/h”.",
+      accepts: ["ley", "norma", "legislacion", "legislación"],
+      explain: "La premisa no dicha suele ser una norma general: ‘La ley prohíbe…’."
+    },
+    {
+      id: 13,
+      type: "mcq",
+      topic: "Entimema",
+      q: "“No entres, es menor de edad”. La premisa oculta más adecuada es…",
+      options: [
+        "Los menores no pueden entrar.",
+        "Los mayores siempre pueden entrar.",
+        "Entrar es una acción peligrosa.",
+        "Ser menor es una virtud."
+      ],
+      answer: 0,
+      explain: "El argumento se apoya en una regla tácita: los menores no tienen permitido entrar."
+    },
+    {
+      id: 14,
+      type: "mcq",
+      topic: "Entimema",
+      q: "“No voy al cine, es martes”. Para que sea entimema, falta una premisa del tipo…",
+      options: [
+        "Los martes no ponen buenas películas (o no hay cine).",
+        "Los martes siempre trabajo.",
+        "El cine es caro.",
+        "El martes es un día largo."
+      ],
+      answer: 0,
+      explain: "Debe existir una regla tácita que conecte ‘martes’ con ‘no ir al cine’."
+    },
+    {
+      id: 15,
+      type: "short",
+      topic: "Entimema",
+      q: "En la mayoría de entimemas, la parte que falta suele ser una ______.",
+      accepts: ["premisa", "razon", "razón"],
+      explain: "Normalmente se omite una premisa porque se da por compartida."
+    },
+    {
+      id: 16,
+      type: "mcq",
+      topic: "Entimema",
+      q: "“Claro que no confío en él, es político”. ¿Qué describe mejor el problema de este entimema?",
+      options: [
+        "No es un argumento, solo una descripción.",
+        "La premisa oculta es un prejuicio generalizador.",
+        "Es una deducción perfecta.",
+        "Es una inducción completa."
+      ],
+      answer: 1,
+      explain: "La premisa implícita suele ser algo como ‘los políticos no son de fiar’, que es una generalización discutible."
+    },
+    {
+      id: 17,
+      type: "mcq",
+      topic: "Entimema",
+      q: "Para reconstruir un entimema, lo primero es…",
+      options: [
+        "cambiar la conclusión por otra",
+        "hacer explícita la premisa que conecta razón y conclusión",
+        "comprobar si suena convincente",
+        "contar cuántas palabras tiene"
+      ],
+      answer: 1,
+      explain: "Hay que encontrar la regla o premisa tácita que hace funcionar el salto."
+    },
+    {
+      id: 18,
+      type: "short",
+      topic: "Entimema",
+      q: "Escribe una premisa oculta razonable para: “No toques eso, quema”. (Una frase).",
+      accepts: [
+        "si algo quema no debe tocarse",
+        "si quema no se toca",
+        "no se debe tocar lo que quema",
+        "lo que quema no se debe tocar",
+        "si algo quema es peligroso tocarlo"
+      ],
+      explain: "Una premisa típica es una regla preventiva: ‘No se debe tocar lo que quema’."
+    },
+
+    // 19–28: Deducción e inducción (definiciones y clasificación)
+    {
+      id: 19,
+      type: "mcq",
+      topic: "Tipos",
+      q: "El razonamiento inductivo suele ir…",
+      options: [
+        "de lo general a lo particular",
+        "de lo particular a lo general",
+        "de una definición a una metáfora",
+        "de una norma a una excepción sin reglas"
+      ],
+      answer: 1,
+      explain: "Inducción: a partir de casos concretos se propone una generalización."
+    },
+    {
+      id: 20,
+      type: "mcq",
+      topic: "Tipos",
+      q: "El razonamiento deductivo suele ir…",
+      options: [
+        "de lo particular a lo general",
+        "de lo general a lo particular",
+        "de lo probable a lo imposible",
+        "de la emoción al dato"
+      ],
+      answer: 1,
+      explain: "Deducción: desde reglas/ideas generales se llega a una conclusión concreta."
+    },
+    {
+      id: 21,
+      type: "mcq",
+      topic: "Tipos",
+      q: "¿Cuál describe mejor la inducción?",
+      options: [
+        "Garantiza la verdad al 100%.",
+        "No es segura al 100%, pero parece razonable por lo observado.",
+        "Siempre parte de leyes universales.",
+        "Siempre es inválida."
+      ],
+      answer: 1,
+      explain: "La inducción puede ser útil, pero no asegura la verdad como una deducción válida con premisas verdaderas."
+    },
+    {
+      id: 22,
+      type: "mcq",
+      topic: "Clasificación",
+      q: "Caso práctico: “He visto tres perros y todos eran amigables. Por tanto, todos los perros son amigables”. Esto es…",
+      options: ["deducción", "inducción incompleta", "inducción completa", "entimema deductivo"],
+      answer: 1,
+      explain: "Se generaliza a partir de algunos casos, no de todos: inducción incompleta."
+    },
+    {
+      id: 23,
+      type: "mcq",
+      topic: "Clasificación",
+      q: "Caso práctico: “Todos los planetas del sistema solar han sido observados y todos giran alrededor del Sol. Por tanto, todos los planetas del sistema solar giran alrededor del Sol”. Esto se acerca a…",
+      options: ["inducción completa", "inducción incompleta", "falacia", "opinión sin datos"],
+      answer: 0,
+      explain: "Si de verdad se han revisado todos los casos del conjunto, la generalización queda asegurada dentro de ese conjunto."
+    },
+    {
+      id: 24,
+      type: "mcq",
+      topic: "Clasificación",
+      q: "¿Qué es un contraejemplo?",
+      options: [
+        "Un caso que confirma la generalización",
+        "Un caso que contradice una generalización y basta para derribarla",
+        "Una deducción con premisas falsas",
+        "Una conclusión sin premisas"
+      ],
+      answer: 1,
+      explain: "Un solo caso contrario puede desmontar una generalización del tipo ‘todos…’."
+    },
+    {
+      id: 25,
+      type: "short",
+      topic: "Tipos",
+      q: "Completa: Deducción: si las ideas de partida son ciertas, la conclusión también lo ____.",
+      accepts: ["sera", "será"],
+      explain: "En deducción válida, la verdad se conserva: premisas verdaderas implican conclusión verdadera."
+    },
+    {
+      id: 26,
+      type: "mcq",
+      topic: "Clasificación",
+      q: "“Si apruebo sin estudiar, soy un genio. Aprobé sin estudiar. Luego soy un genio”. El paso lógico tiene la forma…",
+      options: [
+        "Afirmación del consecuente (inválida)",
+        "Modus ponens (válida)",
+        "Inducción incompleta",
+        "Contraejemplo"
+      ],
+      answer: 1,
+      explain: "Es la forma ‘Si P entonces Q; P; luego Q’ (modus ponens), que es válida aunque la premisa condicional sea absurda."
+    },
+    {
+      id: 27,
+      type: "mcq",
+      topic: "Tipos",
+      q: "¿Qué frase encaja con una deducción (no con una inducción)?",
+      options: [
+        "Como ha pasado varias veces, pasará siempre.",
+        "Como he visto tres casos, todos serán así.",
+        "Si necesito 2 horas al día para aprobar y por la tarde no puedo, entonces tendré que estudiar por la mañana.",
+        "A veces ocurre; por tanto, ocurre por ley."
+      ],
+      answer: 2,
+      explain: "Parte de una regla general (‘necesito 2 horas’) y concluye una decisión concreta."
+    },
+    {
+      id: 28,
+      type: "short",
+      topic: "Tipos",
+      q: "Di si es deducción o inducción: “A Luis le pasó y era por no sintonizar; a mí me pasa; entonces será por no sintonizar”.",
+      accepts: ["induccion", "inducción", "inductivo", "inductiva", "inducción incompleta", "induccion incompleta"],
+      explain: "Se infiere una causa general a partir de casos parecidos: inducción (y, normalmente, incompleta)."
+    },
+
+    // 29–36: Inducción en profundidad + contraejemplo + matices
+    {
+      id: 29,
+      type: "mcq",
+      topic: "Inducción",
+      q: "La inducción completa es “segura” (dentro del conjunto observado) porque…",
+      options: [
+        "se apoya en una conclusión emotiva",
+        "observa todos los casos del conjunto",
+        "usa siempre el condicional ‘si… entonces…’",
+        "no necesita ejemplos"
+      ],
+      answer: 1,
+      explain: "Si se revisan todos los elementos del conjunto, no queda ningún caso sin comprobar."
+    },
+    {
+      id: 30,
+      type: "mcq",
+      topic: "Inducción",
+      q: "La inducción incompleta falla porque…",
+      options: [
+        "observa pocos casos y aun así generaliza",
+        "observa todos los casos y generaliza",
+        "usa definiciones",
+        "es siempre deductiva"
+      ],
+      answer: 0,
+      explain: "Generalizar desde una muestra limitada deja abierta la posibilidad de casos contrarios."
+    },
+    {
+      id: 31,
+      type: "short",
+      topic: "Inducción",
+      q: "Escribe un contraejemplo para la generalización: “Todos los perros son amigables”. (Una frase).",
+      accepts: [
+        "ayer un perro me mordio",
+        "ayer un perro me mordió",
+        "conozco un perro que muerde",
+        "hay un perro que muerde",
+        "vi un perro agresivo",
+        "un perro me mordio",
+        "un perro me mordió"
+      ],
+      explain: "Un solo caso que contradiga ‘todos’ basta para tumbar la generalización."
+    },
+    {
+      id: 32,
+      type: "mcq",
+      topic: "Inducción",
+      q: "¿Qué expresión se derriba con un solo contraejemplo?",
+      options: [
+        "Algunos perros son amigables",
+        "Muchos perros son amigables",
+        "Todos los perros son amigables",
+        "A veces los perros son amigables"
+      ],
+      answer: 2,
+      explain: "El cuantificador ‘todos’ queda falsado por un solo caso contrario."
+    },
+    {
+      id: 33,
+      type: "mcq",
+      topic: "Inducción",
+      q: "Si la conclusión es “probable pero no segura”, estamos más cerca de…",
+      options: ["deducción", "inducción", "definición", "descripción sin inferencia"],
+      answer: 1,
+      explain: "Lo probable caracteriza a la inducción; lo necesario caracteriza a la deducción válida."
+    },
+    {
+      id: 34,
+      type: "short",
+      topic: "Inducción",
+      q: "Completa: En inducción incompleta, la conclusión puede ser útil, pero no es ______.",
+      accepts: ["segura", "cierta", "necesaria"],
+      explain: "Al no observarse todos los casos, la generalización queda abierta."
+    },
+    {
+      id: 35,
+      type: "mcq",
+      topic: "Inducción",
+      q: "Selecciona el ejemplo que mejor funciona como inducción incompleta:",
+      options: [
+        "Todos los mamíferos son animales; el delfín es mamífero; luego el delfín es animal.",
+        "He visto cinco teléfonos fallar tras calentarse al sol; luego el calor suele causar ese fallo.",
+        "Si llueve, me mojo; llueve; luego me mojo.",
+        "Si necesito 2 horas al día, estudiaré 2 horas al día."
+      ],
+      answer: 1,
+      explain: "Se generaliza desde una experiencia repetida, sin revisar todos los casos posibles."
+    },
+    {
+      id: 36,
+      type: "mcq",
+      topic: "Inducción",
+      q: "¿Qué frase distingue bien “inducción completa” de “incompleta”?",
+      options: [
+        "La completa es siempre falsa; la incompleta siempre verdadera.",
+        "La completa observa todos los casos del conjunto; la incompleta solo algunos.",
+        "La completa usa números; la incompleta usa palabras.",
+        "La completa es deductiva; la incompleta es entimema."
+      ],
+      answer: 1,
+      explain: "La diferencia clave es el alcance del examen de casos (todos vs algunos)."
+    },
+
+    // 37–40: Hume: inducción psicológica, no lógica
+    {
+      id: 37,
+      type: "mcq",
+      topic: "Hume",
+      q: "Según Hume, la inducción…",
+      options: [
+        "garantiza la verdad por la lógica",
+        "no es lógica (no garantiza), pero es psicológica (la mente la usa)",
+        "es inválida y por eso no la usamos nunca",
+        "solo vale en matemáticas"
+      ],
+      answer: 1,
+      explain: "Hume sostiene que la inducción no ofrece garantía lógica, pero nuestra mente generaliza por necesidad práctica."
+    },
+    {
+      id: 38,
+      type: "short",
+      topic: "Hume",
+      q: "Completa: Para Hume, la inducción no es lógica, pero es ______.",
+      accepts: ["psicologica", "psicológica"],
+      explain: "La mente tiende a generalizar: es un hábito psicológico."
+    },
+    {
+      id: 39,
+      type: "mcq",
+      topic: "Hume",
+      q: "Ejemplo: “Un niño al que muerde un perro puede pensar que todos los perros muerden”. En la lectura de Hume, esto muestra…",
+      options: [
+        "una deducción válida",
+        "una inducción completa",
+        "una generalización útil para evitar peligro aunque no sea lógica",
+        "una demostración matemática"
+      ],
+      answer: 2,
+      explain: "La generalización no está garantizada, pero puede orientar la conducta y proteger."
+    },
+    {
+      id: 40,
+      type: "mcq",
+      topic: "Hume",
+      q: "La crítica de Hume apunta a que pasar de ‘ha ocurrido muchas veces’ a ‘ocurrirá siempre’…",
+      options: [
+        "es una necesidad lógica",
+        "es un salto que la lógica no justifica del todo",
+        "es imposible psicológicamente",
+        "solo funciona si lo dice una autoridad"
+      ],
+      answer: 1,
+      explain: "La repetición observada no implica lógicamente necesidad futura; la mente lo toma como hábito."
+    }
+  ];
+
+  const quizEl = document.getElementById("quiz");
+  const resEl = document.getElementById("results");
+  const seedView = document.getElementById("seedView");
+  const countBank = document.getElementById("countBank");
+  const countQ = document.getElementById("countQ");
+  const btnNew = document.getElementById("btnNew");
+  const btnGrade = document.getElementById("btnGrade");
+  const btnReset = document.getElementById("btnReset");
+
+  countBank.textContent = String(BANK.length);
+
+  // RNG con semilla (LCG)
+  function makeRng(seed){
+    let s = seed >>> 0;
+    return function(){
+      s = (1664525 * s + 1013904223) >>> 0;
+      return s / 4294967296;
+    };
+  }
+  function newSeed(){
+    // semilla reproducible: tiempo + ruido
+    const t = Date.now() >>> 0;
+    const r = (Math.random() * 0xFFFFFFFF) >>> 0;
+    return (t ^ (r + 0x9E3779B9)) >>> 0;
+  }
+  function shuffle(arr, rng){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(rng() * (i+1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  function norm(s){
+    return (s ?? "")
+      .toString()
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "") // quita tildes
+      .replace(/\s+/g," ");
+  }
+
+  let current = []; // preguntas seleccionadas
+  let currentSeed = 0;
+
+  function pickQuestions(seed){
+    const rng = makeRng(seed);
+    const ids = BANK.map(x => x.id);
+    const picked = shuffle(ids, rng).slice(0, 10);
+    // Orden estable por el orden de selección (no por id)
+    const map = new Map(BANK.map(q => [q.id, q]));
+    return picked.map(id => map.get(id));
+  }
+
+  function render(){
+    quizEl.innerHTML = "";
+    resEl.style.display = "none";
+    resEl.innerHTML = "";
+
+    current.forEach((item, idx) => {
+      const card = document.createElement("section");
+      card.className = "card";
+      card.dataset.qid = item.id;
+
+      const head = document.createElement("div");
+      head.className = "qhead";
+
+      const qid = document.createElement("div");
+      qid.className = "qid";
+      qid.textContent = String(idx+1);
+
+      const title = document.createElement("p");
+      title.className = "qtitle";
+      title.textContent = item.q;
+
+      const tag = document.createElement("div");
+      tag.className = "tag";
+      tag.textContent = item.topic + (item.type === "mcq" ? " · opción múltiple" : " · respuesta corta");
+
+      head.appendChild(qid);
+      const right = document.createElement("div");
+      right.style.flex = "1";
+      right.appendChild(title);
+      head.appendChild(right);
+      head.appendChild(tag);
+
+      card.appendChild(head);
+
+      if(item.type === "mcq"){
+        const opts = document.createElement("div");
+        opts.className = "opts";
+        item.options.forEach((txt, j) => {
+          const lab = document.createElement("label");
+          lab.className = "opt";
+
+          const inp = document.createElement("input");
+          inp.type = "radio";
+          inp.name = "q_" + item.id;
+          inp.value = String(j);
+
+          const span = document.createElement("span");
+          span.textContent = txt;
+
+          lab.appendChild(inp);
+          lab.appendChild(span);
+          opts.appendChild(lab);
+        });
+        card.appendChild(opts);
+      } else {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.className = "short";
+        input.name = "q_" + item.id;
+        input.placeholder = "Escribe la respuesta aquí";
+        input.autocomplete = "off";
+        card.appendChild(input);
+      }
+
+      const fb = document.createElement("div");
+      fb.className = "feedback";
+      fb.id = "fb_" + item.id;
+      card.appendChild(fb);
+
+      quizEl.appendChild(card);
+    });
+
+    document.getElementById("countQ").textContent = String(current.length);
+    seedView.textContent = String(currentSeed);
+  }
+
+  function resetAnswers(){
+    current.forEach(item => {
+      const fb = document.getElementById("fb_" + item.id);
+      if(fb){
+        fb.classList.remove("ok","bad");
+        fb.style.display = "none";
+        fb.innerHTML = "";
+      }
+      if(item.type === "mcq"){
+        const radios = document.querySelectorAll('input[type="radio"][name="q_'+ item.id +'"]');
+        radios.forEach(r => r.checked = false);
+      } else {
+        const input = document.querySelector('input[type="text"][name="q_'+ item.id +'"]');
+        if(input) input.value = "";
+      }
+    });
+    resEl.style.display = "none";
+    resEl.innerHTML = "";
+  }
+
+  function grade(){
+    let ok = 0;
+    let bad = 0;
+    let blank = 0;
+
+    current.forEach(item => {
+      const fb = document.getElementById("fb_" + item.id);
+      if(!fb) return;
+
+      let isCorrect = false;
+      let isBlank = false;
+      let userText = "";
+
+      if(item.type === "mcq"){
+        const chosen = document.querySelector('input[type="radio"][name="q_'+ item.id +'"]:checked');
+        if(!chosen){
+          isBlank = true;
+        } else {
+          const v = Number(chosen.value);
+          isCorrect = (v === item.answer);
+        }
+      } else {
+        const input = document.querySelector('input[type="text"][name="q_'+ item.id +'"]');
+        userText = norm(input ? input.value : "");
+        if(!userText){
+          isBlank = true;
+        } else {
+          const accepts = (item.accepts || []).map(norm);
+          isCorrect = accepts.includes(userText);
+        }
+      }
+
+      fb.style.display = "block";
+      fb.classList.remove("ok","bad");
+      fb.innerHTML = "";
+
+      if(isBlank){
+        blank++;
+        fb.classList.add("bad");
+        const correctLine = document.createElement("div");
+        correctLine.textContent = "Sin responder.";
+        fb.appendChild(correctLine);
+
+        const sol = document.createElement("div");
+        sol.className = "ex";
+        sol.textContent = "Solución: " + getSolutionText(item);
+        fb.appendChild(sol);
+
+        const ex = document.createElement("div");
+        ex.className = "ex";
+        ex.textContent = item.explain;
+        fb.appendChild(ex);
+        return;
+      }
+
+      if(isCorrect){
+        ok++;
+        fb.classList.add("ok");
+        const line = document.createElement("div");
+        line.textContent = "Correcta.";
+        fb.appendChild(line);
+
+        const ex = document.createElement("div");
+        ex.className = "ex";
+        ex.textContent = item.explain;
+        fb.appendChild(ex);
+      } else {
+        bad++;
+        fb.classList.add("bad");
+        const line = document.createElement("div");
+        line.textContent = "Incorrecta.";
+        fb.appendChild(line);
+
+        const sol = document.createElement("div");
+        sol.className = "ex";
+        sol.textContent = "Solución: " + getSolutionText(item);
+        fb.appendChild(sol);
+
+        const ex = document.createElement("div");
+        ex.className = "ex";
+        ex.textContent = item.explain;
+        fb.appendChild(ex);
+      }
+    });
+
+    const total = current.length;
+    const answered = total - blank;
+    const pct = total === 0 ? 0 : Math.round((ok / total) * 100);
+
+    resEl.style.display = "block";
+    resEl.innerHTML = "";
+
+    const top = document.createElement("div");
+    top.className = "score";
+    const h2 = document.createElement("h2");
+    h2.textContent = "Resultado";
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.textContent = "Semilla " + currentSeed + " · " + total + " preguntas";
+    top.appendChild(h2);
+    top.appendChild(meta);
+
+    const kpi = document.createElement("div");
+    kpi.className = "kpi";
+
+    const b1 = document.createElement("div");
+    b1.className = "box";
+    b1.innerHTML = "Aciertos: <strong>" + ok + "</strong>";
+
+    const b2 = document.createElement("div");
+    b2.className = "box";
+    b2.innerHTML = "Fallos: <strong>" + bad + "</strong>";
+
+    const b3 = document.createElement("div");
+    b3.className = "box";
+    b3.innerHTML = "En blanco: <strong>" + blank + "</strong>";
+
+    const b4 = document.createElement("div");
+    b4.className = "box";
+    b4.innerHTML = "Porcentaje: <strong>" + pct + "%</strong>";
+
+    kpi.appendChild(b1);
+    kpi.appendChild(b2);
+    kpi.appendChild(b3);
+    kpi.appendChild(b4);
+
+    const note = document.createElement("div");
+    note.className = "note";
+    note.textContent = "La corrección usa respuestas exactas o equivalentes normalizadas en las preguntas de respuesta corta.";
+
+    resEl.appendChild(top);
+    resEl.appendChild(kpi);
+    resEl.appendChild(note);
+  }
+
+  function getSolutionText(item){
+    if(item.type === "mcq"){
+      return item.options[item.answer];
+    }
+    // para short, enseña la primera variante “bonita” si existe
+    if(item.accepts && item.accepts.length){
+      return item.accepts[0];
+    }
+    return "(no definida)";
+  }
+
+  function generate(){
+    currentSeed = newSeed();
+    current = pickQuestions(currentSeed);
+    render();
+  }
+
+  btnNew.addEventListener("click", generate);
+  btnReset.addEventListener("click", resetAnswers);
+  btnGrade.addEventListener("click", grade);
+
+  // Primer render
+  generate();
+})();
+</script>
+</body>
+</html>

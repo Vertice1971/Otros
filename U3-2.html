@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es-ES">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Correlación y analogía · Cuestionario aleatorio</title>
+<style>
+:root{
+  --bg:#0f1220;--panel:#161a2f;--text:#e8ebff;--muted:#b8bde6;
+  --ok:#39d98a;--bad:#ff5c7a;--line:rgba(255,255,255,.12);
+  --shadow:0 14px 38px rgba(0,0,0,.35);--radius:16px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);color:var(--text);padding:18px
+}
+.wrap{max-width:980px;margin:0 auto}
+header, .card, .results{
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:16px;margin-bottom:12px
+}
+h1{margin:0 0 6px;font-size:20px}
+.sub{color:var(--muted);font-size:13px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+button{
+  border:1px solid var(--line);background:rgba(255,255,255,.06);
+  color:var(--text);padding:10px 12px;border-radius:12px;
+  cursor:pointer;font-weight:600;font-size:13px
+}
+main{margin-top:14px}
+.qhead{display:flex;gap:10px;justify-content:space-between}
+.qid{font-weight:800;color:var(--muted)}
+.opts{display:grid;gap:8px;margin-top:8px}
+label{display:flex;gap:8px;cursor:pointer}
+input[type="text"]{
+  width:100%;padding:10px;border-radius:10px;
+  border:1px solid var(--line);background:rgba(255,255,255,.04);
+  color:var(--text)
+}
+.feedback{display:none;margin-top:8px;padding:10px;border-radius:10px}
+.feedback.ok{background:rgba(57,217,138,.15)}
+.feedback.bad{background:rgba(255,92,122,.15)}
+.results{display:none}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+<header>
+<h1>Correlación y analogía</h1>
+<p class="sub">10 preguntas aleatorias · Corrección inmediata con explicación</p>
+<div class="bar">
+<button id="new">Nuevo test</button>
+<button id="grade">Corregir</button>
+<button id="reset">Reiniciar</button>
+<span class="sub">Banco: 40</span>
+</div>
+</header>
+
+<div id="results" class="results"></div>
+<main id="quiz"></main>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+const BANK = [
+/* 1–20 Correlación */
+{type:"mcq",q:"Dos fenómenos están correlacionados cuando…",
+o:["uno causa necesariamente al otro","siempre hay intención humana",
+"varían juntos de algún modo","son idénticos"],a:2,
+e:"Correlación significa variación conjunta, no causalidad."},
+
+{type:"mcq",q:"La correlación positiva indica que…",
+o:["cuando una sube, la otra baja","cuando una sube, la otra también",
+"no existe relación","hay causa segura"],a:1,
+e:"En la correlación positiva ambas variables aumentan o disminuyen juntas."},
+
+{type:"mcq",q:"La correlación negativa significa que…",
+o:["no hay relación","una variable causa a la otra",
+"cuando una sube, la otra baja","son idénticas"],a:2,
+e:"Una sube mientras la otra baja."},
+
+{type:"mcq",q:"El principal error al usar correlaciones es pensar que…",
+o:["no sirven para nada","implican causalidad","son matemáticas",
+"solo valen en ciencia"],a:1,
+e:"Correlación no implica causalidad."},
+
+{type:"short",q:"Completa: correlación no es lo mismo que ______.",
+acc:["causalidad"],e:"El error clásico es confundir correlación con causa."},
+
+{type:"mcq",q:"Ejemplo: aumentan los ahogamientos y las ventas de helados. Esto muestra…",
+o:["una causa directa","una correlación casual","una ley científica","una analogía"],
+a:1,e:"Ambas aumentan en verano, pero no se causan."},
+
+{type:"mcq",q:"Una correlación espuria es…",
+o:["una causa comprobada","una correlación sin relación real",
+"una deducción","una analogía válida"],a:1,
+e:"Es una coincidencia sin vínculo causal."},
+
+{type:"short",q:"¿Qué se necesita demostrar además de correlación para hablar de causa?",
+acc:["causalidad","una causa"],e:"La causalidad requiere un vínculo explicativo."},
+
+{type:"mcq",q:"¿Qué afirmación es correcta?",
+o:["Toda correlación implica causa",
+"Sin correlación no puede haber causa",
+"La correlación puede orientar hipótesis",
+"La correlación es una falacia"],a:2,
+e:"Sirve como pista, no como prueba definitiva."},
+
+{type:"mcq",q:"Relacionar fumar y cáncer es…",
+o:["solo coincidencia","correlación con base causal demostrada",
+"analogía","inducción completa"],a:1,
+e:"Aquí sí hay correlación respaldada por causalidad."},
+
+/* 21–40 Analogía */
+{type:"mcq",q:"Un argumento por analogía se basa en…",
+o:["datos estadísticos","comparar cosas parecidas",
+"leyes universales","deducción lógica estricta"],a:1,
+e:"La analogía compara semejanzas relevantes."},
+
+{type:"mcq",q:"Una buena analogía exige que…",
+o:["las cosas sean idénticas","las semejanzas sean relevantes",
+"haya emoción","sea llamativa"],a:1,
+e:"Las semejanzas deben ser pertinentes."},
+
+{type:"mcq",q:"Estructura básica de la analogía:",
+o:["A y B son iguales → conclusión",
+"A y B se parecen en varios aspectos → quizá en otro",
+"A causa B","Si A entonces B"],a:1,
+e:"Se infiere una propiedad adicional probable."},
+
+{type:"short",q:"Completa: la analogía concluye algo ______, no seguro.",
+acc:["probable"],e:"Nunca garantiza certeza absoluta."},
+
+{type:"mcq",q:"Comparar un país con una comunidad de vecinos es…",
+o:["una analogía razonable","una deducción","una correlación","una falacia siempre"],
+a:0,e:"Comparten estructura organizativa."},
+
+{type:"mcq",q:"Decir que la ciudad es como la selva es problemático porque…",
+o:["no es bonita","ignora diferencias clave","es inductivo","es matemático"],
+a:1,e:"Las funciones y normas son distintas."},
+
+{type:"mcq",q:"La analogía del matrimonio y la moneda es inválida porque…",
+o:["usa dinero","es antigua","compara realidades no comparables",
+"no tiene conclusión"],a:2,
+e:"Las funciones no son equivalentes."},
+
+{type:"short",q:"En una mala analogía, las semejanzas son ______.",
+acc:["irrelevantes","forzadas"],e:"No conectan con la conclusión."},
+
+{type:"mcq",q:"Una analogía sirve sobre todo para…",
+o:["demostrar con certeza","sugerir una idea","probar matemáticamente",
+"cerrar un debate"],a:1,
+e:"Es orientativa, no demostrativa."},
+
+{type:"mcq",q:"¿Cuál es el mayor riesgo de la analogía?",
+o:["ser aburrida","ser ofensiva","forzar comparaciones",
+"ser deductiva"],a:2,
+e:"El abuso lleva a falacias."}
+];
+
+function rng(seed){let s=seed>>>0;return()=>((s=1664525*s+1013904223>>>0)/4294967296);}
+function shuffle(a,r){a=[...a];for(let i=a.length-1;i>0;i--){let j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function norm(s){return(s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();}
+
+const quiz=document.getElementById("quiz"),res=document.getElementById("results");
+let current=[];
+
+function generate(){
+  const r=rng(Date.now());
+  current=shuffle(BANK,r).slice(0,10);
+  quiz.innerHTML="";res.style.display="none";
+  current.forEach((it,i)=>{
+    const c=document.createElement("section");c.className="card";
+    c.innerHTML=`<div class="qhead"><div class="qid">${i+1}</div><div>${it.q}</div></div>`;
+    if(it.type==="mcq"){
+      it.o.forEach((t,j)=>{
+        c.innerHTML+=`<label><input type="radio" name="q${i}" value="${j}">${t}</label>`;
+      });
+    }else{
+      c.innerHTML+=`<input type="text" name="q${i}">`;
+    }
+    c.innerHTML+=`<div class="feedback" id="f${i}"></div>`;
+    quiz.appendChild(c);
+  });
+}
+
+function grade(){
+  let ok=0;
+  current.forEach((it,i)=>{
+    const f=document.getElementById("f"+i);f.style.display="block";
+    let good=false;
+    if(it.type==="mcq"){
+      const v=document.querySelector(`input[name="q${i}"]:checked`);
+      if(v&&Number(v.value)===it.a) good=true;
+    }else{
+      const v=document.querySelector(`input[name="q${i}"]`).value;
+      if(it.acc.map(norm).includes(norm(v))) good=true;
+    }
+    f.className="feedback "+(good?"ok":"bad");
+    f.textContent=(good?"Correcta. ":"Incorrecta. ")+it.e;
+    if(good) ok++;
+  });
+  res.style.display="block";
+  res.textContent=`Resultado: ${ok} / 10`;
+}
+
+document.getElementById("new").onclick=generate;
+document.getElementById("grade").onclick=grade;
+document.getElementById("reset").onclick=generate;
+
+generate();
+})();
+</script>
+</body>
+</html>

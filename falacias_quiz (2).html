@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Falacias Lógicas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        
+        .progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .progress-item {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .question-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .question-text {
+            font-size: 1.1em;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            font-size: 1em;
+        }
+        
+        .option:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+        
+        .option.selected {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        
+        .option.correct {
+            border-color: #28a745;
+            background: #28a745;
+            color: white;
+        }
+        
+        .option.incorrect {
+            border-color: #dc3545;
+            background: #dc3545;
+            color: white;
+        }
+        
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            display: block;
+            margin: 20px auto;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+        
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+        
+        .results {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .results h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        
+        .score {
+            font-size: 3em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        
+        .results-detail {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .question-text {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Quiz de Falacias Lógicas</h1>
+        <p class="subtitle">Identifica la falacia en cada ejemplo</p>
+        
+        <div id="quiz-container">
+            <div class="progress">
+                <span class="progress-item">Pregunta: <span id="current-question">1</span>/5</span>
+                <span class="progress-item">Correctas: <span id="correct-count">0</span></span>
+            </div>
+            
+            <div class="question-card">
+                <div class="question-text" id="question-text"></div>
+                <div class="options" id="options-container"></div>
+            </div>
+            
+            <div id="feedback" class="feedback hidden"></div>
+            
+            <button id="next-btn" class="btn btn-primary hidden">Siguiente</button>
+            <button id="finish-btn" class="btn btn-primary hidden">Ver Resultados</button>
+        </div>
+        
+        <div id="results-container" class="hidden">
+            <div class="results">
+                <h2>🎉 ¡Quiz Completado!</h2>
+                <div class="score" id="final-score"></div>
+                <div class="results-detail">
+                    <p><strong>Respuestas correctas:</strong> <span id="final-correct"></span> de 5</p>
+                    <p><strong>Porcentaje:</strong> <span id="final-percentage"></span>%</p>
+                </div>
+                <button id="restart-btn" class="btn btn-primary">Hacer Otro Quiz</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const falacias = [
+            // Ad Hominem (5)
+            {
+                texto: "No deberías creer lo que dice María sobre el cambio climático, es conocida por ser muy pesimista y siempre está de mal humor.",
+                correcta: "Ad Hominem",
+                opciones: ["Ad Hominem", "Ad Baculum", "Falsa Causa"]
+            },
+            {
+                texto: "¿Cómo voy a aceptar consejos de salud de mi vecino si fuma un paquete al día?",
+                correcta: "Ad Hominem",
+                opciones: ["Ad Hominem", "Ad Populum", "Generalización Indebida"]
+            },
+            {
+                texto: "Ese político habla de ética, pero tiene tres divorcios. Claramente no sabe nada de valores.",
+                correcta: "Ad Hominem",
+                opciones: ["Ad Hominem", "Muñeco de Paja", "Ad Verecundiam"]
+            },
+            {
+                texto: "No confíes en lo que dice el profesor de economía, viene de una familia muy pobre y tiene resentimiento contra los ricos.",
+                correcta: "Ad Hominem",
+                opciones: ["Ad Hominem", "Ad Misericordiam", "Falsa Analogía"]
+            },
+            {
+                texto: "¿Por qué debería escuchar tus argumentos sobre educación si nunca has terminado la universidad?",
+                correcta: "Ad Hominem",
+                opciones: ["Ad Hominem", "Ad Ignorantiam", "Petición de Principio"]
+            },
+            
+            // Ad Baculum (5)
+            {
+                texto: "Mejor acepta mi propuesta de negocios, porque conozco a gente muy peligrosa que no le gustaría saber que me has rechazado.",
+                correcta: "Ad Baculum",
+                opciones: ["Ad Baculum", "Ad Hominem", "Ad Misericordiam"]
+            },
+            {
+                texto: "Si no votas por mí en las elecciones del sindicato, me aseguraré de que no consigas ningún ascenso en los próximos años.",
+                correcta: "Ad Baculum",
+                opciones: ["Ad Baculum", "Ad Populum", "Falsa Causa"]
+            },
+            {
+                texto: "Deberías estar de acuerdo con mi análisis del proyecto, o tendré que reconsiderar tu posición en el equipo.",
+                correcta: "Ad Baculum",
+                opciones: ["Ad Baculum", "Muñeco de Paja", "Pendiente Resbaladiza"]
+            },
+            {
+                texto: "Más te vale no contradecirme en la reunión, porque soy yo quien decide quién se queda en la empresa y quién no.",
+                correcta: "Ad Baculum",
+                opciones: ["Ad Baculum", "Ad Verecundiam", "Ad Hominem"]
+            },
+            {
+                texto: "Si sigues criticando mis decisiones, haré que el director sepa de todos tus errores del pasado.",
+                correcta: "Ad Baculum",
+                opciones: ["Ad Baculum", "Ad Ignorantiam", "Generalización Indebida"]
+            },
+            
+            // Ad Ignorantiam (5)
+            {
+                texto: "Nadie ha podido demostrar que los extraterrestres no existen, por lo tanto, deben existir.",
+                correcta: "Ad Ignorantiam",
+                opciones: ["Ad Ignorantiam", "Falsa Causa", "Ad Populum"]
+            },
+            {
+                texto: "Como no hay pruebas de que el acusado sea inocente, entonces debe ser culpable.",
+                correcta: "Ad Ignorantiam",
+                opciones: ["Ad Ignorantiam", "Ad Hominem", "Petición de Principio"]
+            },
+            {
+                texto: "No se ha demostrado que los fantasmas no existan, así que hay que aceptar que son reales.",
+                correcta: "Ad Ignorantiam",
+                opciones: ["Ad Ignorantiam", "Ad Verecundiam", "Falsa Analogía"]
+            },
+            {
+                texto: "Nadie puede probar que la reencarnación es falsa, por tanto debe ser verdadera.",
+                correcta: "Ad Ignorantiam",
+                opciones: ["Ad Ignorantiam", "Ad Misericordiam", "Muñeco de Paja"]
+            },
+            {
+                texto: "Como no hay evidencia de que el producto sea peligroso, entonces es completamente seguro.",
+                correcta: "Ad Ignorantiam",
+                opciones: ["Ad Ignorantiam", "Generalización Indebida", "Falsa Causa"]
+            },
+            
+            // Falsa Causa (5)
+            {
+                texto: "Cada vez que me pongo mi camiseta roja, mi equipo gana. Por eso siempre la uso los días de partido.",
+                correcta: "Falsa Causa",
+                opciones: ["Falsa Causa", "Ad Populum", "Generalización Indebida"]
+            },
+            {
+                texto: "Aprobé el examen porque llevé mi amuleto de la suerte en el bolsillo.",
+                correcta: "Falsa Causa",
+                opciones: ["Falsa Causa", "Petición de Principio", "Ad Ignorantiam"]
+            },
+            {
+                texto: "Desde que abrieron esa nueva cafetería, ha aumentado la delincuencia en el barrio. Claramente la cafetería atrae a criminales.",
+                correcta: "Falsa Causa",
+                opciones: ["Falsa Causa", "Falsa Analogía", "Ad Hominem"]
+            },
+            {
+                texto: "Me resfrié porque salí con el pelo mojado, eso todo el mundo lo sabe.",
+                correcta: "Falsa Causa",
+                opciones: ["Falsa Causa", "Ad Verecundiam", "Ad Populum"]
+            },
+            {
+                texto: "El otro día rompí un espejo y luego tuve mala suerte toda la semana. Los espejos rotos traen mala suerte.",
+                correcta: "Falsa Causa",
+                opciones: ["Falsa Causa", "Pendiente Resbaladiza", "Muñeco de Paja"]
+            },
+            
+            // Muñeco de Paja (5)
+            {
+                texto: "Dices que deberíamos reducir el presupuesto militar. ¿Acaso quieres que nuestro país quede indefenso ante cualquier ataque?",
+                correcta: "Muñeco de Paja",
+                opciones: ["Muñeco de Paja", "Pendiente Resbaladiza", "Ad Hominem"]
+            },
+            {
+                texto: "Propones que se regulen las armas. ¿Entonces quieres que el gobierno nos quite todas nuestras libertades?",
+                correcta: "Muñeco de Paja",
+                opciones: ["Muñeco de Paja", "Ad Baculum", "Falsa Analogía"]
+            },
+            {
+                texto: "Así que crees que los deberes deberían reducirse. ¿Quieres que los estudiantes no aprendan nada y sean unos vagos?",
+                correcta: "Muñeco de Paja",
+                opciones: ["Muñeco de Paja", "Generalización Indebida", "Ad Misericordiam"]
+            },
+            {
+                texto: "Sugieres aumentar los impuestos a las grandes empresas. ¿Acaso odias a los empresarios y quieres destruir la economía?",
+                correcta: "Muñeco de Paja",
+                opciones: ["Muñeco de Paja", "Ad Populum", "Falsa Causa"]
+            },
+            {
+                texto: "Defiendes los derechos de los animales. ¿Entonces piensas que los animales son más importantes que las personas?",
+                correcta: "Muñeco de Paja",
+                opciones: ["Muñeco de Paja", "Ad Verecundiam", "Petición de Principio"]
+            },
+            
+            // Ad Misericordiam (5)
+            {
+                texto: "Deberías aprobarme este examen, profesor. Mi abuela está muy enferma y si suspendo se va a poner peor.",
+                correcta: "Ad Misericordiam",
+                opciones: ["Ad Misericordiam", "Ad Hominem", "Muñeco de Paja"]
+            },
+            {
+                texto: "¡Piensa en los niños! Si no apoyas esta ley, ¿qué futuro les espera a nuestros hijos?",
+                correcta: "Ad Misericordiam",
+                opciones: ["Ad Misericordiam", "Ad Populum", "Pendiente Resbaladiza"]
+            },
+            {
+                texto: "Tienes que perdonarme por llegar tarde. Sabes lo difícil que es para mí madrugar después de todo lo que he sufrido en mi vida.",
+                correcta: "Ad Misericordiam",
+                opciones: ["Ad Misericordiam", "Falsa Causa", "Ad Ignorantiam"]
+            },
+            {
+                texto: "Estos inmigrantes nos están quitando el trabajo que por derecho corresponde a nuestros compatriotas que tanto han luchado.",
+                correcta: "Ad Misericordiam",
+                opciones: ["Ad Misericordiam", "Ad Baculum", "Generalización Indebida"]
+            },
+            {
+                texto: "No puedes despedirme, tengo tres hijos que mantener y una hipoteca que pagar. ¿Qué va a ser de mi familia?",
+                correcta: "Ad Misericordiam",
+                opciones: ["Ad Misericordiam", "Ad Verecundiam", "Falsa Analogía"]
+            },
+            
+            // Ad Populum (5)
+            {
+                texto: "Todo el mundo sabe que no se debe nadar después de comer, así que debe ser verdad.",
+                correcta: "Ad Populum",
+                opciones: ["Ad Populum", "Falsa Causa", "Ad Verecundiam"]
+            },
+            {
+                texto: "Millones de personas creen en la astrología, no pueden estar todos equivocados.",
+                correcta: "Ad Populum",
+                opciones: ["Ad Populum", "Ad Ignorantiam", "Generalización Indebida"]
+            },
+            {
+                texto: "Esta película debe ser buena porque ha recaudado millones en taquilla. La gente no se equivoca.",
+                correcta: "Ad Populum",
+                opciones: ["Ad Populum", "Petición de Principio", "Ad Hominem"]
+            },
+            {
+                texto: "Todos mis amigos dicen que fumar de vez en cuando no es malo, así que no debe serlo.",
+                correcta: "Ad Populum",
+                opciones: ["Ad Populum", "Muñeco de Paja", "Falsa Analogía"]
+            },
+            {
+                texto: "La mayoría de la gente piensa que la pena de muerte es justa, por tanto debe ser la opción correcta.",
+                correcta: "Ad Populum",
+                opciones: ["Ad Populum", "Ad Misericordiam", "Pendiente Resbaladiza"]
+            },
+            
+            // Petición de Principio (5)
+            {
+                texto: "La Biblia es la palabra de Dios porque así lo dice la Biblia misma.",
+                correcta: "Petición de Principio",
+                opciones: ["Petición de Principio", "Ad Verecundiam", "Ad Ignorantiam"]
+            },
+            {
+                texto: "Soy una persona honesta, y lo puedes creer porque las personas honestas no mienten.",
+                correcta: "Petición de Principio",
+                opciones: ["Petición de Principio", "Falsa Causa", "Ad Hominem"]
+            },
+            {
+                texto: "Este método funciona porque es efectivo, y sabemos que es efectivo porque funciona.",
+                correcta: "Petición de Principio",
+                opciones: ["Petición de Principio", "Generalización Indebida", "Muñeco de Paja"]
+            },
+            {
+                texto: "Debemos respetar la ley porque es la ley, y la ley debe ser respetada.",
+                correcta: "Petición de Principio",
+                opciones: ["Petición de Principio", "Ad Populum", "Ad Baculum"]
+            },
+            {
+                texto: "Las drogas son ilegales porque son malas, y sabemos que son malas porque son ilegales.",
+                correcta: "Petición de Principio",
+                opciones: ["Petición de Principio", "Falsa Analogía", "Ad Misericordiam"]
+            },
+            
+            // Pendiente Resbaladiza (5)
+            {
+                texto: "Si legalizamos el matrimonio homosexual, pronto querrán casarse con animales, y después con objetos inanimados.",
+                correcta: "Pendiente Resbaladiza",
+                opciones: ["Pendiente Resbaladiza", "Muñeco de Paja", "Falsa Causa"]
+            },
+            {
+                texto: "Si permites que tu hijo falte un día al colegio, luego querrá faltar dos, después una semana, y acabará abandonando los estudios.",
+                correcta: "Pendiente Resbaladiza",
+                opciones: ["Pendiente Resbaladiza", "Ad Misericordiam", "Generalización Indebida"]
+            },
+            {
+                texto: "Si aceptamos refugiados, luego vendrán millones, colapsarán nuestro sistema y destruirán nuestra cultura.",
+                correcta: "Pendiente Resbaladiza",
+                opciones: ["Pendiente Resbaladiza", "Ad Populum", "Ad Hominem"]
+            },
+            {
+                texto: "Si empiezas a fumar un cigarrillo, pronto fumarás una cajetilla al día, luego pasarás a drogas más duras y acabarás en la ruina.",
+                correcta: "Pendiente Resbaladiza",
+                opciones: ["Pendiente Resbaladiza", "Falsa Analogía", "Ad Ignorantiam"]
+            },
+            {
+                texto: "Si le das dinero a ese mendigo, vendrán más, el barrio se llenará de indigentes y tu casa perderá todo su valor.",
+                correcta: "Pendiente Resbaladiza",
+                opciones: ["Pendiente Resbaladiza", "Ad Baculum", "Petición de Principio"]
+            },
+            
+            // Ad Verecundiam (5)
+            {
+                texto: "Einstein creía en Dios, así que la existencia de Dios debe ser verdadera.",
+                correcta: "Ad Verecundiam",
+                opciones: ["Ad Verecundiam", "Ad Populum", "Falsa Causa"]
+            },
+            {
+                texto: "Un famoso actor de Hollywood dice que este producto adelgazante funciona, así que debe ser efectivo.",
+                correcta: "Ad Verecundiam",
+                opciones: ["Ad Verecundiam", "Ad Misericordiam", "Generalización Indebida"]
+            },
+            {
+                texto: "Mi cuñado, que trabaja en un hospital, me dijo que las vacunas son peligrosas, así que no voy a vacunar a mis hijos.",
+                correcta: "Ad Verecundiam",
+                opciones: ["Ad Verecundiam", "Muñeco de Paja", "Ad Ignorantiam"]
+            },
+            {
+                texto: "Un jugador de fútbol famoso recomienda esta marca de coches, debe ser la mejor del mercado.",
+                correcta: "Ad Verecundiam",
+                opciones: ["Ad Verecundiam", "Ad Hominem", "Falsa Analogía"]
+            },
+            {
+                texto: "He oído que un científico dijo una vez que el cambio climático no existe, así que no es real.",
+                correcta: "Ad Verecundiam",
+                opciones: ["Ad Verecundiam", "Pendiente Resbaladiza", "Petición de Principio"]
+            },
+            
+            // Falsa Analogía (5)
+            {
+                texto: "Los empleados son como una familia, así que no necesitan un contrato formal ni derechos laborales.",
+                correcta: "Falsa Analogía",
+                opciones: ["Falsa Analogía", "Muñeco de Paja", "Ad Populum"]
+            },
+            {
+                texto: "Un país es como una empresa: si no genera beneficios, debe cerrar.",
+                correcta: "Falsa Analogía",
+                opciones: ["Falsa Analogía", "Petición de Principio", "Falsa Causa"]
+            },
+            {
+                texto: "Los estudiantes son como plantas: si les das demasiada agua (información), se ahogan.",
+                correcta: "Falsa Analogía",
+                opciones: ["Falsa Analogía", "Ad Misericordiam", "Ad Verecundiam"]
+            },
+            {
+                texto: "El cerebro es como un ordenador, así que podemos mejorarlo simplemente instalando más memoria.",
+                correcta: "Falsa Analogía",
+                opciones: ["Falsa Analogía", "Ad Ignorantiam", "Generalización Indebida"]
+            },
+            {
+                texto: "Una sociedad sin leyes es como un coche sin frenos: por tanto, necesitamos más y más leyes constantemente.",
+                correcta: "Falsa Analogía",
+                opciones: ["Falsa Analogía", "Pendiente Resbaladiza", "Ad Hominem"]
+            },
+            
+            // Generalización Indebida (5)
+            {
+                texto: "Conocí a dos franceses que eran groseros, por tanto todos los franceses son maleducados.",
+                correcta: "Generalización Indebida",
+                opciones: ["Generalización Indebida", "Ad Hominem", "Falsa Causa"]
+            },
+            {
+                texto: "Mi abuelo fumó toda su vida y vivió hasta los 90 años, así que fumar no es tan malo como dicen.",
+                correcta: "Generalización Indebida",
+                opciones: ["Generalización Indebida", "Falsa Analogía", "Ad Populum"]
+            },
+            {
+                texto: "He preguntado a mis cinco mejores amigos y todos prefieren esta marca, por tanto es la favorita de todo el mundo.",
+                correcta: "Generalización Indebida",
+                opciones: ["Generalización Indebida", "Ad Verecundiam", "Muñeco de Paja"]
+            },
+            {
+                texto: "Vi en las noticias dos casos de inmigrantes que cometieron delitos, por tanto los inmigrantes son criminales.",
+                correcta: "Generalización Indebida",
+                opciones: ["Generalización Indebida", "Ad Misericordiam", "Pendiente Resbaladiza"]
+            },
+            {
+                texto: "Tres estudiantes de mi clase suspendieron matemáticas, así que las matemáticas son imposibles de aprobar.",
+                correcta: "Generalización Indebida",
+                opciones: ["Generalización Indebida", "Petición de Principio", "Ad Ignorantiam"]
+            }
+        ];
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let answered = false;
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function selectRandomQuestions() {
+            const shuffled = shuffleArray(falacias);
+            return shuffled.slice(0, 5);
+        }
+
+        function displayQuestion() {
+            answered = false;
+            const question = currentQuestions[currentQuestionIndex];
+            
+            document.getElementById('question-text').textContent = `"${question.texto}"`;
+            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+            document.getElementById('feedback').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('finish-btn').classList.add('hidden');
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            const shuffledOptions = shuffleArray(question.opciones);
+            
+            shuffledOptions.forEach(option => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.textContent = option;
+                optionDiv.onclick = () => selectOption(option, question.correcta);
+                optionsContainer.appendChild(optionDiv);
+            });
+        }
+
+        function selectOption(selected, correct) {
+            if (answered) return;
+            
+            answered = true;
+            const options = document.querySelectorAll('.option');
+            const feedback = document.getElementById('feedback');
+            
+            options.forEach(option => {
+                option.classList.add('disabled');
+                if (option.textContent === correct) {
+                    option.classList.add('correct');
+                }
+                if (option.textContent === selected && selected !== correct) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            if (selected === correct) {
+                correctAnswers++;
+                document.getElementById('correct-count').textContent = correctAnswers;
+                feedback.className = 'feedback correct';
+                feedback.textContent = '¡Correcto! 🎉';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedback.textContent = `Incorrecto. La respuesta correcta es: ${correct}`;
+            }
+            
+            feedback.classList.remove('hidden');
+            
+            if (currentQuestionIndex < 4) {
+                document.getElementById('next-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('finish-btn').classList.remove('hidden');
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            displayQuestion();
+        }
+
+        function showResults() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('results-container').classList.remove('hidden');
+            
+            const percentage = (correctAnswers / 5) * 100;
+            document.getElementById('final-score').textContent = `${correctAnswers}/5`;
+            document.getElementById('final-correct').textContent = correctAnswers;
+            document.getElementById('final-percentage').textContent = percentage;
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            document.getElementById('correct-count').textContent = '0';
+            document.getElementById('quiz-container').classList.remove('hidden');
+            document.getElementById('results-container').classList.add('hidden');
+            initQuiz();
+        }
+
+        function initQuiz() {
+            currentQuestions = selectRandomQuestions();
+            displayQuestion();
+        }
+
+        document.getElementById('next-btn').addEventListener('click', nextQuestion);
+        document.getElementById('finish-btn').addEventListener('click', showResults);
+        document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+
+        // Iniciar el quiz
+        initQuiz();
+    </script>
+</body>
+</html>
