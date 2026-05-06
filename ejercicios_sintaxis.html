@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ejercicios de Sintaxis · 1.º Bachillerato</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f0f13;
+  --surface: #18181f;
+  --surface2: #22222c;
+  --border: #2e2e3a;
+  --text: #e8e6e0;
+  --text-muted: #7a7880;
+  --text-dim: #4a4858;
+  --accent: #e8c547;
+  --accent2: #5b8dee;
+
+  /* función colors */
+  --c-suj:   #5b8dee;
+  --c-pred:  #e05a5a;
+  --c-cd:    #4db87a;
+  --c-ci:    #e8913a;
+  --c-cc:    #a06de8;
+  --c-creg:  #38c4c4;
+  --c-atr:   #e858b8;
+  --c-cpred: #c4884a;
+  --c-cn:    #7ab0e8;
+  --c-ca:    #c46ae8;
+  --c-v:     #e8e6e0;
+
+  --serif: 'Libre Baskerville', Georgia, serif;
+  --mono:  'IBM Plex Mono', monospace;
+  --sans:  'Nunito', sans-serif;
+
+  --radius: 6px;
+  --transition: 0.15s ease;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 1.2rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.header-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  color: var(--text);
+  letter-spacing: 0.01em;
+}
+.header-title span {
+  color: var(--accent);
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.session-badge {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 0.3em 0.8em;
+  border-radius: 20px;
+}
+.btn-new {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: var(--accent);
+  color: #111;
+  border: none;
+  padding: 0.45rem 1.1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity var(--transition);
+  letter-spacing: 0.02em;
+}
+.btn-new:hover { opacity: 0.85; }
+
+/* ── MAIN LAYOUT ── */
+.main {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 0;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  align-items: start;
+}
+
+/* ── SENTENCES PANEL ── */
+.sentences-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  padding-right: 2rem;
+}
+
+.sentence-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color var(--transition);
+}
+.sentence-card.active-card {
+  border-color: var(--accent);
+}
+.sentence-card.validated {
+  border-color: var(--border);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1.2rem;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+.card-num {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.card-status {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+.card-status.done { color: #4db87a; }
+.card-status.partial { color: var(--accent); }
+
+.sentence-display {
+  padding: 1.4rem 1.2rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.1rem;
+  align-items: flex-end;
+  min-height: 70px;
+  cursor: default;
+}
+
+/* ── TOKENS ── */
+.token {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0.1rem 0.08rem;
+  cursor: pointer;
+  position: relative;
+  transition: transform var(--transition);
+}
+.token:hover .tok-word { opacity: 0.7; }
+
+.tok-word {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  color: var(--text);
+  padding: 0.25em 0.3em;
+  border-radius: 4px 4px 0 0;
+  border-bottom: 2px solid transparent;
+  transition: all var(--transition);
+  white-space: nowrap;
+  line-height: 1.3;
+  user-select: none;
+}
+
+.tok-label {
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.1em 0.4em;
+  border-radius: 0 0 3px 3px;
+  color: transparent;
+  background: transparent;
+  transition: all var(--transition);
+  white-space: nowrap;
+  min-width: 100%;
+  text-align: center;
+}
+
+/* when a token has a function assigned */
+.token[data-fn] .tok-word {
+  border-bottom-color: currentColor;
+}
+.token[data-fn] .tok-label {
+  color: #fff;
+}
+.token[data-fn="SUJ"]   { color: var(--c-suj);   } .token[data-fn="SUJ"]   .tok-word { background: rgba(91,141,238,0.12); }  .token[data-fn="SUJ"]   .tok-label { background: var(--c-suj); }
+.token[data-fn="PRED"]  { color: var(--c-pred);  } .token[data-fn="PRED"]  .tok-word { background: rgba(224,90,90,0.12); }   .token[data-fn="PRED"]  .tok-label { background: var(--c-pred); }
+.token[data-fn="CD"]    { color: var(--c-cd);    } .token[data-fn="CD"]    .tok-word { background: rgba(77,184,122,0.12); }  .token[data-fn="CD"]    .tok-label { background: var(--c-cd); }
+.token[data-fn="CI"]    { color: var(--c-ci);    } .token[data-fn="CI"]    .tok-word { background: rgba(232,145,58,0.12); }  .token[data-fn="CI"]    .tok-label { background: var(--c-ci); }
+.token[data-fn="CC"]    { color: var(--c-cc);    } .token[data-fn="CC"]    .tok-word { background: rgba(160,109,232,0.12); } .token[data-fn="CC"]    .tok-label { background: var(--c-cc); }
+.token[data-fn="CREG"]  { color: var(--c-creg);  } .token[data-fn="CREG"]  .tok-word { background: rgba(56,196,196,0.12); }  .token[data-fn="CREG"]  .tok-label { background: var(--c-creg); }
+.token[data-fn="ATR"]   { color: var(--c-atr);   } .token[data-fn="ATR"]   .tok-word { background: rgba(232,88,184,0.12); }  .token[data-fn="ATR"]   .tok-label { background: var(--c-atr); }
+.token[data-fn="CPRED"] { color: var(--c-cpred); } .token[data-fn="CPRED"] .tok-word { background: rgba(196,136,74,0.12); }  .token[data-fn="CPRED"] .tok-label { background: var(--c-cpred); }
+.token[data-fn="CN"]    { color: var(--c-cn);    } .token[data-fn="CN"]    .tok-word { background: rgba(122,176,232,0.12); } .token[data-fn="CN"]    .tok-label { background: var(--c-cn); }
+.token[data-fn="CA"]    { color: var(--c-ca);    } .token[data-fn="CA"]    .tok-word { background: rgba(196,106,232,0.12); } .token[data-fn="CA"]    .tok-label { background: var(--c-ca); }
+.token[data-fn="V"]     { color: var(--c-v);     } .token[data-fn="V"]     .tok-word { background: rgba(232,230,224,0.08); } .token[data-fn="V"]     .tok-label { background: #555; }
+
+/* selection highlight */
+.token.selected .tok-word {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* correct / wrong after validation */
+.token.correct-mark .tok-word { box-shadow: 0 0 0 2px #4db87a; }
+.token.wrong-mark   .tok-word { box-shadow: 0 0 0 2px #e05a5a; }
+.token.missing-mark .tok-word { 
+  box-shadow: 0 0 0 2px #e8c547; 
+  animation: pulse-missing 1s ease 2;
+}
+@keyframes pulse-missing {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+/* ── CARD CONTROLS ── */
+.card-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1.2rem;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.btn-check {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: var(--accent);
+  color: #111;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: opacity var(--transition);
+}
+.btn-check:hover { opacity: 0.85; }
+.btn-check:disabled { opacity: 0.35; cursor: default; }
+.btn-reset {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.btn-reset:hover { border-color: var(--text-muted); color: var(--text); }
+
+.card-feedback {
+  font-size: 0.78rem;
+  font-family: var(--mono);
+  color: var(--text-muted);
+  margin-left: auto;
+}
+.card-feedback.ok   { color: #4db87a; }
+.card-feedback.fail { color: #e05a5a; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: sticky;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.sidebar-title {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0.7rem 1rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── FUNCTION PALETTE ── */
+.palette {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+  padding: 0.8rem;
+}
+.pal-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 5px;
+  border: 1.5px solid transparent;
+  background: var(--surface2);
+  cursor: pointer;
+  transition: all var(--transition);
+  font-family: var(--sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.pal-btn:hover { opacity: 0.8; }
+.pal-btn.active {
+  border-color: currentColor;
+  background: rgba(255,255,255,0.08);
+}
+.pal-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: currentColor;
+}
+
+.pal-btn[data-fn="SUJ"]   { color: var(--c-suj);   }
+.pal-btn[data-fn="PRED"]  { color: var(--c-pred);  }
+.pal-btn[data-fn="CD"]    { color: var(--c-cd);    }
+.pal-btn[data-fn="CI"]    { color: var(--c-ci);    }
+.pal-btn[data-fn="CC"]    { color: var(--c-cc);    }
+.pal-btn[data-fn="CREG"]  { color: var(--c-creg);  }
+.pal-btn[data-fn="ATR"]   { color: var(--c-atr);   }
+.pal-btn[data-fn="CPRED"] { color: var(--c-cpred); }
+.pal-btn[data-fn="CN"]    { color: var(--c-cn);    }
+.pal-btn[data-fn="CA"]    { color: var(--c-ca);    }
+.pal-btn[data-fn="V"]     { color: var(--c-v);     }
+
+.clear-btn {
+  grid-column: span 2;
+  background: transparent;
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  padding: 0.35rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all var(--transition);
+}
+.clear-btn:hover { border-color: var(--text-muted); color: var(--text); }
+
+/* ── REFERENCE CARD ── */
+.ref-list {
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.ref-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+}
+.ref-tag {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 0.1em 0.5em;
+  border-radius: 3px;
+  min-width: 48px;
+  text-align: center;
+  color: #fff;
+}
+.ref-desc {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.68rem;
+}
+
+/* ── SCORE BOX ── */
+.score-box {
+  padding: 1rem;
+  text-align: center;
+}
+.score-nums {
+  font-family: var(--mono);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+.score-label {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.score-bar {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  margin-top: 0.8rem;
+  overflow: hidden;
+}
+.score-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+/* ── INSTRUCTION ── */
+.instruction {
+  padding: 0.7rem 1rem;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.instruction strong { color: var(--text-muted); }
+
+/* ── SOLUTION REVEAL ── */
+.solution-reveal {
+  display: none;
+  margin: 0 1.2rem 1rem;
+  padding: 0.8rem 1rem;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+.solution-reveal.show { display: block; }
+.solution-reveal strong { color: var(--text); font-family: var(--mono); font-size: 0.7rem; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 780px) {
+  .main { grid-template-columns: 1fr; padding: 1rem; }
+  .sentences-panel { padding-right: 0; }
+  .sidebar { position: static; }
+  .palette { grid-template-columns: repeat(3, 1fr); }
+  .clear-btn { grid-column: span 3; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-title">Sintaxis <span>·</span> Ejercicios</div>
+  <div class="header-right">
+    <span class="session-badge" id="session-info">4 frases · sesión 1</span>
+    <button class="btn-new" onclick="newSession()">↺ Nueva sesión</button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="sentences-panel" id="sentences-panel"></div>
+
+  <aside class="sidebar">
+    <!-- Palette -->
+    <div class="sidebar-section">
+      <div class="sidebar-title">Función activa</div>
+      <div class="instruction">
+        <strong>1.</strong> Elige función · <strong>2.</strong> Pulsa palabras · <strong>3.</strong> Comprueba<br>
+        <span style="color:var(--text-dim);font-size:0.68rem">Nota: el <em>se</em> pronominal se etiqueta junto al verbo como unidad verbal (V).</span>
+      </div>
+      <div class="palette" id="palette">
+        <button class="pal-btn" data-fn="SUJ"  onclick="selectFn('SUJ')">  <span class="pal-dot"></span>SUJ</button>
+        <button class="pal-btn" data-fn="V"    onclick="selectFn('V')">    <span class="pal-dot"></span>Verbo</button>
+        <button class="pal-btn" data-fn="CD"   onclick="selectFn('CD')">   <span class="pal-dot"></span>CD</button>
+        <button class="pal-btn" data-fn="CI"   onclick="selectFn('CI')">   <span class="pal-dot"></span>CI</button>
+        <button class="pal-btn" data-fn="CC"   onclick="selectFn('CC')">   <span class="pal-dot"></span>CC</button>
+        <button class="pal-btn" data-fn="CREG" onclick="selectFn('CREG')"> <span class="pal-dot"></span>CRég</button>
+        <button class="pal-btn" data-fn="ATR"  onclick="selectFn('ATR')">  <span class="pal-dot"></span>Atributo</button>
+        <button class="pal-btn" data-fn="CPRED"onclick="selectFn('CPRED')"><span class="pal-dot"></span>CPred</button>
+        <button class="pal-btn" data-fn="CN"   onclick="selectFn('CN')">   <span class="pal-dot"></span>CN</button>
+        <button class="pal-btn" data-fn="CA"   onclick="selectFn('CA')">   <span class="pal-dot"></span>CA</button>
+        <button class="clear-btn" onclick="selectFn(null)">✕ Borrar etiqueta</button>
+      </div>
+    </div>
+
+    <!-- Score -->
+    <div class="sidebar-section">
+      <div class="sidebar-title">Puntuación</div>
+      <div class="score-box">
+        <div class="score-nums"><span id="sc-ok">0</span> / <span id="sc-total">0</span></div>
+        <div class="score-label">funciones correctas</div>
+        <div class="score-bar"><div class="score-fill" id="score-fill" style="width:0%"></div></div>
+      </div>
+    </div>
+
+    <!-- Reference -->
+    <div class="sidebar-section">
+      <div class="sidebar-title">Referencia rápida</div>
+      <div class="ref-list">
+        <div class="ref-item"><span class="ref-tag" style="background:var(--c-suj)">SUJ</span><span class="ref-desc">concuerda con el verbo</span></div>
+        <div class="ref-item"><span class="ref-tag" style="background:#555">V</span><span class="ref-desc">verbo o perífrasis</span></div>
+        <div class="ref-item"><span class="ref-tag" style="background:var(--c-cd)">CD</span><span class="ref-desc">lo / la / los / las</span></div>
+        <div class="ref-item"><span class="ref-tag" style="background:var(--c-ci)">CI</span><span class="ref-desc">le / les</span></div>
+        <div class="ref-item"><span class="ref-tag" style="background:var(--c-cc)">CC</span><span class="ref-desc">circunstancia, suprimible</span></div>
+        <div class="ref-item"><span class="ref-tag" style="background:var(--c-creg)">CREG</span><span class="ref-desc">prep. fija del verbo</span></div>
+        <div class="ref-item"><span class="ref-tag" style="background:var(--c-atr)">ATR</span><span class="ref-desc">ser / estar / parecer</span></div>
+        <div class="ref-item"><span class="ref-tag" style="background:var(--c-cpred)">CPRED</span><span class="ref-desc">adj. concuerda con SUJ/CD</span></div>
+        <div class="ref-item"><span class="ref-tag" style="background:var(--c-cn)">CN</span><span class="ref-desc">modifica al nombre</span></div>
+        <div class="ref-item"><span class="ref-tag" style="background:var(--c-ca)">CA</span><span class="ref-desc">agente de pasiva (por…)</span></div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// BANK OF 30 SENTENCES
+// Each token: { w: "word", fn: "FUNCTION" }
+// fn can be null for punctuation/conjunctions that don't carry a function
+// Multiple tokens can share the same fn (= they're a single constituent)
+// ══════════════════════════════════════
+const SENTENCES = [
+  {
+    id: 1,
+    tokens: [
+      {w:"Mi",fn:"SUJ"},{w:"hermana",fn:"SUJ"},{w:"mayor",fn:"SUJ"},
+      {w:"compró",fn:"V"},
+      {w:"un",fn:"CD"},{w:"libro",fn:"CD"},{w:"de",fn:"CD"},{w:"poemas",fn:"CD"},
+      {w:"ayer",fn:"CC"},
+      {w:"en",fn:"CC"},{w:"la",fn:"CC"},{w:"feria",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"El SUJ incluye el CN <em>mayor</em>. El CC de lugar <em>en la feria</em> y el CC de tiempo <em>ayer</em> son adjuntos suprimibles."
+  },
+  {
+    id: 2,
+    tokens: [
+      {w:"El",fn:"SUJ"},{w:"director",fn:"SUJ"},
+      {w:"le",fn:"CI"},
+      {w:"entregó",fn:"V"},
+      {w:"el",fn:"CD"},{w:"premio",fn:"CD"},
+      {w:"a",fn:"CI"},{w:"la",fn:"CI"},{w:"ganadora",fn:"CI"},{w:".",fn:null}
+    ],
+    note:"<em>Le</em> es el clítico duplicador del CI <em>a la ganadora</em>. Prueba: «le entregó el premio» → CI = le/les."
+  },
+  {
+    id: 3,
+    tokens: [
+      {w:"Los",fn:"SUJ"},{w:"alumnos",fn:"SUJ"},
+      {w:"llegaron",fn:"V"},
+      {w:"cansados",fn:"CPRED"},
+      {w:"al",fn:"CC"},{w:"examen",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"<em>Cansados</em> concuerda con <em>los alumnos</em> (SUJ) y complementa al verbo no copulativo <em>llegar</em> → CPred del sujeto."
+  },
+  {
+    id: 4,
+    tokens: [
+      {w:"Esta",fn:"SUJ"},{w:"novela",fn:"SUJ"},
+      {w:"es",fn:"V"},
+      {w:"la",fn:"ATR"},{w:"más",fn:"ATR"},{w:"vendida",fn:"ATR"},{w:"del",fn:"ATR"},{w:"año",fn:"ATR"},{w:".",fn:null}
+    ],
+    note:"<em>Es</em> es verbo copulativo. El Atributo se sustituye por <em>lo</em>: «Esta novela lo es»."
+  },
+  {
+    id: 5,
+    tokens: [
+      {w:"El",fn:"SUJ"},{w:"puente",fn:"SUJ"},
+      {w:"fue",fn:"V"},{w:"construido",fn:"V"},
+      {w:"por",fn:"CA"},{w:"una",fn:"CA"},{w:"empresa",fn:"CA"},{w:"italiana",fn:"CA"},{w:".",fn:null}
+    ],
+    note:"Pasiva analítica: <em>fue construido</em>. El GP con <em>por</em> es el CA (complemento agente). El SUJ (<em>el puente</em>) es el sujeto paciente."
+  },
+  {
+    id: 6,
+    tokens: [
+      {w:"María",fn:"SUJ"},
+      {w:"confía",fn:"V"},
+      {w:"plenamente",fn:"CC"},
+      {w:"en",fn:"CREG"},{w:"sus",fn:"CREG"},{w:"compañeros",fn:"CREG"},{w:".",fn:null}
+    ],
+    note:"<em>Confiar en</em>: la preposición <em>en</em> es exigida por el verbo → CRég. No puede sustituirse por <em>lo</em>. <em>Plenamente</em> es CC de modo."
+  },
+  {
+    id: 7,
+    tokens: [
+      {w:"Los",fn:"SUJ"},{w:"niños",fn:"SUJ"},
+      {w:"se",fn:"V"},{w:"comieron",fn:"V"},
+      {w:"toda",fn:"CD"},{w:"la",fn:"CD"},{w:"tarta",fn:"CD"},
+      {w:"en",fn:"CC"},{w:"un",fn:"CC"},{w:"momento",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"<em>Se comieron</em>: el <em>se</em> es dativo ético (suprimible: «comieron toda la tarta»). <em>Toda la tarta</em> es el CD."
+  },
+  {
+    id: 8,
+    tokens: [
+      {w:"El",fn:"SUJ"},{w:"informe",fn:"SUJ"},
+      {w:"fue",fn:"V"},{w:"redactado",fn:"V"},
+      {w:"con",fn:"CC"},{w:"mucho",fn:"CC"},{w:"cuidado",fn:"CC"},
+      {w:"por",fn:"CA"},{w:"la",fn:"CA"},{w:"secretaria",fn:"CA"},{w:".",fn:null}
+    ],
+    note:"Pasiva analítica. El CA <em>por la secretaria</em> se convierte en SUJ en la activa: «La secretaria redactó el informe»."
+  },
+  {
+    id: 9,
+    tokens: [
+      {w:"Ese",fn:"SUJ"},
+      {w:"se",fn:"V"},{w:"arrepintió",fn:"V"},
+      {w:"de",fn:"CREG"},{w:"sus",fn:"CREG"},{w:"palabras",fn:"CREG"},
+      {w:"inmediatamente",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"<em>Arrepentirse de</em> es verbo de régimen. <em>Se</em> es pronominal (el verbo no existe sin él con este significado)."
+  },
+  {
+    id: 10,
+    tokens: [
+      {w:"El",fn:"SUJ"},{w:"acusado",fn:"SUJ"},
+      {w:"parecía",fn:"V"},
+      {w:"nervioso",fn:"ATR"},
+      {w:"durante",fn:"CC"},{w:"el",fn:"CC"},{w:"juicio",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"<em>Parecer</em> es verbo copulativo → <em>nervioso</em> es Atributo. Prueba: «El acusado lo parecía». El CC <em>durante el juicio</em> es de tiempo."
+  },
+  {
+    id: 11,
+    tokens: [
+      {w:"La",fn:"SUJ"},{w:"policía",fn:"SUJ"},
+      {w:"encontró",fn:"V"},
+      {w:"el",fn:"CD"},{w:"coche",fn:"CD"},{w:"robado",fn:"CPRED"},
+      {w:"en",fn:"CC"},{w:"un",fn:"CC"},{w:"descampado",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"<em>Robado</em> concuerda con <em>el coche</em> (CD) y complementa al verbo <em>encontrar</em> → CPred del CD."
+  },
+  {
+    id: 12,
+    tokens: [
+      {w:"Le",fn:"CI"},
+      {w:"envié",fn:"V"},
+      {w:"un",fn:"CD"},{w:"mensaje",fn:"CD"},
+      {w:"a",fn:"CI"},{w:"mi",fn:"CI"},{w:"madre",fn:"CI"},
+      {w:"desde",fn:"CC"},{w:"el",fn:"CC"},{w:"aeropuerto",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"CI duplicado con clítico: <em>le</em> y <em>a mi madre</em> son el mismo CI. El CC de lugar es <em>desde el aeropuerto</em>."
+  },
+  {
+    id: 13,
+    tokens: [
+      {w:"Los",fn:"SUJ"},{w:"dos",fn:"SUJ"},{w:"candidatos",fn:"SUJ"},
+      {w:"se",fn:"V"},{w:"saludaron",fn:"V"},
+      {w:"fríamente",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"<em>Se saludaron</em>: SE recíproco (el uno al otro). SUJ plural. <em>Fríamente</em> es CC de modo."
+  },
+  {
+    id: 14,
+    tokens: [
+      {w:"Nadie",fn:"SUJ"},
+      {w:"habló",fn:"V"},
+      {w:"de",fn:"CREG"},{w:"ese",fn:"CREG"},{w:"asunto",fn:"CREG"},
+      {w:"durante",fn:"CC"},{w:"la",fn:"CC"},{w:"reunión",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"<em>Hablar de</em>: verbo de régimen. <em>Nadie</em> es pronombre indefinido → núcleo del SUJ."
+  },
+  {
+    id: 15,
+    tokens: [
+      {w:"Los",fn:"SUJ"},{w:"resultados",fn:"SUJ"},
+      {w:"son",fn:"V"},
+      {w:"mejores",fn:"ATR"},
+      {w:"de",fn:"ATR"},{w:"lo",fn:"ATR"},{w:"esperado",fn:"ATR"},{w:".",fn:null}
+    ],
+    note:"<em>Son</em> es copulativo. El Atributo incluye el GP comparativo <em>de lo esperado</em>."
+  },
+  {
+    id: 16,
+    tokens: [
+      {w:"Su",fn:"SUJ"},{w:"explicación",fn:"SUJ"},
+      {w:"me",fn:"CI"},
+      {w:"pareció",fn:"V"},
+      {w:"muy",fn:"ATR"},{w:"convincente",fn:"ATR"},{w:".",fn:null}
+    ],
+    note:"<em>Parecer</em> copulativo → ATR. El CI <em>me</em> expresa el beneficiario de la valoración."
+  },
+  {
+    id: 17,
+    tokens: [
+      {w:"La",fn:"SUJ"},{w:"empresa",fn:"SUJ"},
+      {w:"despidió",fn:"V"},
+      {w:"a",fn:"CD"},{w:"todos",fn:"CD"},{w:"sus",fn:"CD"},{w:"empleados",fn:"CD"},
+      {w:"sin",fn:"CC"},{w:"previo",fn:"CC"},{w:"aviso",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"CD con <em>a</em> personal: <em>a todos sus empleados</em>. Prueba: «La empresa los despidió». CC de modo: <em>sin previo aviso</em>."
+  },
+  {
+    id: 18,
+    tokens: [
+      {w:"El",fn:"SUJ"},{w:"libro",fn:"SUJ"},
+      {w:"se",fn:"V"},{w:"vendió",fn:"V"},
+      {w:"muy",fn:"CC"},{w:"bien",fn:"CC"},
+      {w:"el",fn:"CC"},{w:"primer",fn:"CC"},{w:"mes",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"<em>Se vendió</em>: pasiva refleja. El SUJ es <em>el libro</em> (concuerda con el verbo en sg.). El CC de modo: <em>muy bien</em>."
+  },
+  {
+    id: 19,
+    tokens: [
+      {w:"La",fn:"SUJ"},{w:"novela",fn:"SUJ"},{w:"de",fn:"CN"},{w:"Galdós",fn:"CN"},
+      {w:"sigue",fn:"V"},
+      {w:"siendo",fn:"V"},
+      {w:"un",fn:"ATR"},{w:"clásico",fn:"ATR"},{w:"indiscutible",fn:"ATR"},{w:".",fn:null}
+    ],
+    note:"El CN <em>de Galdós</em> es un GP que complementa al nombre <em>novela</em>. <em>Sigue siendo</em> es perífrasis semicopulativa → ATR <em>un clásico indiscutible</em>."
+  },
+  {
+    id: 20,
+    tokens: [
+      {w:"El",fn:"SUJ"},{w:"perro",fn:"SUJ"},
+      {w:"se",fn:"V"},{w:"quedó",fn:"V"},
+      {w:"quieto",fn:"ATR"},
+      {w:"junto",fn:"CC"},{w:"a",fn:"CC"},{w:"la",fn:"CC"},{w:"puerta",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"<em>Quedarse</em> es verbo semicopulativo → ATR. <em>Junto a la puerta</em> es CC de lugar."
+  },
+  {
+    id: 21,
+    tokens: [
+      {w:"Los",fn:"SUJ"},{w:"vecinos",fn:"SUJ"},
+      {w:"se",fn:"V"},{w:"quejan",fn:"V"},
+      {w:"constantemente",fn:"CC"},
+      {w:"del",fn:"CREG"},{w:"ruido",fn:"CREG"},{w:".",fn:null}
+    ],
+    note:"<em>Quejarse de</em>: verbo pronominal de régimen. El CRég es <em>del ruido</em>. El CC de modo: <em>constantemente</em>."
+  },
+  {
+    id: 22,
+    tokens: [
+      {w:"La",fn:"SUJ"},{w:"profesora",fn:"SUJ"},
+      {w:"repartió",fn:"V"},
+      {w:"los",fn:"CD"},{w:"exámenes",fn:"CD"},
+      {w:"corregidos",fn:"CPRED"},
+      {w:"a",fn:"CI"},{w:"cada",fn:"CI"},{w:"alumno",fn:"CI"},{w:".",fn:null}
+    ],
+    note:"<em>Corregidos</em> concuerda con <em>los exámenes</em> (CD) → CPred del CD. El CI es <em>a cada alumno</em>."
+  },
+  {
+    id: 23,
+    tokens: [
+      {w:"El",fn:"SUJ"},{w:"tren",fn:"SUJ"},
+      {w:"llegó",fn:"V"},
+      {w:"a",fn:"CC"},{w:"la",fn:"CC"},{w:"estación",fn:"CC"},
+      {w:"con",fn:"CC"},{w:"dos",fn:"CC"},{w:"horas",fn:"CC"},{w:"de",fn:"CC"},{w:"retraso",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"Dos CC: <em>a la estación</em> (CC de lugar) y <em>con dos horas de retraso</em> (CC de modo). Ninguno lo exige el verbo → no son CRég."
+  },
+  {
+    id: 24,
+    tokens: [
+      {w:"Esta",fn:"SUJ"},{w:"situación",fn:"SUJ"},
+      {w:"me",fn:"CI"},
+      {w:"preocupa",fn:"V"},
+      {w:"mucho",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"El SUJ es <em>esta situación</em> (concuerda). El CI <em>me</em> recibe el efecto. <em>Mucho</em> es CC de cantidad."
+  },
+  {
+    id: 25,
+    tokens: [
+      {w:"El",fn:"SUJ"},{w:"cuadro",fn:"SUJ"},{w:"de",fn:"CN"},{w:"Velázquez",fn:"CN"},
+      {w:"que",fn:"CN"},{w:"robaron",fn:"CN"},{w:"ayer",fn:"CN"},
+      {w:"era",fn:"V"},
+      {w:"inestimable",fn:"ATR"},{w:".",fn:null}
+    ],
+    note:"El SUJ contiene dos CN: el GP <em>de Velázquez</em> y la sub. de relativo <em>que robaron ayer</em>, ambos modifican a <em>cuadro</em>. <em>Era</em> copulativo → ATR."
+  },
+  {
+    id: 26,
+    tokens: [
+      {w:"Los",fn:"SUJ"},{w:"soldados",fn:"SUJ"},
+      {w:"regresaron",fn:"V"},
+      {w:"agotados",fn:"CPRED"},
+      {w:"tras",fn:"CC"},{w:"la",fn:"CC"},{w:"batalla",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"<em>Regresar</em> no es copulativo. <em>Agotados</em> concuerda con el SUJ → CPred del sujeto."
+  },
+  {
+    id: 27,
+    tokens: [
+      {w:"El",fn:"SUJ"},{w:"decreto",fn:"SUJ"},
+      {w:"fue",fn:"V"},{w:"aprobado",fn:"V"},
+      {w:"por",fn:"CA"},{w:"el",fn:"CA"},{w:"Consejo",fn:"CA"},{w:"de",fn:"CA"},{w:"Ministros",fn:"CA"},
+      {w:"ayer",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"Pasiva analítica. CA: <em>por el Consejo de Ministros</em>. CC tiempo: <em>ayer</em>."
+  },
+  {
+    id: 28,
+    tokens: [
+      {w:"Mi",fn:"SUJ"},{w:"hermano",fn:"SUJ"},
+      {w:"se",fn:"V"},{w:"lava",fn:"V"},
+      {w:"las",fn:"CD"},{w:"manos",fn:"CD"},
+      {w:"antes",fn:"CC"},{w:"de",fn:"CC"},{w:"comer",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"<em>Se lava las manos</em>: el SE es reflexivo indirecto (CI reflexivo) porque hay CD explícito (<em>las manos</em>). CC de tiempo: <em>antes de comer</em>."
+  },
+  {
+    id: 29,
+    tokens: [
+      {w:"Los",fn:"SUJ"},{w:"nuevos",fn:"SUJ"},{w:"modelos",fn:"SUJ"},
+      {w:"se",fn:"V"},{w:"presentaron",fn:"V"},
+      {w:"en",fn:"CC"},{w:"el",fn:"CC"},{w:"salón",fn:"CC"},{w:"del",fn:"CC"},{w:"automóvil",fn:"CC"},{w:".",fn:null}
+    ],
+    note:"Pasiva refleja: <em>los nuevos modelos</em> es el SUJ (concuerda en pl. con <em>se presentaron</em>)."
+  },
+  {
+    id: 30,
+    tokens: [
+      {w:"Esa",fn:"SUJ"},{w:"decisión",fn:"SUJ"},
+      {w:"le",fn:"CI"},
+      {w:"costó",fn:"V"},
+      {w:"el",fn:"CD"},{w:"puesto",fn:"CD"},
+      {w:"a",fn:"CI"},{w:"ella",fn:"CI"},{w:".",fn:null}
+    ],
+    note:"CI duplicado: <em>le</em> + <em>a ella</em>. CD: <em>el puesto</em>. Prueba CD: «le costó <em>eso</em>»."
+  }
+];
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let activeFn = null;
+let sessionSentences = [];
+let sessionNum = 0;
+let totalOk = 0, totalChecked = 0;
+
+function pickRandom(arr, n) {
+  const shuffled = [...arr].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, n);
+}
+
+function selectFn(fn) {
+  activeFn = fn;
+  document.querySelectorAll('.pal-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.fn === fn);
+  });
+}
+
+// ══════════════════════════════════════
+// RENDER SESSION
+// ══════════════════════════════════════
+function newSession() {
+  sessionNum++;
+  sessionSentences = pickRandom(SENTENCES, 4);
+  document.getElementById('session-info').textContent = `4 frases · sesión ${sessionNum}`;
+  activeFn = null;
+  document.querySelectorAll('.pal-btn').forEach(b => b.classList.remove('active'));
+
+  const panel = document.getElementById('sentences-panel');
+  panel.innerHTML = '';
+  sessionSentences.forEach((s, idx) => renderCard(s, idx, panel));
+}
+
+function renderCard(sentence, idx, panel) {
+  const card = document.createElement('div');
+  card.className = 'sentence-card';
+  card.id = `card-${sentence.id}`;
+
+  // Header
+  card.innerHTML = `
+    <div class="card-header">
+      <span class="card-num">Frase ${idx + 1}</span>
+      <span class="card-status" id="status-${sentence.id}">sin empezar</span>
+    </div>
+    <div class="sentence-display" id="sent-${sentence.id}"></div>
+    <div class="solution-reveal" id="sol-${sentence.id}"></div>
+    <div class="card-controls">
+      <button class="btn-check" id="check-${sentence.id}" onclick="checkCard(${sentence.id})">Comprobar</button>
+      <button class="btn-reset" onclick="resetCard(${sentence.id})">Reiniciar</button>
+      <span class="card-feedback" id="fb-${sentence.id}"></span>
+    </div>
+  `;
+
+  panel.appendChild(card);
+
+  // Render tokens
+  const display = card.querySelector(`#sent-${sentence.id}`);
+  sentence.tokens.forEach((tok, ti) => {
+    if (tok.fn === null) {
+      // punctuation — just text, no interaction
+      const punct = document.createElement('span');
+      punct.textContent = tok.w;
+      punct.style.cssText = 'font-family:var(--serif);font-size:1.15rem;color:var(--text-dim);align-self:flex-end;padding-bottom:0.35em;';
+      display.appendChild(punct);
+      return;
+    }
+
+    const token = document.createElement('div');
+    token.className = 'token';
+    token.dataset.sid = sentence.id;
+    token.dataset.ti = ti;
+    token.dataset.correct = tok.fn;
+    // start with no fn assigned
+    token.innerHTML = `<span class="tok-word">${tok.w}</span><span class="tok-label">·</span>`;
+    token.addEventListener('click', () => handleTokenClick(token, sentence.id));
+    display.appendChild(token);
+  });
+}
+
+function handleTokenClick(token, sid) {
+  const card = document.getElementById(`card-${sid}`);
+  if (card.dataset.validated) return;
+
+  if (activeFn === null) {
+    // clear mode
+    token.removeAttribute('data-fn');
+    token.querySelector('.tok-label').textContent = '·';
+  } else {
+    token.dataset.fn = activeFn;
+    token.querySelector('.tok-label').textContent = activeFn;
+  }
+
+  updateCardStatus(sid);
+}
+
+function updateCardStatus(sid) {
+  const tokens = document.querySelectorAll(`.token[data-sid="${sid}"]`);
+  const labeled = [...tokens].filter(t => t.hasAttribute('data-fn')).length;
+  const total = tokens.length;
+  const statusEl = document.getElementById(`status-${sid}`);
+
+  if (labeled === 0) {
+    statusEl.textContent = 'sin empezar';
+    statusEl.className = 'card-status';
+  } else if (labeled < total) {
+    statusEl.textContent = `${labeled}/${total} etiquetadas`;
+    statusEl.className = 'card-status partial';
+  } else {
+    statusEl.textContent = 'completa';
+    statusEl.className = 'card-status partial';
+  }
+}
+
+// ══════════════════════════════════════
+// CHECK
+// ══════════════════════════════════════
+function checkCard(sid) {
+  const card = document.getElementById(`card-${sid}`);
+  if (card.dataset.validated) return;
+  card.dataset.validated = '1';
+
+  const tokens = document.querySelectorAll(`.token[data-sid="${sid}"]`);
+  let ok = 0, wrong = 0, missing = 0;
+
+  tokens.forEach(tok => {
+    const correctFn = tok.dataset.correct;
+    const assignedFn = tok.dataset.fn || null;
+
+    tok.classList.remove('correct-mark','wrong-mark','missing-mark');
+
+    if (assignedFn === correctFn) {
+      tok.classList.add('correct-mark');
+      ok++;
+    } else if (assignedFn !== null && assignedFn !== correctFn) {
+      tok.classList.add('wrong-mark');
+      // show correct
+      tok.dataset.fn = correctFn;
+      tok.querySelector('.tok-label').textContent = correctFn;
+      wrong++;
+    } else {
+      // not labeled — show correct
+      tok.classList.add('missing-mark');
+      tok.dataset.fn = correctFn;
+      tok.querySelector('.tok-label').textContent = correctFn;
+      missing++;
+    }
+  });
+
+  const total = tokens.length;
+  totalOk += ok;
+  totalChecked += total;
+  card.dataset.scoredOk = ok;
+  card.dataset.scoredTotal = total;
+  updateGlobalScore();
+
+  const fb = document.getElementById(`fb-${sid}`);
+  const pct = Math.round((ok / total) * 100);
+  if (pct === 100) {
+    fb.textContent = '✓ Perfecto';
+    fb.className = 'card-feedback ok';
+  } else {
+    fb.textContent = `${ok}/${total} correctas (${pct}%)`;
+    fb.className = 'card-feedback fail';
+  }
+
+  const statusEl = document.getElementById(`status-${sid}`);
+  statusEl.textContent = pct === 100 ? '✓ correcto' : `${pct}% correcto`;
+  statusEl.className = pct === 100 ? 'card-status done' : 'card-status';
+
+  // Show note
+  const sentence = SENTENCES.find(s => s.id === sid);
+  if (sentence && sentence.note) {
+    const sol = document.getElementById(`sol-${sid}`);
+    sol.innerHTML = `<strong>NOTA</strong> &nbsp;${sentence.note}`;
+    sol.classList.add('show');
+  }
+
+  card.classList.add('validated');
+  document.getElementById(`check-${sid}`).disabled = true;
+}
+
+function resetCard(sid) {
+  const card = document.getElementById(`card-${sid}`);
+  if (!card.dataset.validated) return; // not yet validated, nothing to reset
+
+  // Subtract this card's contribution from global score
+  const prevOk    = parseInt(card.dataset.scoredOk    || '0', 10);
+  const prevTotal = parseInt(card.dataset.scoredTotal  || '0', 10);
+  totalOk      -= prevOk;
+  totalChecked -= prevTotal;
+  delete card.dataset.scoredOk;
+  delete card.dataset.scoredTotal;
+  updateGlobalScore();
+
+  delete card.dataset.validated;
+  card.classList.remove('validated');
+
+  const tokens = document.querySelectorAll(`.token[data-sid="${sid}"]`);
+  tokens.forEach(tok => {
+    tok.removeAttribute('data-fn');
+    tok.querySelector('.tok-label').textContent = '·';
+    tok.classList.remove('correct-mark','wrong-mark','missing-mark');
+  });
+
+  document.getElementById(`status-${sid}`).textContent = 'sin empezar';
+  document.getElementById(`status-${sid}`).className = 'card-status';
+  document.getElementById(`fb-${sid}`).textContent = '';
+  document.getElementById(`fb-${sid}`).className = 'card-feedback';
+  document.getElementById(`check-${sid}`).disabled = false;
+  document.getElementById(`sol-${sid}`).classList.remove('show');
+
+  updateCardStatus(sid);
+}
+
+function updateGlobalScore() {
+  document.getElementById('sc-ok').textContent = totalOk;
+  document.getElementById('sc-total').textContent = totalChecked;
+  const pct = totalChecked > 0 ? (totalOk / totalChecked) * 100 : 0;
+  document.getElementById('score-fill').style.width = pct + '%';
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+newSession();
+</script>
+</body>
+</html>
