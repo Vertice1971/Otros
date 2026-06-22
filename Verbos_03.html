@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El verbo: tiempos verbales y perífrasis. Práctica autocorregible</title>
+<style>
+:root {
+  --bg: #f5f3ef;
+  --panel: #ffffff;
+  --ink: #202124;
+  --muted: #62666d;
+  --line: #d8d2c6;
+  --accent: #314f7c;
+  --accent2: #7c3f31;
+  --ok: #216e39;
+  --bad: #9a2c2c;
+  --soft: #eef2f8;
+  --soft2: #f6eee8;
+  --mark: #fff1a8;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.48;
+}
+header {
+  background: #1f2937;
+  color: #fff;
+  padding: 28px 22px 24px;
+}
+header .wrap { max-width: 1120px; margin: 0 auto; }
+h1 {
+  margin: 0 0 8px;
+  font-size: clamp(1.55rem, 3.5vw, 2.35rem);
+  letter-spacing: -0.02em;
+}
+.subtitle {
+  max-width: 900px;
+  margin: 0;
+  color: #d8dee9;
+  font-size: 1.02rem;
+}
+main {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+nav {
+  position: sticky;
+  top: 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+.nav-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.nav-btn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: 1px solid transparent;
+  background: transparent;
+  padding: 9px 10px;
+  margin: 4px 0;
+  border-radius: 9px;
+  cursor: pointer;
+  color: var(--ink);
+  font-size: .94rem;
+}
+.nav-btn:hover { background: var(--soft); }
+.nav-btn.active {
+  background: var(--soft);
+  border-color: #b9c7df;
+  color: #183b6b;
+  font-weight: 700;
+}
+.tools {
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.small {
+  color: var(--muted);
+  font-size: .88rem;
+}
+button {
+  font: inherit;
+}
+.primary, .secondary, .ghost {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.primary { background: var(--accent); color: #fff; }
+.secondary { background: var(--accent2); color: #fff; }
+.ghost { background: #ece8df; color: var(--ink); }
+.primary:disabled, .secondary:disabled, .ghost:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.05);
+  overflow: hidden;
+}
+.card-head {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+  background: #fbfaf8;
+}
+.card-head h2 {
+  margin: 0 0 6px;
+  font-size: 1.35rem;
+}
+.theory {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border-left: 4px solid var(--accent);
+  background: var(--soft);
+  border-radius: 8px;
+}
+.card-body {
+  padding: 20px;
+}
+.progress-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.progress-wrap {
+  flex: 1;
+  height: 10px;
+  background: #e5e0d7;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--accent);
+  transition: width .25s ease;
+}
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #ece8df;
+  color: #424242;
+  font-size: .82rem;
+  white-space: nowrap;
+}
+.question {
+  font-size: 1.16rem;
+  font-weight: 700;
+  margin: 0 0 16px;
+}
+.options {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+.option:hover { background: #fbfaf5; }
+.option input {
+  margin-top: 3px;
+}
+.option.correct {
+  border-color: #92c59a;
+  background: #edf7ee;
+}
+.option.incorrect {
+  border-color: #d79b9b;
+  background: #faeeee;
+}
+.feedback {
+  display: none;
+  margin: 14px 0 0;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+.feedback.ok {
+  display: block;
+  background: #edf7ee;
+  border-color: #92c59a;
+  color: #163f23;
+}
+.feedback.bad {
+  display: block;
+  background: #faeeee;
+  border-color: #d79b9b;
+  color: #5c1c1c;
+}
+.feedback.show {
+  display: block;
+  background: #fff7d6;
+  border-color: #ead27b;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.kpi {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+}
+.kpi div {
+  background: #fbfaf8;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+}
+.kpi strong {
+  display: block;
+  font-size: 1.25rem;
+}
+.note {
+  background: var(--soft2);
+  border: 1px solid #e4cabd;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 0 0 18px;
+}
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: .95rem;
+}
+.table th, .table td {
+  border: 1px solid var(--line);
+  padding: 9px 10px;
+  vertical-align: top;
+}
+.table th {
+  background: #f1eee8;
+  text-align: left;
+}
+.text-card {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  margin-bottom: 16px;
+}
+.text-card h3 {
+  margin: 0 0 8px;
+}
+.text-body {
+  white-space: pre-line;
+}
+.solution {
+  display: none;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--soft);
+  border: 1px solid #c9d6ea;
+}
+.solution.visible { display: block; }
+.solution ul {
+  margin: 8px 0 0 20px;
+  padding: 0;
+}
+.mark {
+  background: var(--mark);
+  padding: 1px 2px;
+  border-radius: 3px;
+}
+.footer-note {
+  color: var(--muted);
+  font-size: .86rem;
+  margin-top: 18px;
+}
+@media (max-width: 820px) {
+  .grid { grid-template-columns: 1fr; }
+  nav { position: static; }
+  .kpi { grid-template-columns: 1fr; }
+}
+@media print {
+  nav, .controls, .progress-row { display: none; }
+  body { background: #fff; }
+  .grid { display: block; }
+  .card { box-shadow: none; border: none; }
+  .solution { display: block; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>El verbo: tiempos verbales y perífrasis</h1>
+    <p class="subtitle">Práctica autocorregible. El alumno responde, comprueba, lee la explicación y avanza. El material combina identificación de tiempos, modo, aspecto y reconocimiento de perífrasis verbales.</p>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+    <nav aria-label="Secciones">
+      <div class="nav-title">Secciones</div>
+      <div id="sectionButtons"></div>
+      <div class="tools">
+        <button class="ghost" id="resetAll" type="button">Reiniciar todo</button>
+        <div class="kpi" aria-live="polite">
+          <div><strong id="totalAnswered">0</strong><span class="small">respondidas</span></div>
+          <div><strong id="totalCorrect">0</strong><span class="small">aciertos</span></div>
+          <div><strong id="totalPercent">0%</strong><span class="small">porcentaje</span></div>
+        </div>
+      </div>
+    </nav>
+
+    <section class="card" id="practiceCard">
+      <div class="card-head">
+        <span class="badge" id="sectionLabel"></span>
+        <h2 id="sectionTitle"></h2>
+        <div class="theory" id="theoryBox"></div>
+      </div>
+      <div class="card-body">
+        <div class="progress-row">
+          <span class="badge" id="itemCounter"></span>
+          <div class="progress-wrap" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
+        </div>
+        <p class="question" id="questionText"></p>
+        <form id="optionsForm" class="options"></form>
+        <div id="feedback" class="feedback"></div>
+        <div class="controls">
+          <button class="primary" id="checkBtn" type="button">Comprobar</button>
+          <button class="ghost" id="showBtn" type="button">Ver solución</button>
+          <button class="secondary" id="nextBtn" type="button">Siguiente</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card" style="margin-top:18px;">
+    <div class="card-head">
+      <h2>Textos de aplicación</h2>
+      <p class="small">En estos textos conviene intentar primero localizar todas las perífrasis. Después puede mostrarse la solución razonada.</p>
+    </div>
+    <div class="card-body" id="textsBox"></div>
+  </section>
+
+  <section class="card" style="margin-top:18px;">
+    <div class="card-head">
+      <h2>Cuadro mínimo de consulta</h2>
+    </div>
+    <div class="card-body">
+      <div class="note">Para reconocer una perífrasis, no basta con que haya dos verbos. Debe haber un auxiliar que pierda parte de su significado y una forma no personal que aporte el contenido léxico principal.</div>
+      <table class="table">
+        <thead><tr><th>Construcción</th><th>Valor habitual</th><th>Ejemplo</th></tr></thead>
+        <tbody>
+          <tr><td>tener que + infinitivo</td><td>obligación</td><td>Tienes que estudiar.</td></tr>
+          <tr><td>deber + infinitivo</td><td>obligación</td><td>Debes decidir pronto.</td></tr>
+          <tr><td>deber de + infinitivo</td><td>probabilidad</td><td>Deben de ser las seis.</td></tr>
+          <tr><td>poder + infinitivo</td><td>posibilidad o capacidad</td><td>Puede llover.</td></tr>
+          <tr><td>ir a + infinitivo</td><td>intención o acción próxima</td><td>Voy a explicar el tema.</td></tr>
+          <tr><td>ponerse/echarse/romper a + infinitivo</td><td>comienzo de la acción</td><td>Se puso a llorar.</td></tr>
+          <tr><td>dejar de + infinitivo</td><td>interrupción o final</td><td>Dejó de fumar.</td></tr>
+          <tr><td>volver a + infinitivo</td><td>repetición</td><td>Volvió a intentarlo.</td></tr>
+          <tr><td>estar/seguir/llevar + gerundio</td><td>duración o desarrollo</td><td>Lleva estudiando dos horas.</td></tr>
+          <tr><td>tener/llevar/dejar + participio</td><td>resultado</td><td>Lleva escritas cinco páginas.</td></tr>
+        </tbody>
+      </table>
+      <p class="footer-note">Algunas construcciones admiten más de una interpretación según el contexto. En esos casos, la clave es decidir si el primer verbo conserva su significado léxico pleno o si actúa como auxiliar.</p>
+    </div>
+  </section>
+</main>
+
+<script>
+const QUESTIONS = [{"section": "Tiempos verbales: forma, modo y valor", "prompt": "La forma «habremos supuesto» es:", "options": ["Pretérito perfecto de subjuntivo", "Pretérito pluscuamperfecto de subjuntivo", "Pretérito anterior de indicativo", "Futuro compuesto de indicativo"], "answer": 3, "explanation": "«Habremos» es futuro de indicativo del auxiliar haber; con participio forma el futuro compuesto de indicativo."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "La forma «hubieran hablado» es:", "options": ["Pretérito pluscuamperfecto de indicativo", "Pretérito imperfecto de subjuntivo", "Condicional compuesto", "Pretérito pluscuamperfecto de subjuntivo"], "answer": 3, "explanation": "«Hubieran/hubiesen + participio» pertenece al pretérito pluscuamperfecto de subjuntivo."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "La forma «estaría» pertenece al:", "options": ["Futuro simple de subjuntivo", "Pretérito imperfecto de indicativo", "Pretérito anterior", "Condicional simple"], "answer": 3, "explanation": "«Estaría» expresa una acción condicionada o hipotética desde el indicativo: condicional simple."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "La forma «hube amado» es:", "options": ["Pretérito anterior de indicativo", "Pretérito perfecto compuesto de indicativo", "Pretérito pluscuamperfecto de subjuntivo", "Futuro compuesto"], "answer": 0, "explanation": "«Hube + participio» es pretérito anterior de indicativo. Es una forma culta y hoy poco frecuente."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "La forma «había amado» es:", "options": ["Pretérito perfecto simple", "Pretérito pluscuamperfecto de indicativo", "Pretérito perfecto de subjuntivo", "Condicional compuesto"], "answer": 1, "explanation": "«Había + participio» expresa una acción pasada anterior a otra pasada: pluscuamperfecto de indicativo."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «Ojalá haya llegado ya», la forma «haya llegado» es:", "options": ["Presente de subjuntivo", "Pretérito perfecto de subjuntivo", "Pretérito pluscuamperfecto de subjuntivo", "Futuro compuesto de indicativo"], "answer": 1, "explanation": "«Haya + participio» es pretérito perfecto de subjuntivo. El marcador «ojalá» refuerza el valor desiderativo."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «Si yo tuviera tiempo, iría», la forma «tuviera» es:", "options": ["Pretérito imperfecto de subjuntivo", "Pretérito perfecto simple", "Condicional simple", "Presente de subjuntivo"], "answer": 0, "explanation": "«Tuviera/tuviese» es pretérito imperfecto de subjuntivo."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «Quizá vuelvan mañana», la forma «vuelvan» está en:", "options": ["Indicativo", "Subjuntivo", "Imperativo", "Infinitivo"], "answer": 1, "explanation": "La duda introducida por «quizá» favorece el subjuntivo: «vuelvan»."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «Ayer terminamos el trabajo», «terminamos» es:", "options": ["Presente de indicativo", "Pretérito perfecto simple de indicativo", "Futuro simple", "Pretérito imperfecto"], "answer": 1, "explanation": "La forma coincide con el presente en 1.ª persona plural, pero «ayer» fija un valor de pretérito perfecto simple."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «Todos los veranos íbamos al pueblo», «íbamos» es:", "options": ["Pretérito imperfecto de indicativo", "Pretérito perfecto simple", "Condicional simple", "Presente de subjuntivo"], "answer": 0, "explanation": "El imperfecto expresa una acción habitual o en desarrollo en el pasado."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «Mañana saldréis temprano», «saldréis» es:", "options": ["Condicional simple", "Futuro simple de indicativo", "Presente de subjuntivo", "Pretérito perfecto simple"], "answer": 1, "explanation": "La desinencia «-réis» marca futuro simple de indicativo."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «Cantad más bajo», la forma verbal está en:", "options": ["Indicativo", "Subjuntivo", "Imperativo", "Gerundio"], "answer": 2, "explanation": "«Cantad» es imperativo de segunda persona del plural."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «Consigan ustedes el objetivo», la forma «consigan» funciona como:", "options": ["Indicativo", "Imperativo de cortesía", "Gerundio", "Infinitivo"], "answer": 1, "explanation": "Las formas de mandato con «usted/ustedes» toman la forma del subjuntivo, pero funcionan como imperativo."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "«Sufriste» es:", "options": ["Presente", "Pretérito perfecto simple", "Pretérito imperfecto", "Futuro simple"], "answer": 1, "explanation": "«Sufriste» es pretérito perfecto simple de indicativo, segunda persona singular."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "«Habrás esquiado» es:", "options": ["Futuro compuesto de subjuntivo", "Futuro compuesto de indicativo", "Imperativo", "Pretérito anterior"], "answer": 1, "explanation": "«Habrás + participio» es futuro compuesto de indicativo."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "«Sean prudentes» contiene una forma verbal en:", "options": ["Presente de subjuntivo con valor exhortativo", "Pretérito imperfecto", "Futuro compuesto", "Participio"], "answer": 0, "explanation": "«Sean» es presente de subjuntivo. En esta oración tiene valor exhortativo o de mandato."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «Cuando hubimos terminado, salimos», «hubimos terminado» es:", "options": ["Pretérito anterior", "Pretérito perfecto compuesto", "Pluscuamperfecto de indicativo", "Condicional compuesto"], "answer": 0, "explanation": "«Hubimos + participio» es pretérito anterior. Suele aparecer tras nexos como «cuando», «apenas», «en cuanto»."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «Habría venido si hubiera podido», «habría venido» es:", "options": ["Condicional compuesto", "Futuro compuesto", "Pretérito pluscuamperfecto de subjuntivo", "Presente perfecto"], "answer": 0, "explanation": "«Habría + participio» es condicional compuesto."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «No creo que venga», «venga» está en:", "options": ["Indicativo", "Subjuntivo", "Imperativo", "Infinitivo"], "answer": 1, "explanation": "La negación de un verbo de opinión o creencia suele exigir subjuntivo en la subordinada: «que venga»."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "En «Creo que viene», «viene» está en:", "options": ["Indicativo", "Subjuntivo", "Imperativo", "Participio"], "answer": 0, "explanation": "Con afirmación de creencia u opinión se presenta el hecho como asumido: indicativo."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "La forma «cantare» en «Quien cantare será sancionado» es:", "options": ["Futuro simple de subjuntivo", "Presente de indicativo", "Condicional simple", "Pretérito imperfecto"], "answer": 0, "explanation": "«Cantare» es futuro simple de subjuntivo. Es una forma arcaizante, frecuente en lenguaje jurídico."}, {"section": "Tiempos verbales: forma, modo y valor", "prompt": "La forma «hubiere cantado» es:", "options": ["Futuro compuesto de subjuntivo", "Pretérito pluscuamperfecto de subjuntivo", "Futuro compuesto de indicativo", "Pretérito anterior"], "answer": 0, "explanation": "«Hubiere + participio» es futuro compuesto de subjuntivo, hoy muy restringido."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "«Cantaba» tiene aspecto:", "options": ["Perfectivo", "Imperfectivo", "Resultativo", "Modal"], "answer": 1, "explanation": "El pretérito imperfecto no presenta la acción como cerrada: aspecto imperfectivo."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "«Canté» tiene aspecto:", "options": ["Perfectivo", "Imperfectivo", "Durativo", "Incoativo"], "answer": 0, "explanation": "El pretérito perfecto simple presenta la acción como concluida: aspecto perfectivo."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "«He cantado» tiene aspecto:", "options": ["Imperfectivo", "Perfectivo", "Progresivo", "Frecuentativo"], "answer": 1, "explanation": "Las formas compuestas se construyen con «haber + participio» y son perfectivas."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "«Cantaré» tiene aspecto:", "options": ["Perfectivo", "Imperfectivo", "Resultativo", "No verbal"], "answer": 1, "explanation": "El futuro simple no informa por sí mismo de la terminación interna de la acción: aspecto imperfectivo."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "¿Cuál de estas formas es compuesta?", "options": ["saliera", "habrán terminado", "cantábamos", "viviré"], "answer": 1, "explanation": "«Habrán terminado» contiene auxiliar haber + participio."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "¿Cuál de estas formas es no personal?", "options": ["comerás", "hemos comido", "habiendo comido", "comes"], "answer": 2, "explanation": "«Habiendo comido» es gerundio compuesto; no expresa persona ni número por sí mismo."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "En «El caminar de los patos es peculiar», «caminar» funciona como:", "options": ["Verbo personal", "Sustantivo", "Adjetivo", "Imperativo"], "answer": 1, "explanation": "El infinitivo puede sustantivarse: «el caminar»."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "En «Un animal asustado puede morder», «asustado» funciona como:", "options": ["Adjetivo", "Gerundio", "Infinitivo", "Auxiliar"], "answer": 0, "explanation": "El participio puede funcionar como adjetivo y concordar con el sustantivo."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "En «Entró silbando», «silbando» funciona como:", "options": ["Sustantivo", "Adverbio o complemento de modo", "Participio", "Modo subjuntivo"], "answer": 1, "explanation": "El gerundio puede expresar modo o circunstancia: entró así, silbando."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "En «Asustado por el ruido, el perro huyó», «asustado» conserva valor:", "options": ["Solo nominal", "Verbal, porque lleva complemento", "De imperativo", "De auxiliar"], "answer": 1, "explanation": "El participio conserva valor verbal porque se complementa con «por el ruido»."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "La forma «previendo» es:", "options": ["Incorrecta; debería ser preveyendo", "Correcta; viene de prever", "Participio", "Futuro de indicativo"], "answer": 1, "explanation": "«Prever» se conjuga como «ver»: previendo, previó, prevés."}, {"section": "Aspecto, formas simples y formas no personales", "prompt": "La oración correcta es:", "options": ["Habían muchas personas", "Había muchas personas", "Hubieron muchos problemas", "Habrán tormentas"], "answer": 1, "explanation": "El verbo «haber» impersonal va en singular: había, hubo, habrá, habría."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Al vernos, tu primo se puso a silbar». ¿Hay perífrasis?", "options": ["Sí: «se puso a silbar»", "No", "Sí: «al vernos»", "Sí: «tu primo»"], "answer": 0, "explanation": "«Ponerse a + infinitivo» indica comienzo de la acción: perífrasis incoativa."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Un almuerzo de la Antigua Roma venía a durar doce horas». ¿Hay perífrasis?", "options": ["No", "Sí: «venía a durar»", "Sí: «de la Antigua Roma»", "Sí: «doce horas»"], "answer": 1, "explanation": "«Venir a + infinitivo» no significa desplazarse; expresa aproximación: duración aproximada."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Mi prima María sigue creyendo en el Ratoncito Pérez». ¿Hay perífrasis?", "options": ["No", "Sí: «sigue creyendo»", "Sí: «creyendo en»", "Sí: «mi prima»"], "answer": 1, "explanation": "«Seguir + gerundio» expresa continuidad de una acción."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Intentaré estudiar un rato más». ¿Hay perífrasis?", "options": ["Sí: «intentaré estudiar»", "No", "Sí: «estudiar un rato»", "Sí: «un rato más»"], "answer": 1, "explanation": "«Intentar» conserva su significado y admite sustitución: «Lo intentaré». No forma perífrasis."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Tu hermana debe de haber llegado ya». ¿Hay perífrasis?", "options": ["No", "Sí: «de haber llegado»", "Sí: «debe de haber llegado»", "Sí: «haber llegado ya»"], "answer": 2, "explanation": "«Deber de + infinitivo» expresa suposición o probabilidad."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Callaos un momento, voy a deciros la verdad». ¿Hay perífrasis?", "options": ["Sí: «voy a deciros»", "No", "Sí: «callaos»", "Sí: «la verdad»"], "answer": 0, "explanation": "«Ir a + infinitivo» no expresa desplazamiento aquí, sino acción inminente o intención inmediata."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Hemos de finalizar esta pelea». ¿Hay perífrasis?", "options": ["No", "Sí: «hemos de finalizar»", "Sí: «esta pelea»", "Sí: «finalizar esta»"], "answer": 1, "explanation": "«Haber de + infinitivo» expresa obligación."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Mi novio quiere jugar un partido». ¿Hay perífrasis?", "options": ["Sí: «quiere jugar»", "No", "Sí: «jugar un partido»", "Sí: «un partido»"], "answer": 1, "explanation": "«Querer» conserva significado pleno: quiere eso. No es perífrasis en el análisis escolar habitual."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Mi suegra se está vistiendo todavía». ¿Hay perífrasis?", "options": ["Sí: «se está vistiendo»", "No", "Sí: «todavía»", "Sí: «mi suegra»"], "answer": 0, "explanation": "«Estar + gerundio» presenta la acción en desarrollo."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Mi primo está jugando en el ordenador». ¿Hay perífrasis?", "options": ["No", "Sí: «está jugando»", "Sí: «jugando en»", "Sí: «en el ordenador»"], "answer": 1, "explanation": "«Estar + gerundio» es perífrasis durativa o progresiva."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Prefieren ver una película de animación». ¿Hay perífrasis?", "options": ["Sí: «prefieren ver»", "No", "Sí: «ver una película»", "Sí: «de animación»"], "answer": 1, "explanation": "«Preferir» conserva su significado: prefieren eso. No hay perífrasis."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Debo hacer ejercicios de matemáticas». ¿Hay perífrasis?", "options": ["Sí: «debo hacer»", "No", "Sí: «hacer ejercicios»", "Sí: «de matemáticas»"], "answer": 0, "explanation": "«Deber + infinitivo» expresa obligación."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Mi hermano ha dejado de fumar». ¿Hay perífrasis?", "options": ["No", "Sí: «ha dejado de fumar»", "Sí: «ha dejado»", "Sí: «fumar»"], "answer": 1, "explanation": "«Dejar de + infinitivo» expresa interrupción o final de una acción."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Ella ha dejado ver la televisión a sus hijos». ¿Hay perífrasis?", "options": ["Sí: «ha dejado ver»", "No", "Sí: «ver la televisión»", "Sí: «a sus hijos»"], "answer": 1, "explanation": "Aquí «dejar» significa permitir. Conserva su significado pleno: no es perífrasis."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Se echaron a reír sin motivo». ¿Hay perífrasis?", "options": ["No", "Sí: «se echaron a reír»", "Sí: «sin motivo»", "Sí: «reír sin»"], "answer": 1, "explanation": "«Echarse a + infinitivo» indica comienzo brusco de la acción."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Se echará a descansar bajo un árbol». ¿Hay perífrasis?", "options": ["Sí siempre", "No, si significa recostarse", "Sí: de obligación", "Sí: de probabilidad"], "answer": 1, "explanation": "Aquí «echarse» puede conservar su sentido literal de recostarse. No funciona como auxiliar."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Llevamos estudiando cuatro horas seguidas». ¿Hay perífrasis?", "options": ["No", "Sí: «llevamos estudiando»", "Sí: «cuatro horas»", "Sí: «horas seguidas»"], "answer": 1, "explanation": "«Llevar + gerundio» expresa duración acumulada."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Llevas puestos los calcetines del revés». ¿Hay perífrasis?", "options": ["Sí siempre", "No, porque «llevar puestos» conserva sentido posesivo/de uso", "Sí: de obligación", "Sí: incoativa"], "answer": 1, "explanation": "En este caso «llevar puestos» significa traer una prenda encima. No es perífrasis verbal clara."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Lleva escritas cinco poesías». ¿Hay perífrasis?", "options": ["Sí: «lleva escritas»", "No", "Sí: «cinco poesías»", "Sí: «poesías»"], "answer": 0, "explanation": "«Llevar + participio» indica resultado acumulado: cinco poesías ya escritas."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«No podemos entretenernos». ¿Hay perífrasis?", "options": ["No", "Sí: «podemos entretenernos»", "Sí: «no podemos» solamente", "Sí: «entretenernos»"], "answer": 1, "explanation": "«Poder + infinitivo» expresa posibilidad o capacidad."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Tienes que decir lo que sabes». ¿Hay perífrasis?", "options": ["Sí: «tienes que decir»", "No", "Sí: «lo que sabes»", "Sí: «decir lo»"], "answer": 0, "explanation": "«Tener que + infinitivo» expresa obligación."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Tenemos rotos los calcetines». ¿Hay perífrasis?", "options": ["Sí: «tenemos rotos»", "No necesariamente: puede significar posesión/estado", "Sí: durativa", "Sí: incoativa"], "answer": 1, "explanation": "Aquí «tener» conserva su sentido de posesión: nuestros calcetines están rotos."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Va a contar chistes». ¿Hay perífrasis?", "options": ["No", "Sí: «va a contar»", "Sí: «contar chistes»", "Sí: «chistes»"], "answer": 1, "explanation": "«Ir a + infinitivo» puede expresar intención o inminencia."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Voy a Correos a echar una carta». ¿Hay perífrasis en «voy a Correos»?", "options": ["Sí", "No", "Sí: obligación", "Sí: probabilidad"], "answer": 1, "explanation": "«Voy a Correos» expresa desplazamiento real. El verbo «ir» conserva su significado."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Vengo a recoger el paquete». ¿Hay perífrasis?", "options": ["Sí: aproximativa", "No, expresa desplazamiento con finalidad", "Sí: obligación", "Sí: terminativa"], "answer": 1, "explanation": "Aquí «venir» conserva su valor de desplazamiento. «A recoger» indica finalidad."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Tu hermano anda hablando mal de mí». ¿Hay perífrasis?", "options": ["Sí: «anda hablando»", "No", "Sí: «mal de mí»", "Sí: «hablando mal» solamente"], "answer": 0, "explanation": "«Andar + gerundio» puede expresar acción repetida o mantenida con matiz coloquial."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«Caminaba charlando por el móvil». ¿Hay perífrasis?", "options": ["Sí: «caminaba charlando»", "No", "Sí: «charlando por»", "Sí: «por el móvil»"], "answer": 1, "explanation": "El gerundio indica modo o circunstancia: caminaba así, charlando. No hay auxiliarización."}, {"section": "Perífrasis verbales: reconocer si hay perífrasis", "prompt": "«No sabe nadar». ¿Hay perífrasis?", "options": ["Sí: «sabe nadar»", "No", "Sí: posibilidad", "Sí: costumbre"], "answer": 1, "explanation": "«Saber» conserva su significado de conocimiento o capacidad aprendida. No es perífrasis."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Arranca el agua a hervir». La perífrasis es:", "options": ["Incoativa", "Terminativa", "De obligación", "Resultativa"], "answer": 0, "explanation": "«Arrancar a + infinitivo» indica comienzo de la acción."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«El músico dejó de tocar». La perífrasis es:", "options": ["Durativa", "Terminativa", "De posibilidad", "Reiterativa"], "answer": 1, "explanation": "«Dejar de + infinitivo» indica que la acción se interrumpe o termina."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Esa casa debe de estar bien ventilada». La perífrasis expresa:", "options": ["Obligación", "Probabilidad o suposición", "Comienzo", "Resultado"], "answer": 1, "explanation": "«Deber de + infinitivo» expresa probabilidad."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«El Barça acaba de empatar». La perífrasis es:", "options": ["Terminativa o de anterioridad reciente", "Durativa", "De obligación", "Reiterativa"], "answer": 0, "explanation": "«Acabar de + infinitivo» indica acción recién terminada."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«No puedo correr tan deprisa». La perífrasis expresa:", "options": ["Posibilidad o capacidad", "Obligación", "Hipótesis con deber de", "Frecuencia"], "answer": 0, "explanation": "«Poder + infinitivo» expresa posibilidad o capacidad."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Empezaremos a limpiar el garaje». La perífrasis es:", "options": ["Incoativa", "Perfectiva", "Probabilidad", "Reiterativa"], "answer": 0, "explanation": "«Empezar a + infinitivo» indica inicio de la acción."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Las aulas pasaron a ser dormitorios». La perífrasis indica:", "options": ["Obligación", "Transición o cambio de estado", "Duración", "Costumbre"], "answer": 1, "explanation": "«Pasar a + infinitivo» puede expresar transición hacia una nueva situación."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Últimamente viene lloviendo dos veces por semana». La perífrasis es:", "options": ["Durativa/reiterada", "De obligación", "Incoativa", "Resultativa"], "answer": 0, "explanation": "«Venir + gerundio» indica una acción que se mantiene o se repite durante un periodo."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Estoy por denunciar al presidente». La perífrasis es:", "options": ["Ingresiva o de disposición inminente", "Perfectiva", "Frecuentativa", "De obligación"], "answer": 0, "explanation": "«Estar por + infinitivo» puede expresar disposición próxima a realizar una acción."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Al final, acabó pidiendo disculpas». La perífrasis es:", "options": ["Terminativa o resultativa", "De posibilidad", "Incoativa", "De costumbre"], "answer": 0, "explanation": "«Acabar + gerundio» expresa el resultado final de un proceso."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«No volveré a ir con ese chico». La perífrasis es:", "options": ["Durativa", "Reiterativa", "Incoativa", "De obligación"], "answer": 1, "explanation": "«Volver a + infinitivo» indica repetición."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Todavía no me he puesto a trabajar». La perífrasis es:", "options": ["Incoativa", "Probabilidad", "Resultativa", "Costumbre"], "answer": 0, "explanation": "«Ponerse a + infinitivo» marca inicio de la acción."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Ha estado lloviendo toda la semana». La perífrasis es:", "options": ["Durativa", "Incoativa", "Reiterativa pura", "De obligación"], "answer": 0, "explanation": "«Estar + gerundio» presenta una acción en desarrollo; el complemento temporal refuerza la duración."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Vendrás a ganar unos 1.200 euros». La perífrasis expresa:", "options": ["Aproximación", "Mandato", "Finalización", "Costumbre"], "answer": 0, "explanation": "«Venir a + infinitivo» puede indicar cálculo aproximado."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Tengo pensado irme temprano». La perífrasis es:", "options": ["Resultativa o perfectiva", "Incoativa", "Durativa", "De obligación"], "answer": 0, "explanation": "«Tener + participio» expresa un estado resultante de una decisión previa."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Manoli se ponía a hablar». La perífrasis es:", "options": ["Incoativa", "Terminativa", "Probabilidad", "Frecuentativa"], "answer": 0, "explanation": "«Ponerse a + infinitivo» indica inicio."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Los alumnos han de someterse a las decisiones». La perífrasis es:", "options": ["Obligación", "Posibilidad", "Duración", "Resultado"], "answer": 0, "explanation": "«Haber de + infinitivo» expresa obligación."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Inma suele mirarme mal». La perífrasis expresa:", "options": ["Costumbre o hábito", "Probabilidad", "Comienzo brusco", "Resultado"], "answer": 0, "explanation": "«Soler + infinitivo» expresa acción habitual."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Debemos darnos prisa». La perífrasis expresa:", "options": ["Obligación", "Probabilidad", "Inminencia", "Resultado"], "answer": 0, "explanation": "«Deber + infinitivo» sin «de» expresa obligación."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«El tren debe de haber llegado ya». La perífrasis expresa:", "options": ["Obligación", "Probabilidad", "Repetición", "Duración"], "answer": 1, "explanation": "«Deber de + infinitivo» expresa suposición."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Va diciendo por ahí que ha sido Lucía». La perífrasis es:", "options": ["Durativa/progresiva con matiz reiterativo", "Obligación", "Terminativa", "Resultativa"], "answer": 0, "explanation": "«Ir + gerundio» puede indicar desarrollo progresivo o repetición."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Acaba de volver de Londres». La perífrasis es:", "options": ["Acción recién terminada", "Costumbre", "Posibilidad", "Mandato"], "answer": 0, "explanation": "«Acabar de + infinitivo» indica anterioridad inmediata."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Llegó a acumular una pequeña fortuna». La perífrasis expresa:", "options": ["Culminación o resultado final", "Inicio repentino", "Costumbre", "Obligación"], "answer": 0, "explanation": "«Llegar a + infinitivo» señala que se alcanza un resultado extremo o culminante."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«No vuelvas a comer en ese restaurante». La perífrasis es:", "options": ["Reiterativa", "Durativa", "De probabilidad", "Resultativa"], "answer": 0, "explanation": "«Volver a + infinitivo» indica repetición; en negativo, prohíbe la repetición."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Hoy vamos a analizar el uso del gerundio». La perífrasis expresa:", "options": ["Intención o acción próxima", "Resultado", "Costumbre", "Probabilidad"], "answer": 0, "explanation": "«Ir a + infinitivo» no indica desplazamiento, sino plan inmediato de la clase."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Tengo leídos cuatro libros». La perífrasis es:", "options": ["Resultativa o perfectiva", "Incoativa", "De probabilidad", "No verbal"], "answer": 0, "explanation": "En el análisis escolar habitual, «tener + participio» con participio concordado puede expresar resultado acumulado."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«El abuelo dejó escrito su testamento». La perífrasis es:", "options": ["Resultativa", "Incoativa", "Durativa", "Aproximativa"], "answer": 0, "explanation": "«Dejar + participio» expresa un resultado que queda tras la acción."}, {"section": "Perífrasis verbales: clasificar", "prompt": "«Los policías siguen buscando a los ladrones». La perífrasis es:", "options": ["Durativa", "Terminativa", "De obligación", "De probabilidad"], "answer": 0, "explanation": "«Seguir + gerundio» expresa continuidad."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Debes decidir con prontitud» expresa:", "options": ["Probabilidad", "Obligación", "Costumbre", "Resultado"], "answer": 1, "explanation": "«Deber + infinitivo» expresa obligación."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Deben de ser las seis» expresa:", "options": ["Obligación", "Probabilidad", "Mandato", "Inicio"], "answer": 1, "explanation": "«Deber de + infinitivo» expresa probabilidad o suposición."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Debes devolver lo que robaste» expresa:", "options": ["Obligación", "Probabilidad", "Duración", "Aproximación"], "answer": 0, "explanation": "Sin «de», «deber + infinitivo» tiene valor de obligación."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Debe de haber un incendio cerca» expresa:", "options": ["Obligación", "Probabilidad", "Resultado", "Costumbre"], "answer": 1, "explanation": "«Debe de haber» indica inferencia: probablemente hay un incendio."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Quiero ir de excursión» no es perífrasis porque:", "options": ["«Querer» conserva su significado", "El segundo verbo está en infinitivo", "No hay sujeto", "Tiene valor de obligación"], "answer": 0, "explanation": "El infinitivo puede sustituirse por «eso»: quiero eso. No hay unidad perifrástica."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Necesito comprender lo que pasa» no es perífrasis porque:", "options": ["«Necesitar» conserva su significado", "El infinitivo nunca puede aparecer tras otro verbo", "Es pasiva", "Es imperativo"], "answer": 0, "explanation": "No todo verbo seguido de infinitivo forma perífrasis."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Puede costar un ojo de la cara» es perífrasis porque:", "options": ["«Poder» funciona como auxiliar de posibilidad", "«Costar» está en infinitivo", "Toda oración con dos verbos es perífrasis", "Es una forma compuesta"], "answer": 0, "explanation": "«Poder + infinitivo» es una perífrasis modal de posibilidad."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Le gusta pasear» no es perífrasis porque:", "options": ["«Pasear» funciona como sujeto de «gusta»", "«Gustar» es auxiliar", "Es una obligación", "Es un participio"], "answer": 0, "explanation": "Equivale a «Le gusta eso». El infinitivo no forma núcleo verbal unitario con «gusta»."}, {"section": "Casos fronterizos y contrastes", "prompt": "«No es cierto que haya venido sin hacer las tareas». ¿«Sin hacer» es perífrasis?", "options": ["Sí", "No", "Sí: obligación", "Sí: resultativa"], "answer": 1, "explanation": "«Sin hacer las tareas» es una construcción no personal con valor circunstancial, no una perífrasis verbal."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Vamos a comer al restaurante». ¿Puede ser perífrasis?", "options": ["Sí, si significa intención próxima de comer", "Nunca", "Solo si expresa obligación", "Solo si está en pasado"], "answer": 0, "explanation": "Según contexto, «ir a + infinitivo» puede ser perífrasis de intención; si indica desplazamiento real, no lo sería."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Voy a comer al restaurante» frente a «Voy al restaurante a comer»: la diferencia es:", "options": ["La primera puede ser perifrástica; la segunda expresa desplazamiento y finalidad", "Ambas son siempre iguales", "La segunda es obligación", "La primera es pasiva"], "answer": 0, "explanation": "El orden y el significado del verbo «ir» son decisivos."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Anda enamorado». ¿Hay perífrasis?", "options": ["Sí: andar + adjetivo", "No", "Sí: durativa", "Sí: resultativa"], "answer": 1, "explanation": "Aquí «anda» funciona como verbo semicopulativo con atributo, no como auxiliar de gerundio."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Anda diciendo mentiras». ¿Hay perífrasis?", "options": ["Sí", "No", "Solo si hay movimiento real", "Solo si está en futuro"], "answer": 0, "explanation": "«Andar + gerundio» funciona como perífrasis con valor durativo o reiterativo."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Lleva descosido el bajo del pantalón». ¿Qué conviene decir?", "options": ["Puede analizarse como uso léxico de llevar + atributo/complemento predicativo", "Siempre es obligación", "Es futuro compuesto", "Es imperativo"], "answer": 0, "explanation": "Con prendas o elementos que alguien trae encima, «llevar» suele conservar valor léxico."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Lleva escritas cinco páginas». ¿Por qué sí es perifrástica?", "options": ["Porque indica resultado acumulado, no transporte físico", "Porque todo participio crea perífrasis", "Porque «cinco» es numeral", "Porque no hay sujeto"], "answer": 0, "explanation": "El auxiliar «llevar» pierde su sentido literal y marca acumulación de resultado."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Me salió diciendo que no era verdad». La construcción «salió diciendo» puede tener valor:", "options": ["Incoativo o de irrupción discursiva", "De obligación", "De probabilidad", "De pasiva"], "answer": 0, "explanation": "Algunas perífrasis de gerundio tienen matices coloquiales: irrupción, reacción inesperada o desarrollo."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Se ve que estás cansado». ¿«Se ve» es perífrasis verbal?", "options": ["No", "Sí: de obligación", "Sí: durativa", "Sí: resultativa"], "answer": 0, "explanation": "No hay combinación auxiliar + forma no personal. Es una construcción pronominal/impersonal, no perífrasis."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Hay que venir antes». La perífrasis expresa:", "options": ["Obligación impersonal", "Probabilidad", "Duración", "Resultado"], "answer": 0, "explanation": "«Hay que + infinitivo» expresa obligación sin señalar un sujeto concreto."}, {"section": "Casos fronterizos y contrastes", "prompt": "«Hemos acabado cansados». ¿Hay perífrasis de infinitivo?", "options": ["No", "Sí: acabar + infinitivo", "Sí: obligación", "Sí: reiterativa"], "answer": 0, "explanation": "No hay forma no personal dependiente que forme una perífrasis. «Cansados» funciona como atributo o predicativo."}];
+const TEXTS = [{"title": "Texto 1", "body": "Ayer estuvo lloviendo toda la mañana. Cuando comenzaba a aclarar, Alberto y yo decidimos ponernos a coger caracoles. Estuvimos andando durante dos horas y, en ese tiempo, no dejamos ni un solo minuto de llenar bolsas. Luego nos sentamos en un banco de piedra. Alberto me preguntó qué haríamos con los caracoles, pero yo no estaba seguro de lo que debía responder. Me arrepentí enseguida y me puse a disculparme. Le dije que tenía que tomarse las cosas con más calma.", "solution": [["estuvo lloviendo", "estar + gerundio: aspectual durativa"], ["ponernos a coger", "ponerse a + infinitivo: aspectual incoativa"], ["estuvimos andando", "estar + gerundio: aspectual durativa"], ["dejamos de llenar", "dejar de + infinitivo: aspectual terminativa"], ["debía responder", "deber + infinitivo: modal de obligación o conveniencia"], ["me puse a disculparme", "ponerse a + infinitivo: aspectual incoativa"], ["tenía que tomarse", "tener que + infinitivo: modal de obligación"]]}, {"title": "Texto 2", "body": "Todo el día había estado lloviendo y ya debían de ser las cinco. Había quedado establecido que a las siete empezarían a actuar. Sin embargo, Marcial seguía dándole vueltas al asunto y no estaba del todo decidido. Llegó a pensar que había que abandonar el proyecto, pero volvió a considerar que no se podía hacer otra cosa. Se decía a sí mismo que debía intentarlo. Cuando fue a descolgar el teléfono, vio que había dejado de llover.", "solution": [["había estado lloviendo", "estar + gerundio en forma compuesta: aspectual durativa"], ["debían de ser", "deber de + infinitivo: modal de probabilidad"], ["empezarían a actuar", "empezar a + infinitivo: aspectual incoativa"], ["seguía dándole vueltas", "seguir + gerundio: aspectual durativa"], ["llegó a pensar", "llegar a + infinitivo: aspectual culminativa"], ["había que abandonar", "haber que + infinitivo: modal de obligación"], ["volvió a considerar", "volver a + infinitivo: aspectual reiterativa"], ["se podía hacer", "poder + infinitivo: modal de posibilidad"], ["debía intentarlo", "deber + infinitivo: modal de obligación"], ["dejó de llover", "dejar de + infinitivo: aspectual terminativa"]]}, {"title": "Texto 3", "body": "El inspector pensó que debía de estar borracho cuando empezó a llover. Como tantas otras veces, iba dando tumbos de bar en bar, sin dejar de beber ni un minuto. Llegó a dormirse en el primer sitio que encontró. Nadie iba a preguntar por la muerte de un desconocido. En el fondo, puede que hubiera sido mejor para él.", "solution": [["debía de estar", "deber de + infinitivo: modal de probabilidad"], ["empezó a llover", "empezar a + infinitivo: aspectual incoativa"], ["iba dando", "ir + gerundio: aspectual progresiva/durativa"], ["dejar de beber", "dejar de + infinitivo: aspectual terminativa, aquí negada por «sin»"], ["llegó a dormirse", "llegar a + infinitivo: aspectual culminativa"], ["iba a preguntar", "ir a + infinitivo: intención o acción futura prevista"], ["puede que hubiera sido", "locución de posibilidad con subjuntivo; no es perífrasis canónica «poder + infinitivo»"]]}];
+const THEORY = {"Tiempos verbales: forma, modo y valor": "El tiempo verbal sitúa la acción respecto al momento del habla o respecto a otro punto de referencia. El modo indica cómo presenta el hablante la acción: como real o constatada, como dudosa o deseada, o como mandato.", "Aspecto, formas simples y formas no personales": "Las formas simples constan de una sola palabra; las compuestas se forman con haber + participio. El aspecto perfectivo presenta la acción como terminada; el imperfectivo no la presenta como cerrada.", "Perífrasis verbales: reconocer si hay perífrasis": "Una perífrasis verbal forma un solo núcleo del predicado. El primer verbo funciona como auxiliar y pierde total o parcialmente su significado propio.", "Perífrasis verbales: clasificar": "Las perífrasis pueden ser modales, si expresan obligación, posibilidad o probabilidad, y aspectuales, si indican inicio, duración, repetición, término o resultado de la acción.", "Casos fronterizos y contrastes": "Los casos fronterizos se resuelven preguntando si el primer verbo conserva su significado pleno. Si puede sustituirse el infinitivo por «eso» o «lo», normalmente no hay perífrasis."};
+
+let sections = [...new Set(QUESTIONS.map(q => q.section))];
+let currentSection = sections[0];
+let currentIndexBySection = Object.fromEntries(sections.map(s => [s, 0]));
+let answered = new Map();
+
+const sectionButtons = document.getElementById('sectionButtons');
+const sectionLabel = document.getElementById('sectionLabel');
+const sectionTitle = document.getElementById('sectionTitle');
+const theoryBox = document.getElementById('theoryBox');
+const itemCounter = document.getElementById('itemCounter');
+const progressBar = document.getElementById('progressBar');
+const questionText = document.getElementById('questionText');
+const optionsForm = document.getElementById('optionsForm');
+const feedback = document.getElementById('feedback');
+const checkBtn = document.getElementById('checkBtn');
+const showBtn = document.getElementById('showBtn');
+const nextBtn = document.getElementById('nextBtn');
+const resetAll = document.getElementById('resetAll');
+const totalAnswered = document.getElementById('totalAnswered');
+const totalCorrect = document.getElementById('totalCorrect');
+const totalPercent = document.getElementById('totalPercent');
+
+function sectionQuestions(section) {
+  return QUESTIONS.filter(q => q.section === section);
+}
+
+function globalQuestionIndex(q) {
+  return QUESTIONS.indexOf(q);
+}
+
+function renderNav() {
+  sectionButtons.innerHTML = '';
+  sections.forEach(section => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'nav-btn' + (section === currentSection ? ' active' : '');
+    const qs = sectionQuestions(section);
+    const done = qs.filter(q => answered.has(globalQuestionIndex(q))).length;
+    btn.textContent = `${section} (${done}/${qs.length})`;
+    btn.addEventListener('click', () => {
+      currentSection = section;
+      render();
+    });
+    sectionButtons.appendChild(btn);
+  });
+}
+
+function render() {
+  const qs = sectionQuestions(currentSection);
+  let i = currentIndexBySection[currentSection] || 0;
+  if (i >= qs.length) i = qs.length - 1;
+  const q = qs[i];
+  const gid = globalQuestionIndex(q);
+  const record = answered.get(gid);
+
+  sectionLabel.textContent = `Bloque ${sections.indexOf(currentSection) + 1} de ${sections.length}`;
+  sectionTitle.textContent = currentSection;
+  theoryBox.textContent = THEORY[currentSection] || '';
+  itemCounter.textContent = `Ejercicio ${i + 1} de ${qs.length}`;
+  progressBar.style.width = `${Math.round((i) / Math.max(1, qs.length - 1) * 100)}%`;
+  questionText.textContent = q.prompt;
+  optionsForm.innerHTML = '';
+  feedback.className = 'feedback';
+  feedback.textContent = '';
+
+  q.options.forEach((option, idx) => {
+    const label = document.createElement('label');
+    label.className = 'option';
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'answer';
+    input.value = idx;
+    if (record && record.choice === idx) input.checked = true;
+    const span = document.createElement('span');
+    span.textContent = option;
+    label.appendChild(input);
+    label.appendChild(span);
+    optionsForm.appendChild(label);
+  });
+
+  if (record) {
+    showFeedback(record.correct, q, record.choice, record.revealed);
+  }
+
+  updateStats();
+  renderNav();
+}
+
+function selectedIndex() {
+  const selected = optionsForm.querySelector('input[name="answer"]:checked');
+  return selected ? Number(selected.value) : null;
+}
+
+function showFeedback(correct, q, choice, revealed=false) {
+  const labels = [...optionsForm.querySelectorAll('.option')];
+  labels.forEach((label, idx) => {
+    label.classList.remove('correct', 'incorrect');
+    if (idx === q.answer) label.classList.add('correct');
+    if (choice !== null && idx === choice && idx !== q.answer) label.classList.add('incorrect');
+  });
+  feedback.className = 'feedback ' + (revealed ? 'show' : (correct ? 'ok' : 'bad'));
+  const prefix = revealed ? 'Solución: ' : (correct ? 'Correcto. ' : 'Incorrecto. ');
+  feedback.textContent = prefix + q.explanation;
+}
+
+checkBtn.addEventListener('click', () => {
+  const qs = sectionQuestions(currentSection);
+  const i = currentIndexBySection[currentSection] || 0;
+  const q = qs[i];
+  const gid = globalQuestionIndex(q);
+  const choice = selectedIndex();
+  if (choice === null) {
+    feedback.className = 'feedback show';
+    feedback.textContent = 'Selecciona una respuesta antes de comprobar.';
+    return;
+  }
+  const correct = choice === q.answer;
+  answered.set(gid, { choice, correct, revealed: false });
+  showFeedback(correct, q, choice, false);
+  updateStats();
+  renderNav();
+});
+
+showBtn.addEventListener('click', () => {
+  const qs = sectionQuestions(currentSection);
+  const i = currentIndexBySection[currentSection] || 0;
+  const q = qs[i];
+  const gid = globalQuestionIndex(q);
+  const choice = selectedIndex();
+  answered.set(gid, { choice, correct: choice === q.answer, revealed: true });
+  showFeedback(choice === q.answer, q, choice, true);
+  updateStats();
+  renderNav();
+});
+
+nextBtn.addEventListener('click', () => {
+  const qs = sectionQuestions(currentSection);
+  let i = currentIndexBySection[currentSection] || 0;
+  if (i < qs.length - 1) {
+    currentIndexBySection[currentSection] = i + 1;
+  } else {
+    const si = sections.indexOf(currentSection);
+    if (si < sections.length - 1) {
+      currentSection = sections[si + 1];
+      currentIndexBySection[currentSection] = currentIndexBySection[currentSection] || 0;
+    } else {
+      currentIndexBySection[currentSection] = 0;
+    }
+  }
+  render();
+});
+
+resetAll.addEventListener('click', () => {
+  if (!confirm('¿Reiniciar todas las respuestas?')) return;
+  answered = new Map();
+  currentIndexBySection = Object.fromEntries(sections.map(s => [s, 0]));
+  currentSection = sections[0];
+  render();
+});
+
+function updateStats() {
+  const total = answered.size;
+  const correct = [...answered.values()].filter(r => r.correct && !r.revealed).length;
+  const percent = total ? Math.round(correct / total * 100) : 0;
+  totalAnswered.textContent = total;
+  totalCorrect.textContent = correct;
+  totalPercent.textContent = percent + '%';
+}
+
+function highlightPhrases(text, phrases) {
+  let escaped = text.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  phrases.sort((a,b) => b.length - a.length).forEach(p => {
+    const safe = p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(safe.replace(/\s+/g, '\\s+'), 'gi');
+    escaped = escaped.replace(re, match => `<span class="mark">${match}</span>`);
+  });
+  return escaped;
+}
+
+function renderTexts() {
+  const box = document.getElementById('textsBox');
+  box.innerHTML = '';
+  TEXTS.forEach((t, idx) => {
+    const div = document.createElement('div');
+    div.className = 'text-card';
+    const phrases = t.solution.map(s => s[0]);
+    div.innerHTML = `
+      <h3>${t.title}</h3>
+      <p class="text-body" id="text-body-${idx}">${t.body.replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}</p>
+      <div class="controls">
+        <button class="ghost" type="button" data-action="mark" data-index="${idx}">Subrayar perífrasis</button>
+        <button class="primary" type="button" data-action="solution" data-index="${idx}">Ver solución razonada</button>
+      </div>
+      <div class="solution" id="solution-${idx}">
+        <strong>Solución:</strong>
+        <ul>${t.solution.map(s => `<li><span class="mark">${s[0]}</span>: ${s[1]}</li>`).join('')}</ul>
+      </div>
+    `;
+    box.appendChild(div);
+  });
+  box.addEventListener('click', (ev) => {
+    const btn = ev.target.closest('button');
+    if (!btn) return;
+    const idx = Number(btn.dataset.index);
+    if (btn.dataset.action === 'solution') {
+      document.getElementById('solution-' + idx).classList.toggle('visible');
+    }
+    if (btn.dataset.action === 'mark') {
+      const p = document.getElementById('text-body-' + idx);
+      p.innerHTML = highlightPhrases(TEXTS[idx].body, TEXTS[idx].solution.map(s => s[0]));
+    }
+  }, { once: false });
+}
+
+renderTexts();
+render();
+</script>
+</body>
+</html>

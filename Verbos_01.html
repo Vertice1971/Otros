@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verbos y perífrasis verbales | Práctica autocorregible</title>
+<style>
+:root {
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-color: #334155;
+    --title-color: #0f172a;
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --secondary: #0ea5e9;
+    --accent: #e11d48;
+    --success: #15803d;
+    --error: #b91c1c;
+    --warning: #92400e;
+    --border-color: #e2e8f0;
+    --muted: #64748b;
+    --soft-blue: #eef2ff;
+    --soft-green: #ecfdf5;
+    --soft-red: #fef2f2;
+    --soft-yellow: #fffbeb;
+}
+* { box-sizing: border-box; }
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    max-width: 1080px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
+}
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+    border-bottom: 3px solid var(--primary);
+    padding-bottom: 1.5rem;
+}
+header h1 {
+    color: var(--primary);
+    font-size: clamp(2rem, 4vw, 2.6rem);
+    margin: 0 0 .5rem;
+}
+header p {
+    font-size: 1.05rem;
+    color: var(--muted);
+    margin: 0;
+}
+h2 {
+    color: var(--primary);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: .5rem;
+    margin-top: 2.5rem;
+}
+h3 {
+    color: var(--secondary);
+    margin-top: 1.5rem;
+}
+h4 {
+    color: var(--title-color);
+    margin-top: 0;
+}
+.card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 1.4rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, .06);
+    border: 1px solid var(--border-color);
+}
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    background: white;
+}
+th, td {
+    text-align: left;
+    padding: .75rem;
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: top;
+}
+th {
+    background-color: #f1f5f9;
+    color: var(--title-color);
+}
+code {
+    background: #f1f5f9;
+    padding: .15rem .35rem;
+    border-radius: 4px;
+}
+.badge {
+    display: inline-block;
+    padding: .25rem .55rem;
+    background-color: #e2e8f0;
+    border-radius: 999px;
+    font-size: .82rem;
+    font-weight: 700;
+}
+.badge-modal { background-color: #dbeafe; color: #1e40af; }
+.badge-aspectual { background-color: #fef9c3; color: #854d0e; }
+.warning-card {
+    border-left: 5px solid var(--accent);
+    background-color: #fff1f2;
+}
+.note {
+    padding: 1rem;
+    border-left: 5px solid var(--primary);
+    background: var(--soft-blue);
+    border-radius: 8px;
+}
+.exercise-panel {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 1rem;
+    align-items: start;
+}
+.sidebar {
+    position: sticky;
+    top: 1rem;
+}
+.block-button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin: .35rem 0;
+    padding: .65rem .8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    color: var(--text-color);
+}
+.block-button.active {
+    background: var(--soft-blue);
+    border-color: var(--primary);
+    color: var(--primary);
+    font-weight: 700;
+}
+.progress {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+.progress strong {
+    display: block;
+    font-size: 1.5rem;
+    color: var(--title-color);
+}
+.question-card {
+    min-height: 360px;
+}
+.question-meta {
+    color: var(--muted);
+    font-size: .9rem;
+    margin-bottom: .5rem;
+}
+.question-text {
+    font-weight: 700;
+    color: var(--title-color);
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+}
+.option {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: .8rem .9rem;
+    margin: .55rem 0;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+}
+.option:hover {
+    background: #f8fafc;
+}
+.option.selected {
+    border-color: var(--primary);
+    background: var(--soft-blue);
+}
+.option.correct {
+    border-color: var(--success);
+    background: var(--soft-green);
+}
+.option.incorrect {
+    border-color: var(--error);
+    background: var(--soft-red);
+}
+.btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin-top: 1rem;
+}
+.btn {
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    padding: .65rem 1rem;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 700;
+}
+.btn:hover { background-color: var(--primary-hover); }
+.btn.secondary {
+    background: #e2e8f0;
+    color: var(--title-color);
+}
+.btn.secondary:hover {
+    background: #cbd5e1;
+}
+.feedback {
+    display: none;
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+}
+.feedback.visible { display: block; }
+.feedback.ok {
+    background: var(--soft-green);
+    border-left: 5px solid var(--success);
+}
+.feedback.bad {
+    background: var(--soft-red);
+    border-left: 5px solid var(--error);
+}
+.feedback.solution {
+    background: var(--soft-yellow);
+    border-left: 5px solid var(--warning);
+}
+.text-practice {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.text-body {
+    white-space: pre-line;
+}
+mark {
+    background: #fef08a;
+    padding: .05rem .15rem;
+    border-radius: 3px;
+}
+.solution-list {
+    display: none;
+    margin-top: 1rem;
+    background: var(--soft-green);
+    border-left: 5px solid var(--success);
+    padding: 1rem;
+    border-radius: 8px;
+}
+.solution-list.visible { display: block; }
+.footer {
+    color: var(--muted);
+    font-size: .9rem;
+    margin-top: 2rem;
+}
+@media (max-width: 850px) {
+    .grid-2, .exercise-panel {
+        grid-template-columns: 1fr;
+    }
+    .sidebar {
+        position: static;
+    }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+    <h1>Verbos y perífrasis verbales</h1>
+    <p>Guía práctica autocorregible para 1.º de Bachillerato</p>
+</header>
+
+<section>
+    <h2>1. Teoría básica</h2>
+
+    <h3>Tiempos verbales y valores de uso</h3>
+    <p>En el análisis verbal conviene distinguir la forma gramatical y el valor que adquiere en el contexto. Una forma puede ser presente, futuro o imperfecto desde el punto de vista morfológico y, sin embargo, funcionar con un valor distinto.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Valor</th>
+                <th>Descripción</th>
+                <th>Ejemplo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Presente histórico</strong></td>
+                <td>Presente usado para narrar hechos pasados.</td>
+                <td>Colón <em>llega</em> a América en 1492.</td>
+            </tr>
+            <tr>
+                <td><strong>Presente de mandato</strong></td>
+                <td>Presente con valor imperativo.</td>
+                <td>Ahora mismo me <em>dices</em> la verdad.</td>
+            </tr>
+            <tr>
+                <td><strong>Futuro de probabilidad</strong></td>
+                <td>Futuro usado para expresar conjetura.</td>
+                <td><em>Serán</em> las diez.</td>
+            </tr>
+            <tr>
+                <td><strong>Imperfecto de cortesía</strong></td>
+                <td>Imperfecto usado para suavizar una petición presente.</td>
+                <td><em>Quería</em> un kilo de manzanas.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Perífrasis verbales</h3>
+    <p>Una perífrasis verbal es una construcción formada por un verbo auxiliar y un verbo en forma no personal. Funciona como un solo núcleo verbal. La estructura habitual es: <code>verbo auxiliar conjugado + posible nexo + infinitivo / gerundio / participio</code>.</p>
+
+    <div class="grid-2">
+        <div class="card">
+            <h4><span class="badge badge-modal">Modales</span> actitud del hablante</h4>
+            <ul>
+                <li><strong>Obligación:</strong> tener que, deber, haber de, haber que + infinitivo.</li>
+                <li><strong>Posibilidad:</strong> poder + infinitivo.</li>
+                <li><strong>Probabilidad:</strong> deber de + infinitivo.</li>
+                <li><strong>Aproximación:</strong> venir a + infinitivo.</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h4><span class="badge badge-aspectual">Aspectuales</span> desarrollo de la acción</h4>
+            <ul>
+                <li><strong>Ingresivas:</strong> ir a, estar a punto de + infinitivo.</li>
+                <li><strong>Incoativas:</strong> ponerse a, echarse a, romper a, empezar a + infinitivo.</li>
+                <li><strong>Durativas:</strong> estar, seguir, llevar, andar + gerundio.</li>
+                <li><strong>Terminativas:</strong> dejar de, acabar de + infinitivo.</li>
+                <li><strong>Reiterativas:</strong> volver a + infinitivo.</li>
+                <li><strong>Resultativas:</strong> llevar, tener, dejar + participio.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>2. Criterios de reconocimiento</h2>
+
+    <div class="card warning-card">
+        <h4>El criterio de sustitución por «eso»</h4>
+        <p>Si el infinitivo puede sustituirse por «eso» o por «lo», normalmente no hay perífrasis, porque el primer verbo conserva su significado pleno.</p>
+        <ul>
+            <li><em>Quiero comer pizza</em> → <em>Quiero eso</em>. No es perífrasis.</li>
+            <li><em>Prometió estudiar</em> → <em>Lo prometió</em>. No es perífrasis.</li>
+            <li><em>Tengo que estudiar</em> → <em>Tengo que eso</em>. No funciona. Sí es perífrasis modal de obligación.</li>
+        </ul>
+    </div>
+
+    <div class="card warning-card">
+        <h4>Deber / deber de</h4>
+        <ul>
+            <li><strong>Deber + infinitivo</strong>: obligación. <em>Debes estudiar más.</em></li>
+            <li><strong>Deber de + infinitivo</strong>: probabilidad o suposición. <em>Deben de ser las cinco.</em></li>
+        </ul>
+    </div>
+
+    <div class="note">
+        <strong>Precaución:</strong> no toda combinación de dos verbos es una perífrasis. La clave está en saber si el primer verbo se ha convertido en auxiliar o si conserva su significado léxico normal.
+    </div>
+</section>
+
+<section>
+    <h2>3. Ejercicios autocorregibles</h2>
+    <div class="exercise-panel">
+        <aside class="sidebar">
+            <div class="card">
+                <h4>Bloques</h4>
+                <div id="blockButtons"></div>
+            </div>
+            <div class="progress">
+                <strong id="score">0 / 0</strong>
+                <span id="scoreText">Aciertos</span>
+            </div>
+        </aside>
+
+        <div class="card question-card">
+            <div class="question-meta" id="questionMeta"></div>
+            <div class="question-text" id="questionText"></div>
+            <div id="options"></div>
+            <div id="feedback" class="feedback"></div>
+            <div class="btn-row">
+                <button class="btn" id="checkBtn" type="button">Comprobar</button>
+                <button class="btn secondary" id="showBtn" type="button">Ver solución</button>
+                <button class="btn secondary" id="nextBtn" type="button">Siguiente</button>
+                <button class="btn secondary" id="resetBtn" type="button">Reiniciar</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>4. Textos de aplicación</h2>
+    <p>Localiza primero las perífrasis en cada texto. Después muestra la solución.</p>
+    <div id="texts"></div>
+</section>
+
+<p class="footer">HTML autocontenido: no necesita conexión a internet ni archivos externos.</p>
+</div>
+
+<script>
+const DATA = {"questions": [{"block": "Tiempos verbales", "q": "Identifica la forma verbal «habremos supuesto».", "options": ["Pretérito perfecto de subjuntivo", "Pretérito pluscuamperfecto de subjuntivo", "Pretérito anterior de indicativo", "Futuro compuesto de indicativo"], "answer": 3, "explain": "«Habremos» es futuro de indicativo del auxiliar haber; con participio forma futuro compuesto de indicativo."}, {"block": "Tiempos verbales", "q": "Identifica la forma verbal «hubieran hablado».", "options": ["Pretérito pluscuamperfecto de indicativo", "Pretérito imperfecto de subjuntivo", "Condicional compuesto", "Pretérito pluscuamperfecto de subjuntivo"], "answer": 3, "explain": "«Hubieran/hubiesen + participio» es pretérito pluscuamperfecto de subjuntivo."}, {"block": "Tiempos verbales", "q": "La forma «estaría» pertenece a:", "options": ["Futuro simple de subjuntivo", "Pretérito imperfecto de indicativo", "Pretérito anterior", "Condicional simple"], "answer": 3, "explain": "«Estaría» es condicional simple de indicativo."}, {"block": "Tiempos verbales", "q": "En «Ayer terminamos el trabajo», la forma «terminamos» es:", "options": ["Presente de indicativo", "Pretérito perfecto simple de indicativo", "Futuro simple", "Pretérito imperfecto de indicativo"], "answer": 1, "explain": "La forma coincide con el presente en 1.ª persona plural, pero «ayer» fija el valor de pretérito perfecto simple."}, {"block": "Tiempos verbales", "q": "En «Quizás vuelva esta tarde», el verbo está en:", "options": ["Indicativo", "Subjuntivo", "Imperativo", "Infinitivo"], "answer": 1, "explain": "La duda introducida por «quizás» favorece el subjuntivo: «vuelva»."}, {"block": "Tiempos verbales", "q": "En «Cantad más bajo», la forma verbal está en:", "options": ["Indicativo", "Subjuntivo", "Imperativo", "Gerundio"], "answer": 2, "explain": "«Cantad» es imperativo de segunda persona del plural."}, {"block": "Tiempos verbales", "q": "En «Buenos días, quería un kilo de manzanas», «quería» tiene valor de:", "options": ["Imperfecto de cortesía", "Presente histórico", "Futuro de probabilidad", "Imperativo"], "answer": 0, "explain": "Formalmente es pretérito imperfecto, pero suaviza una petición presente: imperfecto de cortesía."}, {"block": "Tiempos verbales", "q": "En «Colón llega a América en 1492», «llega» tiene valor de:", "options": ["Presente habitual", "Presente histórico", "Presente de mandato", "Presente gnómico"], "answer": 1, "explain": "Se usa el presente para narrar un hecho pasado y darle viveza: presente histórico."}, {"block": "Tiempos verbales", "q": "En «Serán las diez», dicho sin mirar el reloj, «serán» expresa:", "options": ["Futuro cronológico", "Mandato", "Probabilidad o conjetura", "Acción acabada"], "answer": 2, "explain": "El futuro puede expresar probabilidad en el presente: «probablemente son las diez»."}, {"block": "Tiempos verbales", "q": "En «Ahora mismo me dices la verdad», «dices» tiene valor de:", "options": ["Presente histórico", "Presente con valor de mandato", "Presente habitual", "Futuro compuesto"], "answer": 1, "explain": "Formalmente es presente de indicativo, pero se usa con valor imperativo."}, {"block": "Aspecto y formas no personales", "q": "La forma «cantaba» tiene aspecto:", "options": ["Perfectivo", "Imperfectivo", "Resultativo", "Modal"], "answer": 1, "explain": "El imperfecto no presenta la acción como concluida: aspecto imperfectivo."}, {"block": "Aspecto y formas no personales", "q": "La forma «canté» tiene aspecto:", "options": ["Perfectivo", "Imperfectivo", "Durativo", "Incoativo"], "answer": 0, "explain": "El pretérito perfecto simple presenta la acción como cerrada o concluida."}, {"block": "Aspecto y formas no personales", "q": "¿Cuál de estas formas es compuesta?", "options": ["saliera", "habrán terminado", "cantábamos", "viviré"], "answer": 1, "explain": "«Habrán terminado» se forma con auxiliar haber + participio."}, {"block": "Aspecto y formas no personales", "q": "¿Cuál de estas formas es no personal?", "options": ["comerás", "hemos comido", "habiendo comido", "comes"], "answer": 2, "explain": "«Habiendo comido» es gerundio compuesto; no expresa persona ni número."}, {"block": "Aspecto y formas no personales", "q": "En «El caminar de los patos es peculiar», «caminar» funciona como:", "options": ["Verbo personal", "Sustantivo", "Adjetivo", "Imperativo"], "answer": 1, "explain": "El infinitivo puede sustantivarse: «el caminar»."}, {"block": "Aspecto y formas no personales", "q": "En «Un animal asustado puede ser peligroso», «asustado» funciona como:", "options": ["Adjetivo", "Gerundio", "Infinitivo", "Auxiliar"], "answer": 0, "explain": "El participio puede funcionar como adjetivo y concordar con el sustantivo."}, {"block": "Aspecto y formas no personales", "q": "En «Entró silbando», «silbando» funciona como:", "options": ["Sustantivo", "Complemento de modo", "Participio", "Modo subjuntivo"], "answer": 1, "explain": "El gerundio puede expresar modo o circunstancia: entró así, silbando."}, {"block": "Aspecto y formas no personales", "q": "La oración correcta es:", "options": ["Habían muchas personas.", "Había muchas personas.", "Hubieron muchos problemas.", "Habrán tormentas."], "answer": 1, "explain": "El verbo «haber» usado impersonalmente va en singular: había, hubo, habrá."}, {"block": "Reconocimiento de perífrasis", "q": "En «Al vernos, tu primo se puso a silbar», hay perífrasis en:", "options": ["al vernos", "se puso a silbar", "tu primo", "no hay perífrasis"], "answer": 1, "explain": "«Ponerse a + infinitivo» indica comienzo de la acción: perífrasis aspectual incoativa."}, {"block": "Reconocimiento de perífrasis", "q": "En «Intentaré estudiar un rato más», ¿hay perífrasis?", "options": ["Sí: intentaré estudiar", "No", "Sí: estudiar un rato", "Sí: un rato más"], "answer": 1, "explain": "«Intentar» conserva su significado y admite sustitución: «Lo intentaré». No forma perífrasis."}, {"block": "Reconocimiento de perífrasis", "q": "En «Tu hermana debe de haber llegado ya», la perífrasis es:", "options": ["de haber llegado", "debe de haber llegado", "haber llegado ya", "no hay perífrasis"], "answer": 1, "explain": "«Deber de + infinitivo» expresa suposición o probabilidad."}, {"block": "Reconocimiento de perífrasis", "q": "En «Mi novio quiere jugar un partido», ¿hay perífrasis?", "options": ["Sí: quiere jugar", "No", "Sí: jugar un partido", "Sí: un partido"], "answer": 1, "explain": "«Querer» conserva su significado pleno: quiere eso. No forma perífrasis."}, {"block": "Reconocimiento de perífrasis", "q": "En «Mi hermano ha dejado de fumar», la perífrasis es:", "options": ["ha dejado de fumar", "ha dejado", "de fumar", "no hay perífrasis"], "answer": 0, "explain": "«Dejar de + infinitivo» indica interrupción o final de una acción."}, {"block": "Reconocimiento de perífrasis", "q": "En «Ella ha dejado ver la televisión a sus hijos», ¿hay perífrasis?", "options": ["Sí: ha dejado ver", "No", "Sí: ver la televisión", "Sí: a sus hijos"], "answer": 1, "explain": "Aquí «dejar» significa permitir. Conserva su significado pleno, por tanto no forma perífrasis."}, {"block": "Reconocimiento de perífrasis", "q": "En «Llevamos estudiando cuatro horas», hay perífrasis en:", "options": ["llevamos estudiando", "cuatro horas", "estudiando cuatro", "no hay perífrasis"], "answer": 0, "explain": "«Llevar + gerundio» expresa duración acumulada."}, {"block": "Reconocimiento de perífrasis", "q": "En «Voy a Correos a echar una carta», ¿«voy a Correos» es perífrasis?", "options": ["Sí", "No", "Sí, de obligación", "Sí, de probabilidad"], "answer": 1, "explain": "Aquí «ir» conserva su significado de desplazamiento real."}, {"block": "Clasificación de perífrasis", "q": "«Tienes que estudiar más» es una perífrasis:", "options": ["Aspectual durativa", "Modal de obligación", "Modal de probabilidad", "Aspectual reiterativa"], "answer": 1, "explain": "«Tener que + infinitivo» expresa obligación. Es modal, no aspectual."}, {"block": "Clasificación de perífrasis", "q": "«Debe de haber un incendio cerca» es una perífrasis:", "options": ["Modal de obligación", "Modal de probabilidad", "Aspectual incoativa", "Aspectual resultativa"], "answer": 1, "explain": "«Deber de + infinitivo» expresa suposición o probabilidad."}, {"block": "Clasificación de perífrasis", "q": "«Se puso a llorar» es una perífrasis:", "options": ["Aspectual incoativa", "Modal de obligación", "Aspectual reiterativa", "Modal de posibilidad"], "answer": 0, "explain": "«Ponerse a + infinitivo» indica comienzo de la acción."}, {"block": "Clasificación de perífrasis", "q": "«No volveré a ir con ese chico» es una perífrasis:", "options": ["Aspectual durativa", "Aspectual reiterativa", "Modal de obligación", "Aspectual resultativa"], "answer": 1, "explain": "«Volver a + infinitivo» indica repetición; en negativo, rechazo de la repetición."}, {"block": "Clasificación de perífrasis", "q": "«Ha estado lloviendo toda la semana» es una perífrasis:", "options": ["Aspectual durativa", "Modal de probabilidad", "Aspectual incoativa", "Modal de obligación"], "answer": 0, "explain": "«Estar + gerundio» presenta la acción en desarrollo; el complemento temporal refuerza la duración."}, {"block": "Clasificación de perífrasis", "q": "«Lleva escritas cinco páginas» es una perífrasis:", "options": ["Modal de posibilidad", "Aspectual resultativa o perfectiva", "Aspectual incoativa", "Modal de obligación"], "answer": 1, "explain": "«Llevar + participio» indica resultado acumulado: cinco páginas ya escritas."}, {"block": "Clasificación de perífrasis", "q": "«Acaba de volver de Londres» es una perífrasis:", "options": ["Modal de probabilidad", "Aspectual de acción recién terminada", "Aspectual reiterativa", "Modal de obligación"], "answer": 1, "explain": "«Acabar de + infinitivo» indica anterioridad inmediata: acaba de ocurrir."}, {"block": "Clasificación de perífrasis", "q": "«Suele mirarme mal» expresa:", "options": ["Costumbre o hábito", "Probabilidad", "Comienzo de la acción", "Resultado"], "answer": 0, "explain": "«Soler + infinitivo» expresa acción habitual."}, {"block": "Clasificación de perífrasis", "q": "«Vendrás a ganar unos 1.200 euros» expresa:", "options": ["Aproximación", "Mandato", "Finalización", "Costumbre"], "answer": 0, "explain": "«Venir a + infinitivo» puede expresar cálculo aproximado."}, {"block": "Clasificación de perífrasis", "q": "«Los policías siguen buscando a los ladrones» es:", "options": ["Aspectual durativa", "Aspectual terminativa", "Modal de obligación", "Modal de probabilidad"], "answer": 0, "explain": "«Seguir + gerundio» expresa continuidad de una acción."}], "texts": [{"title": "Texto A", "body": "Todo el día había estado lloviendo y ya debían de ser las cinco. Había quedado establecido que a las siete empezarían a actuar. Sin embargo, Marcial seguía dándole vueltas al asunto. Llegó a pensar que había que abandonar el proyecto, pero volvió a considerar que no se podía hacer otra cosa.", "solutions": [["había estado lloviendo", "estar + gerundio: perífrasis aspectual durativa"], ["debían de ser", "deber de + infinitivo: perífrasis modal de probabilidad"], ["empezarían a actuar", "empezar a + infinitivo: perífrasis aspectual incoativa"], ["seguía dándole vueltas", "seguir + gerundio: perífrasis aspectual durativa"], ["llegó a pensar", "llegar a + infinitivo: perífrasis aspectual culminativa"], ["había que abandonar", "haber que + infinitivo: perífrasis modal de obligación"], ["volvió a considerar", "volver a + infinitivo: perífrasis aspectual reiterativa"], ["se podía hacer", "poder + infinitivo: perífrasis modal de posibilidad"]]}, {"title": "Texto B", "body": "Al vernos, tu primo se puso a silbar. Tu hermana debe de haber llegado ya a Madrid. No podemos entretenernos: vamos a tomar el tren. Mi hermano ha dejado de fumar, pero sigue diciendo que no le cuesta nada.", "solutions": [["se puso a silbar", "ponerse a + infinitivo: perífrasis aspectual incoativa"], ["debe de haber llegado", "deber de + infinitivo compuesto: perífrasis modal de probabilidad"], ["podemos entretenernos", "poder + infinitivo: perífrasis modal de posibilidad"], ["vamos a tomar", "ir a + infinitivo: perífrasis aspectual ingresiva o de acción próxima"], ["ha dejado de fumar", "dejar de + infinitivo: perífrasis aspectual terminativa"], ["sigue diciendo", "seguir + gerundio: perífrasis aspectual durativa"]]}]};
+
+let blocks = [...new Set(DATA.questions.map(q => q.block))];
+let currentBlock = blocks[0];
+let currentIndexByBlock = Object.fromEntries(blocks.map(b => [b, 0]));
+let chosen = null;
+let results = new Map();
+
+const blockButtons = document.getElementById("blockButtons");
+const questionMeta = document.getElementById("questionMeta");
+const questionText = document.getElementById("questionText");
+const optionsBox = document.getElementById("options");
+const feedback = document.getElementById("feedback");
+const score = document.getElementById("score");
+
+function questionsOf(block) {
+    return DATA.questions.filter(q => q.block === block);
+}
+
+function globalIndex(q) {
+    return DATA.questions.indexOf(q);
+}
+
+function renderBlocks() {
+    blockButtons.innerHTML = "";
+    blocks.forEach(block => {
+        const btn = document.createElement("button");
+        const done = questionsOf(block).filter(q => results.has(globalIndex(q))).length;
+        btn.className = "block-button" + (block === currentBlock ? " active" : "");
+        btn.textContent = block + " (" + done + "/" + questionsOf(block).length + ")";
+        btn.onclick = () => {
+            currentBlock = block;
+            chosen = null;
+            renderQuestion();
+        };
+        blockButtons.appendChild(btn);
+    });
+}
+
+function renderQuestion() {
+    const qs = questionsOf(currentBlock);
+    const i = currentIndexByBlock[currentBlock];
+    const q = qs[i];
+    const g = globalIndex(q);
+    const previous = results.get(g);
+    chosen = previous ? previous.choice : null;
+
+    questionMeta.textContent = currentBlock + " · ejercicio " + (i + 1) + " de " + qs.length;
+    questionText.textContent = q.q;
+    optionsBox.innerHTML = "";
+    feedback.className = "feedback";
+    feedback.textContent = "";
+
+    q.options.forEach((text, idx) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "option";
+        button.textContent = text;
+        button.onclick = () => {
+            chosen = idx;
+            [...optionsBox.children].forEach(el => el.classList.remove("selected"));
+            button.classList.add("selected");
+        };
+        optionsBox.appendChild(button);
+    });
+
+    if (previous) {
+        chosen = previous.choice;
+        showResult(q, previous.choice, previous.revealed);
+    }
+
+    updateScore();
+    renderBlocks();
+}
+
+function showResult(q, choice, revealed=false) {
+    const buttons = [...optionsBox.children];
+    buttons.forEach((button, idx) => {
+        button.classList.remove("selected", "correct", "incorrect");
+        if (idx === q.answer) button.classList.add("correct");
+        if (choice === idx && idx !== q.answer) button.classList.add("incorrect");
+        if (choice === idx && idx === q.answer) button.classList.add("selected");
+    });
+
+    const correct = choice === q.answer;
+    feedback.className = "feedback visible " + (revealed ? "solution" : (correct ? "ok" : "bad"));
+    if (revealed) {
+        feedback.innerHTML = "<strong>Solución:</strong> " + q.options[q.answer] + "<br>" + q.explain;
+    } else if (correct) {
+        feedback.innerHTML = "<strong>Correcto.</strong> " + q.explain;
+    } else {
+        feedback.innerHTML = "<strong>Incorrecto.</strong> La respuesta correcta es: <strong>" + q.options[q.answer] + "</strong>.<br>" + q.explain;
+    }
+}
+
+document.getElementById("checkBtn").onclick = () => {
+    const q = questionsOf(currentBlock)[currentIndexByBlock[currentBlock]];
+    if (chosen === null) {
+        feedback.className = "feedback visible solution";
+        feedback.textContent = "Selecciona una respuesta antes de comprobar.";
+        return;
+    }
+    const g = globalIndex(q);
+    results.set(g, { choice: chosen, correct: chosen === q.answer, revealed: false });
+    showResult(q, chosen, false);
+    updateScore();
+    renderBlocks();
+};
+
+document.getElementById("showBtn").onclick = () => {
+    const q = questionsOf(currentBlock)[currentIndexByBlock[currentBlock]];
+    const g = globalIndex(q);
+    results.set(g, { choice: chosen, correct: chosen === q.answer, revealed: true });
+    showResult(q, chosen, true);
+    updateScore();
+    renderBlocks();
+};
+
+document.getElementById("nextBtn").onclick = () => {
+    const qs = questionsOf(currentBlock);
+    if (currentIndexByBlock[currentBlock] < qs.length - 1) {
+        currentIndexByBlock[currentBlock]++;
+    } else {
+        const b = blocks.indexOf(currentBlock);
+        currentBlock = blocks[(b + 1) % blocks.length];
+        currentIndexByBlock[currentBlock] = currentIndexByBlock[currentBlock] || 0;
+    }
+    chosen = null;
+    renderQuestion();
+};
+
+document.getElementById("resetBtn").onclick = () => {
+    results.clear();
+    currentIndexByBlock = Object.fromEntries(blocks.map(b => [b, 0]));
+    currentBlock = blocks[0];
+    chosen = null;
+    renderQuestion();
+};
+
+function updateScore() {
+    const answered = [...results.values()].filter(r => !r.revealed).length;
+    const correct = [...results.values()].filter(r => r.correct && !r.revealed).length;
+    score.textContent = correct + " / " + answered;
+}
+
+function escapeHTML(str) {
+    return str.replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
+}
+
+function markText(text, phrases) {
+    let escaped = escapeHTML(text);
+    phrases.sort((a,b) => b[0].length - a[0].length).forEach(item => {
+        const phrase = escapeHTML(item[0]);
+        escaped = escaped.replaceAll(phrase, "<mark>" + phrase + "</mark>");
+    });
+    return escaped;
+}
+
+function renderTexts() {
+    const box = document.getElementById("texts");
+    DATA.texts.forEach((t, idx) => {
+        const div = document.createElement("div");
+        div.className = "text-practice";
+        div.innerHTML = `
+            <h3>${t.title}</h3>
+            <p class="text-body" id="text-${idx}">${escapeHTML(t.body)}</p>
+            <div class="btn-row">
+                <button class="btn secondary" type="button" onclick="document.getElementById('text-${idx}').innerHTML = markText(DATA.texts[${idx}].body, DATA.texts[${idx}].solutions)">Subrayar perífrasis</button>
+                <button class="btn" type="button" onclick="document.getElementById('solution-${idx}').classList.toggle('visible')">Ver solución razonada</button>
+            </div>
+            <div class="solution-list" id="solution-${idx}">
+                <strong>Solución:</strong>
+                <ul>${t.solutions.map(s => "<li><mark>" + escapeHTML(s[0]) + "</mark>: " + escapeHTML(s[1]) + "</li>").join("")}</ul>
+            </div>
+        `;
+        box.appendChild(div);
+    });
+}
+
+renderTexts();
+renderQuestion();
+</script>
+</body>
+</html>
