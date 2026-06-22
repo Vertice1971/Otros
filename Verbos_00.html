@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tiempos verbales</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --fondo: #f7f5f0;
+    --papel: #ffffff;
+    --texto: #1e1e1e;
+    --gris: #888;
+    --acento: #5a6e3c;
+    --acento-claro: #e8eddf;
+    --error: #7a2e2e;
+    --borde: #d0ccc3;
+    --mono: 'Courier New', Courier, monospace;
+    --sans: Georgia, 'Times New Roman', serif;
+  }
+
+  body {
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  header {
+    max-width: 720px;
+    margin: 0 auto 3rem;
+    border-bottom: 2px solid var(--texto);
+    padding-bottom: 1rem;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+    font-weight: normal;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  header p {
+    color: var(--gris);
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+  }
+
+  #contenedor {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .bloque-tiempo {
+    margin-bottom: 2.5rem;
+    background: var(--papel);
+    border: 1px solid var(--borde);
+    padding: 1.5rem 1.75rem;
+  }
+
+  .etiqueta-tiempo {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gris);
+    margin-bottom: 0.3rem;
+  }
+
+  .nombre-tiempo {
+    font-size: 1.05rem;
+    font-weight: bold;
+    margin-bottom: 1.2rem;
+    border-bottom: 1px solid var(--borde);
+    padding-bottom: 0.6rem;
+  }
+
+  .ejercicio {
+    margin-bottom: 1.2rem;
+  }
+
+  .enunciado {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    margin-bottom: 0.4rem;
+  }
+
+  .forma-destacada {
+    font-style: italic;
+    font-weight: bold;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .btn-solución {
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    background: none;
+    border: 1px solid var(--acento);
+    color: var(--acento);
+    padding: 0.2rem 0.7rem;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .btn-solución:hover {
+    background: var(--acento);
+    color: #fff;
+  }
+
+  .solución {
+    display: none;
+    margin-top: 0.4rem;
+    font-family: var(--mono);
+    font-size: 0.88rem;
+    color: var(--acento);
+    border-left: 3px double var(--acento);
+    padding-left: 0.7rem;
+    line-height: 1.5;
+  }
+
+  .solución.visible {
+    display: block;
+  }
+
+  .solución strong {
+    text-decoration: underline double;
+    text-underline-offset: 3px;
+  }
+
+  .controles {
+    max-width: 720px;
+    margin: 0 auto 2.5rem;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-acción {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 0.45rem 1.1rem;
+    border: 1px solid var(--texto);
+    background: var(--texto);
+    color: var(--fondo);
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    transition: opacity 0.15s;
+  }
+
+  .btn-acción:hover { opacity: 0.8; }
+
+  .btn-acción.secundario {
+    background: none;
+    color: var(--texto);
+  }
+
+  .divisor-grupo {
+    max-width: 720px;
+    margin: 0 auto 1.5rem;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gris);
+    border-top: 1px solid var(--borde);
+    padding-top: 0.5rem;
+  }
+
+  @media (max-width: 500px) {
+    .bloque-tiempo { padding: 1rem 1rem; }
+    .enunciado { font-size: 0.88rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Tiempos verbales del español</h1>
+  <p>Dos ejercicios por tiempo en cada sesión — 22 tiempos/formas — reconocimiento y análisis</p>
+</header>
+
+<div class="controles">
+  <button class="btn-acción" onclick="nuevaSesion()">Nueva sesión</button>
+  <button class="btn-acción secundario" onclick="mostrarTodo()">Mostrar todas las soluciones</button>
+  <button class="btn-acción secundario" onclick="ocultarTodo()">Ocultar soluciones</button>
+</div>
+
+<div id="contenedor"></div>
+
+<script>
+/* ====================================================
+   BANCO DE EJERCICIOS
+   Cada ejercicio: { enunciado, forma, solución }
+   'forma' = texto exacto dentro del enunciado que se marcará
+   'solución' = explicación
+==================================================== */
+const banco = {
+
+  "Indicativo · Presente": [
+    { enunciado: "María come una manzana cada mañana.", forma: "come", solución: "«come» → Indicativo presente, 3.ª pers. sing. de comer. Acción habitual." },
+    { enunciado: "Yo leo el periódico antes de desayunar.", forma: "leo", solución: "«leo» → Indicativo presente, 1.ª pers. sing. de leer. Hábito cotidiano." },
+    { enunciado: "Ellos trabajan en una empresa multinacional.", forma: "trabajan", solución: "«trabajan» → Indicativo presente, 3.ª pers. pl. de trabajar." },
+    { enunciado: "¿Tú sabes dónde está la llave?", forma: "sabes", solución: "«sabes» → Indicativo presente, 2.ª pers. sing. de saber." },
+    { enunciado: "El Sol sale por el este.", forma: "sale", solución: "«sale» → Indicativo presente, valor de verdad general/atemporal." },
+    { enunciado: "Nosotros vivimos cerca del mercado.", forma: "vivimos", solución: "«vivimos» → Indicativo presente, 1.ª pers. pl. de vivir." },
+    { enunciado: "El tren llega a las ocho en punto.", forma: "llega", solución: "«llega» → Indicativo presente, 3.ª pers. sing. de llegar. Presente programático." },
+    { enunciado: "Vosotros siempre llegáis tarde a las reuniones.", forma: "llegáis", solución: "«llegáis» → Indicativo presente, 2.ª pers. pl. de llegar." },
+    { enunciado: "¿Cuánto cuesta este libro?", forma: "cuesta", solución: "«cuesta» → Indicativo presente, 3.ª pers. sing. de costar (diptongante e→ue)." },
+    { enunciado: "La niña duerme con la luz encendida.", forma: "duerme", solución: "«duerme» → Indicativo presente, 3.ª pers. sing. de dormir (diptongante o→ue)." },
+    { enunciado: "Mañana te cuento todo lo que pasó.", forma: "cuento", solución: "«cuento» → Indicativo presente con valor de futuro próximo, 1.ª pers. sing. de contar." },
+    { enunciado: "En 1492, Colón llega a América.", forma: "llega", solución: "«llega» → Presente histórico, 3.ª pers. sing. de llegar. Recurso narrativo." },
+  ],
+
+  "Indicativo · Pretérito imperfecto": [
+    { enunciado: "Cuando era niño, jugaba en la calle todos los días.", forma: "jugaba", solución: "«jugaba» → Pretérito imperfecto, 1.ª pers. sing. de jugar. Acción habitual en el pasado." },
+    { enunciado: "Ella siempre sonreía cuando te veía.", forma: "sonreía", solución: "«sonreía» → Pretérito imperfecto, 3.ª pers. sing. de sonreír. Acción iterativa pasada." },
+    { enunciado: "Mis abuelos vivían en un pueblo de la sierra.", forma: "vivían", solución: "«vivían» → Pretérito imperfecto, 3.ª pers. pl. de vivir. Estado en el pasado." },
+    { enunciado: "El cielo estaba completamente despejado aquella tarde.", forma: "estaba", solución: "«estaba» → Pretérito imperfecto, 3.ª pers. sing. de estar. Descripción en el pasado." },
+    { enunciado: "Mientras yo dormía, llegó la tormenta.", forma: "dormía", solución: "«dormía» → Pretérito imperfecto, acción de fondo frente a otra puntual en pretérito perfecto simple." },
+    { enunciado: "De pequeño, leía cómics hasta muy tarde.", forma: "leía", solución: "«leía» → Pretérito imperfecto, 1.ª pers. sing. de leer. Costumbre pasada." },
+    { enunciado: "El perro ladraba sin parar cada noche.", forma: "ladraba", solución: "«ladraba» → Pretérito imperfecto, 3.ª pers. sing. de ladrar. Acción repetida en el pasado." },
+    { enunciado: "Antes no había tantos coches en las ciudades.", forma: "había", solución: "«había» → Pretérito imperfecto, 3.ª pers. sing. de haber. Estado general pasado." },
+    { enunciado: "Tú querías ser astronauta de mayor.", forma: "querías", solución: "«querías» → Pretérito imperfecto, 2.ª pers. sing. de querer. Deseo habitual en el pasado." },
+    { enunciado: "Las calles olían a pan recién hecho.", forma: "olían", solución: "«olían» → Pretérito imperfecto, 3.ª pers. pl. de oler. Descripción sensorial pasada." },
+    { enunciado: "Necesitaba hablar con alguien urgentemente.", forma: "Necesitaba", solución: "«Necesitaba» → Pretérito imperfecto con matiz de cortesía/urgencia atenuada." },
+    { enunciado: "En aquella época, los jóvenes no tenían móviles.", forma: "tenían", solución: "«tenían» → Pretérito imperfecto, 3.ª pers. pl. de tener. Estado general en el pasado." },
+  ],
+
+  "Indicativo · Pretérito perfecto simple": [
+    { enunciado: "Ayer llegué a casa muy tarde.", forma: "llegué", solución: "«llegué» → Pretérito perfecto simple (indefinido), 1.ª pers. sing. de llegar. Acción puntual y concluida." },
+    { enunciado: "El año pasado viajaron a Japón.", forma: "viajaron", solución: "«viajaron» → Pretérito perfecto simple, 3.ª pers. pl. de viajar." },
+    { enunciado: "Se levantó a las seis y salió corriendo.", forma: "levantó", solución: "«levantó» → Pretérito perfecto simple, 3.ª pers. sing. de levantarse. Secuencia narrativa." },
+    { enunciado: "Napoleón murió en Santa Elena en 1821.", forma: "murió", solución: "«murió» → Pretérito perfecto simple, 3.ª pers. sing. de morir. Hecho histórico fechado." },
+    { enunciado: "Los niños corrieron hacia el parque.", forma: "corrieron", solución: "«corrieron» → Pretérito perfecto simple, 3.ª pers. pl. de correr." },
+    { enunciado: "¿Supiste la noticia por la televisión?", forma: "Supiste", solución: "«Supiste» → Pretérito perfecto simple, 2.ª pers. sing. de saber." },
+    { enunciado: "La empresa cerró sus puertas el mes pasado.", forma: "cerró", solución: "«cerró» → Pretérito perfecto simple, 3.ª pers. sing. de cerrar." },
+    { enunciado: "Fuimos al teatro el sábado por la noche.", forma: "Fuimos", solución: "«Fuimos» → Pretérito perfecto simple, 1.ª pers. pl. de ir (irregular: fui, fuiste, fue…)." },
+    { enunciado: "Ella dijo la verdad ante el juez.", forma: "dijo", solución: "«dijo» → Pretérito perfecto simple, 3.ª pers. sing. de decir (irregular)." },
+    { enunciado: "Puse el libro sobre la mesa y me fui.", forma: "Puse", solución: "«Puse» → Pretérito perfecto simple, 1.ª pers. sing. de poner (irregular)." },
+    { enunciado: "Hicieron todo el trabajo en una tarde.", forma: "Hicieron", solución: "«Hicieron» → Pretérito perfecto simple, 3.ª pers. pl. de hacer (irregular)." },
+    { enunciado: "El concierto duró tres horas.", forma: "duró", solución: "«duró» → Pretérito perfecto simple, 3.ª pers. sing. de durar." },
+  ],
+
+  "Indicativo · Pretérito perfecto compuesto": [
+    { enunciado: "Esta mañana he desayunado muy tarde.", forma: "he desayunado", solución: "«he desayunado» → Pretérito perfecto compuesto, 1.ª pers. sing. Aux. haber (pres.) + participio. Acción reciente con relevancia presente." },
+    { enunciado: "¿Has visto la nueva película de Almodóvar?", forma: "Has visto", solución: "«Has visto» → Pretérito perfecto compuesto, 2.ª pers. sing. de ver." },
+    { enunciado: "Hoy han anunciado las notas del examen.", forma: "han anunciado", solución: "«han anunciado» → Pretérito perfecto compuesto, 3.ª pers. pl. Acción dentro de un período no concluido (hoy)." },
+    { enunciado: "Nunca he estado en Nueva York.", forma: "he estado", solución: "«he estado» → Pretérito perfecto compuesto, experiencia acumulada hasta el presente." },
+    { enunciado: "Este año hemos trabajado muy duro.", forma: "hemos trabajado", solución: "«hemos trabajado» → Pretérito perfecto compuesto, 1.ª pers. pl. Marco temporal no cerrado (este año)." },
+    { enunciado: "Ya han llegado todos los invitados.", forma: "han llegado", solución: "«han llegado» → Pretérito perfecto compuesto, 3.ª pers. pl. Resultado perceptible en el presente." },
+    { enunciado: "¿Habéis comido ya?", forma: "habéis comido", solución: "«habéis comido» → Pretérito perfecto compuesto, 2.ª pers. pl." },
+    { enunciado: "El ministro ha dimitido esta tarde.", forma: "ha dimitido", solución: "«ha dimitido» → Pretérito perfecto compuesto, acción muy reciente con repercusión presente." },
+    { enunciado: "Siempre he creído en ti.", forma: "he creído", solución: "«he creído» → Pretérito perfecto compuesto con valor de acción que se prolonga hasta el presente." },
+    { enunciado: "¿Qué ha pasado aquí?", forma: "ha pasado", solución: "«ha pasado» → Pretérito perfecto compuesto, pregunta sobre resultado presente de acción pasada." },
+    { enunciado: "He visto tres veces esa película.", forma: "He visto", solución: "«He visto» → Pretérito perfecto compuesto, experiencia repetida con conexión al presente." },
+    { enunciado: "Este mes no hemos recibido ninguna queja.", forma: "hemos recibido", solución: "«hemos recibido» → Pretérito perfecto compuesto dentro de marco temporal abierto (este mes)." },
+  ],
+
+  "Indicativo · Pretérito pluscuamperfecto": [
+    { enunciado: "Cuando llegué, ella ya había salido.", forma: "había salido", solución: "«había salido» → Pretérito pluscuamperfecto, 3.ª pers. sing. Acción anterior a otra pasada (llegué)." },
+    { enunciado: "Nunca había comido tan bien en mi vida.", forma: "había comido", solución: "«había comido» → Pretérito pluscuamperfecto, experiencia pasada anterior al momento de referencia." },
+    { enunciado: "Los alumnos habían estudiado todo el temario antes del examen.", forma: "habían estudiado", solución: "«habían estudiado» → Pretérito pluscuamperfecto, 3.ª pers. pl. Anterioridad respecto a un momento pasado." },
+    { enunciado: "Me dijo que ya había terminado el proyecto.", forma: "había terminado", solución: "«había terminado» → Pretérito pluscuamperfecto en estilo indirecto." },
+    { enunciado: "Antes de que llegara el médico, el paciente había mejorado.", forma: "había mejorado", solución: "«había mejorado» → Pretérito pluscuamperfecto, acción completada antes de otra pasada." },
+    { enunciado: "Todavía no habíamos llegado cuando empezó la lluvia.", forma: "habíamos llegado", solución: "«habíamos llegado» → Pretérito pluscuamperfecto, 1.ª pers. pl. Anterioridad fallida." },
+    { enunciado: "Recordé entonces que había dejado las llaves en casa.", forma: "había dejado", solución: "«había dejado» → Pretérito pluscuamperfecto, acción pasada anterior al recuerdo (recordé)." },
+    { enunciado: "El tren había partido cinco minutos antes de nuestra llegada.", forma: "había partido", solución: "«había partido» → Pretérito pluscuamperfecto, anterioridad cronológica explícita." },
+    { enunciado: "Cuando abrí el sobre, ya lo habían leído.", forma: "habían leído", solución: "«habían leído» → Pretérito pluscuamperfecto, 3.ª pers. pl." },
+    { enunciado: "Ella había prometido volver, pero no volvió.", forma: "había prometido", solución: "«había prometido» → Pretérito pluscuamperfecto, promesa anterior al incumplimiento." },
+    { enunciado: "No habíais avisado de que vendríais tarde.", forma: "habíais avisado", solución: "«habíais avisado» → Pretérito pluscuamperfecto, 2.ª pers. pl." },
+    { enunciado: "Cuando desperté, él ya había preparado el desayuno.", forma: "había preparado", solución: "«había preparado» → Pretérito pluscuamperfecto. Anterioridad respecto a desperté." },
+  ],
+
+  "Indicativo · Pretérito anterior": [
+    { enunciado: "Apenas hube terminado, sonó el teléfono.", forma: "hube terminado", solución: "«hube terminado» → Pretérito anterior, 1.ª pers. sing. Aux. haber (pretérito perf. simple) + participio. Inmediatamente anterior a otra acción pasada." },
+    { enunciado: "Cuando hubo anochecido, salimos a caminar.", forma: "hubo anochecido", solución: "«hubo anochecido» → Pretérito anterior, 3.ª pers. sing. Anterioridad inmediata. Hoy muy arcaico." },
+    { enunciado: "Tan pronto como hubimos llegado, comenzó la reunión.", forma: "hubimos llegado", solución: "«hubimos llegado» → Pretérito anterior, 1.ª pers. pl. Secuencia inmediata en narración formal." },
+    { enunciado: "Apenas hubieron comido, se levantaron de la mesa.", forma: "hubieron comido", solución: "«hubieron comido» → Pretérito anterior, 3.ª pers. pl. Anterioridad inmediata respecto a otra acción perfectiva." },
+    { enunciado: "No bien hubo dicho eso, todos guardaron silencio.", forma: "hubo dicho", solución: "«hubo dicho» → Pretérito anterior, 3.ª pers. sing. Valor de inmediatez. Hoy sustituido por pluscuamperfecto en el habla." },
+    { enunciado: "Cuando hubo firmado el contrato, se marchó sin decir nada.", forma: "hubo firmado", solución: "«hubo firmado» → Pretérito anterior, 3.ª pers. sing. de firmar." },
+    { enunciado: "Una vez que hubiste leído la carta, la quemaste.", forma: "hubiste leído", solución: "«hubiste leído» → Pretérito anterior, 2.ª pers. sing. Tiempo prácticamente en desuso en el habla espontánea." },
+    { enunciado: "Apenas hube cerrado los ojos, me dormí.", forma: "hube cerrado", solución: "«hube cerrado» → Pretérito anterior, 1.ª pers. sing. Valor de inmediatez. Se documenta sobre todo en literatura clásica." },
+    { enunciado: "Cuando hubieron partido los invitados, la casa quedó en silencio.", forma: "hubieron partido", solución: "«hubieron partido» → Pretérito anterior, 3.ª pers. pl. de partir. Valor aspectual perfectivo." },
+    { enunciado: "No bien hubo salido el sol, los pájaros empezaron a cantar.", forma: "hubo salido", solución: "«hubo salido» → Pretérito anterior, 3.ª pers. sing. Consecutio temporum: anterioridad inmediata." },
+    { enunciado: "Tan pronto como hubimos visto la señal, actuamos.", forma: "hubimos visto", solución: "«hubimos visto» → Pretérito anterior, 1.ª pers. pl. de ver." },
+    { enunciado: "Apenas hubo pronunciado su nombre, todos se volvieron.", forma: "hubo pronunciado", solución: "«hubo pronunciado» → Pretérito anterior, 3.ª pers. sing. Narración con cadencia literaria." },
+  ],
+
+  "Indicativo · Futuro simple": [
+    { enunciado: "Mañana llamaré al médico sin falta.", forma: "llamaré", solución: "«llamaré» → Futuro simple, 1.ª pers. sing. de llamar. Acción futura prevista." },
+    { enunciado: "¿Cuándo vendrán los técnicos a reparar la avería?", forma: "vendrán", solución: "«vendrán» → Futuro simple, 3.ª pers. pl. de venir (irregular)." },
+    { enunciado: "Si sigue lloviendo, no saldremos de casa.", forma: "saldremos", solución: "«saldremos» → Futuro simple, 1.ª pers. pl. de salir (irregular). Futuro condicionado." },
+    { enunciado: "Serán las tres de la tarde, más o menos.", forma: "Serán", solución: "«Serán» → Futuro simple de probabilidad/conjetura en el presente, 3.ª pers. pl. de ser." },
+    { enunciado: "El próximo mes cumplirás treinta años.", forma: "cumplirás", solución: "«cumplirás» → Futuro simple, 2.ª pers. sing. de cumplir." },
+    { enunciado: "No mentirás, reza el mandamiento.", forma: "mentirás", solución: "«mentirás» → Futuro simple de mandato/deóntico." },
+    { enunciado: "¿Dónde estará mi móvil? No lo encuentro.", forma: "estará", solución: "«estará» → Futuro simple de conjetura/probabilidad sobre el presente." },
+    { enunciado: "El presidente hablará ante el Congreso el martes.", forma: "hablará", solución: "«hablará» → Futuro simple, 3.ª pers. sing. de hablar. Programación futura." },
+    { enunciado: "Si estudias, aprobarás el examen.", forma: "aprobarás", solución: "«aprobarás» → Futuro simple en apódosis de condicional real." },
+    { enunciado: "El paquete llegará antes del viernes.", forma: "llegará", solución: "«llegará» → Futuro simple, 3.ª pers. sing. de llegar. Predicción." },
+    { enunciado: "Tendré que revisar todo el informe otra vez.", forma: "Tendré", solución: "«Tendré» → Futuro simple, 1.ª pers. sing. de tener (irregular). Obligación futura." },
+    { enunciado: "¿Quién será ese hombre que nos mira?", forma: "será", solución: "«será» → Futuro simple de conjetura sobre el presente, 3.ª pers. sing. de ser." },
+  ],
+
+  "Indicativo · Futuro compuesto": [
+    { enunciado: "Para el viernes, habremos terminado el proyecto.", forma: "habremos terminado", solución: "«habremos terminado» → Futuro compuesto, 1.ª pers. pl. Acción que se completará antes de un momento futuro." },
+    { enunciado: "Cuando llegues, ya habrá salido el sol.", forma: "habrá salido", solución: "«habrá salido» → Futuro compuesto, 3.ª pers. sing. Anterioridad en el ámbito futuro." },
+    { enunciado: "¿Habrás estudiado todo el temario para el lunes?", forma: "Habrás estudiado", solución: "«Habrás estudiado» → Futuro compuesto, 2.ª pers. sing. Pregunta sobre acción futura completada." },
+    { enunciado: "A estas horas ya habrán llegado a su destino.", forma: "habrán llegado", solución: "«habrán llegado» → Futuro compuesto de conjetura sobre el pasado reciente." },
+    { enunciado: "Para cuando lo sepas, ya lo habrán publicado.", forma: "habrán publicado", solución: "«habrán publicado» → Futuro compuesto, 3.ª pers. pl. Anterioridad respecto a un futuro." },
+    { enunciado: "Se habrá equivocado, porque nunca comete ese error.", forma: "habrá equivocado", solución: "«habrá equivocado» → Futuro compuesto de probabilidad sobre el pasado." },
+    { enunciado: "Cuando cumplas dieciocho años, habrás vivido muchas cosas.", forma: "habrás vivido", solución: "«habrás vivido» → Futuro compuesto, 2.ª pers. sing. de vivir." },
+    { enunciado: "Para esta noche habrá nevado en las cumbres.", forma: "habrá nevado", solución: "«habrá nevado» → Futuro compuesto, 3.ª pers. sing. Predicción con anterioridad futura." },
+    { enunciado: "¿Cuántos libros habrás leído cuando acabe el curso?", forma: "habrás leído", solución: "«habrás leído» → Futuro compuesto, valor de acción acumulada antes de un momento futuro." },
+    { enunciado: "Habrán sido las doce cuando regresé.", forma: "Habrán sido", solución: "«Habrán sido» → Futuro compuesto de conjetura sobre el pasado, 3.ª pers. pl. de ser." },
+    { enunciado: "Para el año que viene, habremos pagado toda la deuda.", forma: "habremos pagado", solución: "«habremos pagado» → Futuro compuesto, 1.ª pers. pl. de pagar." },
+    { enunciado: "Cuando la obra estrene, el director habrá ensayado durante meses.", forma: "habrá ensayado", solución: "«habrá ensayado» → Futuro compuesto, acción completada antes de un hito futuro." },
+  ],
+
+  "Indicativo · Condicional simple": [
+    { enunciado: "Si tuviera dinero, viajaría por todo el mundo.", forma: "viajaría", solución: "«viajaría» → Condicional simple, 1.ª pers. sing. de viajar. Apódosis de condicional irreal." },
+    { enunciado: "Me dijo que llegaría tarde a la cena.", forma: "llegaría", solución: "«llegaría» → Condicional simple, 3.ª pers. sing. de llegar. Futuro del pasado en estilo indirecto." },
+    { enunciado: "¿Podrías ayudarme con este paquete?", forma: "Podrías", solución: "«Podrías» → Condicional simple de cortesía, 2.ª pers. sing. de poder." },
+    { enunciado: "Serían las dos cuando apagué la luz.", forma: "Serían", solución: "«Serían» → Condicional simple de probabilidad en el pasado, 3.ª pers. pl. de ser." },
+    { enunciado: "Yo en tu lugar no haría eso.", forma: "haría", solución: "«haría» → Condicional simple, 1.ª pers. sing. de hacer. Valor de consejo o hipótesis." },
+    { enunciado: "¿Querría usted firmar aquí, por favor?", forma: "Querría", solución: "«Querría» → Condicional simple de cortesía formal, 3.ª pers. sing. de querer." },
+    { enunciado: "Pensé que vendría antes del mediodía.", forma: "vendría", solución: "«vendría» → Condicional simple, futuro visto desde el pasado (pensé)." },
+    { enunciado: "¿Dónde estaría mi paraguas ayer por la tarde?", forma: "estaría", solución: "«estaría» → Condicional simple de conjetura sobre el pasado." },
+    { enunciado: "Dijeron que el vuelo aterrizaría con retraso.", forma: "aterrizaría", solución: "«aterrizaría» → Condicional simple en estilo indirecto dependiente de dijeron." },
+    { enunciado: "Con más práctica, tocarías la guitarra perfectamente.", forma: "tocarías", solución: "«tocarías» → Condicional simple, 2.ª pers. sing. de tocar. Hipótesis." },
+    { enunciado: "¿Tendrías un bolígrafo para dejarme?", forma: "Tendrías", solución: "«Tendrías» → Condicional simple de cortesía/petición, 2.ª pers. sing. de tener." },
+    { enunciado: "Prometió que lo haría lo antes posible.", forma: "haría", solución: "«haría» → Condicional simple, futuro del pasado. Promesa en estilo indirecto." },
+  ],
+
+  "Indicativo · Condicional compuesto": [
+    { enunciado: "Si hubiera estudiado más, habría aprobado el examen.", forma: "habría aprobado", solución: "«habría aprobado» → Condicional compuesto, apódosis de condicional irreal del pasado." },
+    { enunciado: "Me habrían dicho algo si hubieran sabido la noticia.", forma: "habrían dicho", solución: "«habrían dicho» → Condicional compuesto, 3.ª pers. pl. Consecuencia hipotética no cumplida." },
+    { enunciado: "¿Habrías aceptado tú esa oferta de trabajo?", forma: "Habrías aceptado", solución: "«Habrías aceptado» → Condicional compuesto, 2.ª pers. sing. Hipótesis sobre el pasado." },
+    { enunciado: "Yo en su lugar no habría dicho eso.", forma: "habría dicho", solución: "«habría dicho» → Condicional compuesto, 1.ª pers. sing. Consejo retrospectivo." },
+    { enunciado: "Con más apoyo, el proyecto habría tenido éxito.", forma: "habría tenido", solución: "«habría tenido» → Condicional compuesto, 3.ª pers. sing. Resultado hipotético no realizado." },
+    { enunciado: "Dijo que para entonces ya lo habría terminado.", forma: "habría terminado", solución: "«habría terminado» → Condicional compuesto, futuro anterior del pasado en estilo indirecto." },
+    { enunciado: "Si me hubieran avisado, no habría llegado tarde.", forma: "habría llegado", solución: "«habría llegado» → Condicional compuesto en apódosis. Consecuencia no cumplida." },
+    { enunciado: "¿Qué habrías hecho tú en esa situación?", forma: "habrías hecho", solución: "«habrías hecho» → Condicional compuesto, interrogativa hipotética sobre el pasado." },
+    { enunciado: "Pensó que ya habría salido el tren.", forma: "habría salido", solución: "«habría salido» → Condicional compuesto de probabilidad en el pasado remoto." },
+    { enunciado: "Con otro enfoque, habrían conseguido mejores resultados.", forma: "habrían conseguido", solución: "«habrían conseguido» → Condicional compuesto, 3.ª pers. pl." },
+    { enunciado: "Nunca me habría imaginado algo así.", forma: "habría imaginado", solución: "«habría imaginado» → Condicional compuesto, sorpresa retrospectiva." },
+    { enunciado: "Si hubierais llegado antes, habríais visto el espectáculo.", forma: "habríais visto", solución: "«habríais visto» → Condicional compuesto, 2.ª pers. pl." },
+  ],
+
+  "Subjuntivo · Presente": [
+    { enunciado: "Quiero que vengas a la fiesta.", forma: "vengas", solución: "«vengas» → Presente de subjuntivo, 2.ª pers. sing. de venir. Subordinada sustantiva de deseo." },
+    { enunciado: "No creo que eso sea cierto.", forma: "sea", solución: "«sea» → Presente de subjuntivo, 3.ª pers. sing. de ser. Expresión de duda/negación." },
+    { enunciado: "Busco a alguien que sepa tocar el piano.", forma: "sepa", solución: "«sepa» → Presente de subjuntivo, 3.ª pers. sing. de saber. Antecedente indeterminado." },
+    { enunciado: "Cuando llegues a casa, avísame.", forma: "llegues", solución: "«llegues» → Presente de subjuntivo, 2.ª pers. sing. de llegar. Subordinada temporal de futuro." },
+    { enunciado: "Es importante que hagáis la tarea a tiempo.", forma: "hagáis", solución: "«hagáis» → Presente de subjuntivo, 2.ª pers. pl. de hacer. Oración impersonal valorativa." },
+    { enunciado: "Ojalá llueva esta semana.", forma: "llueva", solución: "«llueva» → Presente de subjuntivo, 3.ª pers. sing. de llover. Deseo con ojalá." },
+    { enunciado: "Me alegra que estés bien.", forma: "estés", solución: "«estés» → Presente de subjuntivo, 2.ª pers. sing. de estar. Verbo de emoción." },
+    { enunciado: "Dile que no haga ruido.", forma: "haga", solución: "«haga» → Presente de subjuntivo, 3.ª pers. sing. de hacer. Mandato indirecto." },
+    { enunciado: "Para que te entiendan, habla despacio.", forma: "entiendan", solución: "«entiendan» → Presente de subjuntivo, 3.ª pers. pl. de entender. Subordinada final." },
+    { enunciado: "No hay nadie que pueda hacer eso mejor que tú.", forma: "pueda", solución: "«pueda» → Presente de subjuntivo, antecedente negativo con valor irreal." },
+    { enunciado: "Espero que tengas éxito en tu nuevo trabajo.", forma: "tengas", solución: "«tengas» → Presente de subjuntivo, 2.ª pers. sing. de tener." },
+    { enunciado: "Aunque llueva, saldré a correr.", forma: "llueva", solución: "«llueva» → Presente de subjuntivo en concesiva. Concesión hipotética." },
+  ],
+
+  "Subjuntivo · Pretérito imperfecto": [
+    { enunciado: "Quería que vinieras a la reunión.", forma: "vinieras", solución: "«vinieras» → Pretérito imperfecto de subjuntivo, 2.ª pers. sing. de venir (-ra). Concordancia con quería." },
+    { enunciado: "Si tuviera más tiempo, aprendería chino.", forma: "tuviera", solución: "«tuviera» → Pretérito imperfecto de subjuntivo, 1.ª pers. sing. de tener. Prótasis de condicional irreal." },
+    { enunciado: "No había nadie que supiera la respuesta.", forma: "supiera", solución: "«supiera» → Pretérito imperfecto de subjuntivo, 3.ª pers. sing. de saber. Antecedente negativo en pasado." },
+    { enunciado: "Me pidió que esperase en la puerta.", forma: "esperase", solución: "«esperase» → Pretérito imperfecto de subjuntivo (-se), 1.ª/3.ª pers. sing. de esperar." },
+    { enunciado: "Ojalá pudiera acompañarte al viaje.", forma: "pudiera", solución: "«pudiera» → Pretérito imperfecto de subjuntivo. Deseo difícilmente realizable." },
+    { enunciado: "Le encantaba que le contasen cuentos de niña.", forma: "contasen", solución: "«contasen» → Pretérito imperfecto de subjuntivo (-se), 3.ª pers. pl. de contar." },
+    { enunciado: "Buscaban a alguien que hablara varios idiomas.", forma: "hablara", solución: "«hablara» → Pretérito imperfecto de subjuntivo. Antecedente desconocido en pasado." },
+    { enunciado: "Si yo fuera tú, no lo haría.", forma: "fuera", solución: "«fuera» → Pretérito imperfecto de subjuntivo, 1.ª pers. sing. de ser/ir. Condicional irreal." },
+    { enunciado: "Era necesario que todos firmaran el documento.", forma: "firmaran", solución: "«firmaran» → Pretérito imperfecto de subjuntivo, 3.ª pers. pl. de firmar." },
+    { enunciado: "Esperé a que terminaran de hablar.", forma: "terminaran", solución: "«terminaran» → Pretérito imperfecto de subjuntivo en temporal: esperar a que + subj." },
+    { enunciado: "Nos pidió que nos callásemos.", forma: "callásemos", solución: "«callásemos» → Pretérito imperfecto de subjuntivo (-se), 1.ª pers. pl. de callarse." },
+    { enunciado: "Si fuera tan sencillo, ya lo habría hecho.", forma: "fuera", solución: "«fuera» → Pretérito imperfecto de subjuntivo. Prótasis de irrealidad." },
+  ],
+
+  "Subjuntivo · Pretérito perfecto": [
+    { enunciado: "Espero que hayas llegado bien.", forma: "hayas llegado", solución: "«hayas llegado» → Pretérito perfecto de subjuntivo, 2.ª pers. sing. Acción pasada dentro del ámbito temporal del presente." },
+    { enunciado: "No creo que hayan aprobado todos.", forma: "hayan aprobado", solución: "«hayan aprobado» → Pretérito perfecto de subjuntivo, 3.ª pers. pl. Duda sobre acción pasada." },
+    { enunciado: "Me alegra que lo hayas conseguido.", forma: "hayas conseguido", solución: "«hayas conseguido» → Pretérito perfecto de subjuntivo. Emoción ante hecho cumplido." },
+    { enunciado: "En cuanto hayas terminado, dímelo.", forma: "hayas terminado", solución: "«hayas terminado» → Pretérito perfecto de subjuntivo. Anterioridad futura en temporal." },
+    { enunciado: "Cuando hayáis leído el documento, firmadlo.", forma: "hayáis leído", solución: "«hayáis leído» → Pretérito perfecto de subjuntivo, 2.ª pers. pl. de leer." },
+    { enunciado: "Es una lástima que no haya venido.", forma: "haya venido", solución: "«haya venido» → Pretérito perfecto de subjuntivo. Valoración de hecho pasado." },
+    { enunciado: "No hay nadie que haya visto algo así.", forma: "haya visto", solución: "«haya visto» → Pretérito perfecto de subjuntivo. Antecedente negativo con experiencia." },
+    { enunciado: "Ojalá hayan solucionado el problema.", forma: "hayan solucionado", solución: "«hayan solucionado» → Pretérito perfecto de subjuntivo. Deseo referido al pasado inmediato." },
+    { enunciado: "Cuando haya anochecido, encenderemos las luces.", forma: "haya anochecido", solución: "«haya anochecido» → Pretérito perfecto de subjuntivo. Anterioridad en subordinada temporal futura." },
+    { enunciado: "Dudo que hayan dicho la verdad.", forma: "hayan dicho", solución: "«hayan dicho» → Pretérito perfecto de subjuntivo, 3.ª pers. pl. de decir. Duda." },
+    { enunciado: "Me sorprende que hayas tardado tanto.", forma: "hayas tardado", solución: "«hayas tardado» → Pretérito perfecto de subjuntivo. Valoración emotiva de acción acabada." },
+    { enunciado: "Si hayas terminado para las cinco, avísame.", forma: "hayas terminado", solución: "«hayas terminado» → Pretérito perfecto de subjuntivo en condicional (uso coloquial o literario)." },
+  ],
+
+  "Subjuntivo · Pretérito pluscuamperfecto": [
+    { enunciado: "Si hubiera sabido la verdad, no lo habría hecho.", forma: "hubiera sabido", solución: "«hubiera sabido» → Pretérito pluscuamperfecto de subjuntivo, 1.ª pers. sing. Prótasis de condicional contrafactual pasado." },
+    { enunciado: "Ojalá hubiera llegado antes.", forma: "hubiera llegado", solución: "«hubiera llegado» → Pretérito pluscuamperfecto de subjuntivo. Deseo irrealizable sobre el pasado." },
+    { enunciado: "Me habría alegrado de que hubiesen venido.", forma: "hubiesen venido", solución: "«hubiesen venido» → Pretérito pluscuamperfecto de subjuntivo (-se), 3.ª pers. pl." },
+    { enunciado: "No había nadie que lo hubiera visto antes.", forma: "hubiera visto", solución: "«hubiera visto» → Pretérito pluscuamperfecto de subjuntivo. Antecedente negativo en pasado anterior." },
+    { enunciado: "Si hubieras estudiado, habrías aprobado.", forma: "hubieras estudiado", solución: "«hubieras estudiado» → Pretérito pluscuamperfecto de subjuntivo, 2.ª pers. sing. Condicional irreal del pasado." },
+    { enunciado: "Era imposible que hubieran llegado tan rápido.", forma: "hubieran llegado", solución: "«hubieran llegado» → Pretérito pluscuamperfecto de subjuntivo, 3.ª pers. pl. Valoración de imposibilidad pasada." },
+    { enunciado: "Dudaba de que lo hubieses dicho en serio.", forma: "hubieses dicho", solución: "«hubieses dicho» → Pretérito pluscuamperfecto de subjuntivo (-se). Duda sobre acción anterior en el pasado." },
+    { enunciado: "Si lo hubiéramos sabido, habríamos actuado diferente.", forma: "hubiéramos sabido", solución: "«hubiéramos sabido» → Pretérito pluscuamperfecto de subjuntivo, 1.ª pers. pl." },
+    { enunciado: "Lamentó que no hubiera podido asistir.", forma: "hubiera podido", solución: "«hubiera podido» → Pretérito pluscuamperfecto de subjuntivo. Emoción ante hecho no cumplido en el pasado." },
+    { enunciado: "Como si no hubiera pasado nada, siguió hablando.", forma: "hubiera pasado", solución: "«hubiera pasado» → Pretérito pluscuamperfecto de subjuntivo. Comparativa hipotética." },
+    { enunciado: "Aunque lo hubieran intentado, no habrían podido.", forma: "hubieran intentado", solución: "«hubieran intentado» → Pretérito pluscuamperfecto de subjuntivo. Concesiva contrafactual." },
+    { enunciado: "Nos pidió que lo hubiéramos terminado para el lunes.", forma: "hubiéramos terminado", solución: "«hubiéramos terminado» → Pretérito pluscuamperfecto de subjuntivo, 1.ª pers. pl." },
+  ],
+
+  "Subjuntivo · Futuro simple": [
+    { enunciado: "Si alguien supiere algo, que lo comunique.", forma: "supiere", solución: "«supiere» → Futuro simple de subjuntivo, 3.ª pers. sing. de saber. Hoy arcaico; uso en textos jurídicos y fórmulas fijas." },
+    { enunciado: "Donde fueres, haz lo que vieres.", forma: "fueres", solución: "«fueres» → Futuro simple de subjuntivo, 2.ª pers. sing. de ir. Refrán. Forma arcaica." },
+    { enunciado: "El que lo hallare, devuélvalo a su dueño.", forma: "hallare", solución: "«hallare» → Futuro simple de subjuntivo, 3.ª pers. sing. de hallar. Uso legal/administrativo clásico." },
+    { enunciado: "Si hubiere dudas, se consultará al responsable.", forma: "hubiere", solución: "«hubiere» → Futuro simple de subjuntivo, 3.ª pers. sing. de haber. Redacción jurídica." },
+    { enunciado: "Aquel que contraviniere las normas será sancionado.", forma: "contraviniere", solución: "«contraviniere» → Futuro simple de subjuntivo, 3.ª pers. sing. de contravenir. Lenguaje legal." },
+    { enunciado: "El contrato se rescindirá si el proveedor no cumpliere con lo pactado.", forma: "cumpliere", solución: "«cumpliere» → Futuro simple de subjuntivo, 3.ª pers. sing. de cumplir. Uso contractual." },
+    { enunciado: "Quien lo solicitare deberá presentar su DNI.", forma: "solicitare", solución: "«solicitare» → Futuro simple de subjuntivo. Relativa con antecedente indeterminado. Registro formal-jurídico." },
+    { enunciado: "Si el acusado probare su inocencia, quedará absuelto.", forma: "probare", solución: "«probare» → Futuro simple de subjuntivo, 3.ª pers. sing. de probar." },
+    { enunciado: "Vieres lo que vieres, mantén la calma.", forma: "vieres", solución: "«vieres» → Futuro simple de subjuntivo, 2.ª pers. sing. de ver. Concesiva de libre elección." },
+    { enunciado: "Lo que fuere, ya se verá.", forma: "fuere", solución: "«fuere» → Futuro simple de subjuntivo, 3.ª pers. sing. de ser/ir. Expresión resignada, uso fijo." },
+    { enunciado: "El que mucho abarcare, poco apretará.", forma: "abarcare", solución: "«abarcare» → Futuro simple de subjuntivo. Refrán clásico." },
+    { enunciado: "Se procederá de oficio si así lo requirieren las circunstancias.", forma: "requirieren", solución: "«requirieren» → Futuro simple de subjuntivo, 3.ª pers. pl. de requerir. Redacción normativa." },
+  ],
+
+  "Subjuntivo · Futuro compuesto": [
+    { enunciado: "Si para entonces lo hubiere terminado, se presentará al jurado.", forma: "hubiere terminado", solución: "«hubiere terminado» → Futuro compuesto de subjuntivo, 3.ª pers. sing. Anterioridad en ámbito futuro hipotético. Uso jurídico/arcaico." },
+    { enunciado: "Quien hubiere cometido la infracción deberá pagar la multa.", forma: "hubiere cometido", solución: "«hubiere cometido» → Futuro compuesto de subjuntivo. Relativa de antecedente indeterminado en norma legal." },
+    { enunciado: "Si los testigos hubieren declarado antes del plazo, el juicio continuará.", forma: "hubieren declarado", solución: "«hubieren declarado» → Futuro compuesto de subjuntivo, 3.ª pers. pl. Condicional con anterioridad futura. Registro jurídico." },
+    { enunciado: "Cuando lo hubiere recibido, firmará el albarán.", forma: "hubiere recibido", solución: "«hubiere recibido» → Futuro compuesto de subjuntivo. Temporal con anterioridad en el futuro." },
+    { enunciado: "Aquel que se hubiere inscrito en el plazo tendrá preferencia.", forma: "hubiere inscrito", solución: "«hubiere inscrito» → Futuro compuesto de subjuntivo. Participante con acción completada antes del momento futuro de referencia." },
+    { enunciado: "Si el arrendatario no hubiere pagado en la fecha prevista, se iniciará el proceso.", forma: "hubiere pagado", solución: "«hubiere pagado» → Futuro compuesto de subjuntivo. Condición de no-realización en texto contractual." },
+    { enunciado: "El que hubiere presentado la solicitud fuera de plazo quedará excluido.", forma: "hubiere presentado", solución: "«hubiere presentado» → Futuro compuesto de subjuntivo. Relativa con antecedente genérico en norma." },
+    { enunciado: "Una vez que hubieren votado todos los miembros, se publicará el resultado.", forma: "hubieren votado", solución: "«hubieren votado» → Futuro compuesto de subjuntivo, 3.ª pers. pl. Temporal de anterioridad futura." },
+    { enunciado: "Si no se hubiere resuelto la reclamación, se acudirá a la vía judicial.", forma: "hubiere resuelto", solución: "«hubiere resuelto» → Futuro compuesto de subjuntivo. Condicional negativa en texto normativo." },
+    { enunciado: "Quien hubiere obtenido la licencia podrá ejercer la actividad.", forma: "hubiere obtenido", solución: "«hubiere obtenido» → Futuro compuesto de subjuntivo. Antecedente indeterminado con acción previa cumplida." },
+    { enunciado: "Cuando los expedientes hubieren sido examinados, se dará traslado.", forma: "hubieren sido examinados", solución: "«hubieren sido examinados» → Futuro compuesto de subjuntivo, voz pasiva, 3.ª pers. pl." },
+    { enunciado: "Si el deudor hubiere satisfecho la deuda, se cancelará el aval.", forma: "hubiere satisfecho", solución: "«hubiere satisfecho» → Futuro compuesto de subjuntivo. Condicional de cumplimiento previo en texto legal." },
+  ],
+
+  "Imperativo": [
+    { enunciado: "¡Come las verduras antes de levantarte!", forma: "Come", solución: "«Come» → Imperativo afirmativo, 2.ª pers. sing. (tú) de comer." },
+    { enunciado: "Habla más despacio, por favor.", forma: "Habla", solución: "«Habla» → Imperativo afirmativo, 2.ª pers. sing. de hablar." },
+    { enunciado: "¡No corráis por el pasillo!", forma: "corráis", solución: "«corráis» → Imperativo negativo, 2.ª pers. pl. (vosotros). Usa la forma del subjuntivo." },
+    { enunciado: "Salid de aquí inmediatamente.", forma: "Salid", solución: "«Salid» → Imperativo afirmativo, 2.ª pers. pl. de salir." },
+    { enunciado: "No digas mentiras.", forma: "digas", solución: "«digas» → Imperativo negativo, 2.ª pers. sing. de decir. Forma tomada del subjuntivo presente." },
+    { enunciado: "Haz los deberes antes de cenar.", forma: "Haz", solución: "«Haz» → Imperativo afirmativo, 2.ª pers. sing. de hacer. Irregular (hace → haz)." },
+    { enunciado: "Ten paciencia, todo llegará.", forma: "Ten", solución: "«Ten» → Imperativo afirmativo, 2.ª pers. sing. de tener (irregular: ten)." },
+    { enunciado: "Venid todos al salón.", forma: "Venid", solución: "«Venid» → Imperativo afirmativo, 2.ª pers. pl. de venir." },
+    { enunciado: "No te preocupes tanto.", forma: "preocupes", solución: "«preocupes» → Imperativo negativo, 2.ª pers. sing. de preocuparse. Forma del subjuntivo." },
+    { enunciado: "Ponlo en la mesa, por favor.", forma: "Ponlo", solución: "«Ponlo» → Imperativo afirmativo con pronombre enclítico, 2.ª pers. sing. de poner." },
+    { enunciado: "¡No me interrumpas!", forma: "interrumpas", solución: "«interrumpas» → Imperativo negativo, 2.ª pers. sing. de interrumpir." },
+    { enunciado: "Séd pacientes y todo se resolverá.", forma: "Séd", solución: "Nota: la forma correcta es «Sed» (imp. 2.ª pl. de ser). Verbo irregular." },
+  ],
+
+  "Formas no personales · Infinitivo simple": [
+    { enunciado: "Me gusta cantar en la ducha.", forma: "cantar", solución: "«cantar» → Infinitivo simple de cantar. Sujeto de la oración (equivale a un sustantivo)." },
+    { enunciado: "Necesito hablar contigo urgentemente.", forma: "hablar", solución: "«hablar» → Infinitivo simple de hablar. CD del verbo necesitar." },
+    { enunciado: "Saber es poder.", forma: "Saber", solución: "«Saber» → Infinitivo simple de saber. Uso sustantivado como sujeto." },
+    { enunciado: "Empezó a llover de repente.", forma: "llover", solución: "«llover» → Infinitivo simple en perífrasis verbal (empezar a + infinitivo)." },
+    { enunciado: "Van a inaugurar el museo el próximo mes.", forma: "inaugurar", solución: "«inaugurar» → Infinitivo simple en perífrasis ir a + infinitivo (futuro próximo)." },
+    { enunciado: "Hay que estudiar para aprobar.", forma: "estudiar", solución: "«estudiar» → Infinitivo simple en perífrasis obligativa hay que + infinitivo." },
+    { enunciado: "Prometió volver antes de medianoche.", forma: "volver", solución: "«volver» → Infinitivo simple de volver. Complemento de prometer." },
+    { enunciado: "Vino a ver la exposición especialmente.", forma: "ver", solución: "«ver» → Infinitivo simple. Expresa finalidad (venir a + inf.)." },
+    { enunciado: "Al llegar a casa, se quitó el abrigo.", forma: "llegar", solución: "«llegar» → Infinitivo simple precedido de al: expresión temporal (= cuando llegó)." },
+    { enunciado: "Sin estudiar, no aprobarás.", forma: "estudiar", solución: "«estudiar» → Infinitivo simple precedido de sin: valor condicional negativo." },
+    { enunciado: "Le ordenaron callar.", forma: "callar", solución: "«callar» → Infinitivo simple, CD en construcción de infinitivo concertado." },
+    { enunciado: "Correr cada mañana es muy saludable.", forma: "Correr", solución: "«Correr» → Infinitivo simple, sujeto de la oración. Valor sustantivo." },
+  ],
+
+  "Formas no personales · Infinitivo compuesto": [
+    { enunciado: "Después de haber comido, salimos a pasear.", forma: "haber comido", solución: "«haber comido» → Infinitivo compuesto de comer. Expresa anterioridad respecto a la acción principal." },
+    { enunciado: "Reconoce haber mentido en su declaración.", forma: "haber mentido", solución: "«haber mentido» → Infinitivo compuesto de mentir. CD de reconocer; acción anterior al reconocimiento." },
+    { enunciado: "Por haber llegado tarde, perdió el vuelo.", forma: "haber llegado", solución: "«haber llegado» → Infinitivo compuesto. Valor causal-temporal anterior." },
+    { enunciado: "Lamenta no haber estudiado más.", forma: "haber estudiado", solución: "«haber estudiado» → Infinitivo compuesto negado. Anterioridad con valor de arrepentimiento." },
+    { enunciado: "Parece haber dormido muy mal.", forma: "haber dormido", solución: "«haber dormido» → Infinitivo compuesto en perífrasis aspectual. Acción anterior inferida." },
+    { enunciado: "Sin haber avisado, no podemos excusarte.", forma: "haber avisado", solución: "«haber avisado» → Infinitivo compuesto precedido de sin. Condición incumplida anterior." },
+    { enunciado: "De haber sabido la verdad, habría actuado de otro modo.", forma: "haber sabido", solución: "«haber sabido» → Infinitivo compuesto. Prótasis condicional (= si hubiera sabido)." },
+    { enunciado: "Dice haber visto algo extraño aquella noche.", forma: "haber visto", solución: "«haber visto» → Infinitivo compuesto. CD de decir; anterioridad al momento de habla." },
+    { enunciado: "Tras haber firmado el contrato, se fue tranquilo.", forma: "haber firmado", solución: "«haber firmado» → Infinitivo compuesto con tras. Temporal de anterioridad inmediata." },
+    { enunciado: "El haber vivido en el extranjero le abrió muchas puertas.", forma: "haber vivido", solución: "«haber vivido» → Infinitivo compuesto sustantivado (precedido de artículo el). Sujeto." },
+    { enunciado: "Por no haber prestado atención, cometió el error.", forma: "haber prestado", solución: "«haber prestado» → Infinitivo compuesto negado con valor causal." },
+    { enunciado: "Creía haber resuelto el problema definitivamente.", forma: "haber resuelto", solución: "«haber resuelto» → Infinitivo compuesto. CD de creer; acción anterior a la creencia." },
+  ],
+
+  "Formas no personales · Gerundio simple": [
+    { enunciado: "Salió corriendo hacia la salida.", forma: "corriendo", solución: "«corriendo» → Gerundio simple de correr. Valor modal (indica el modo de salir)." },
+    { enunciado: "Estaba leyendo cuando sonó el teléfono.", forma: "leyendo", solución: "«leyendo» → Gerundio simple en perífrasis estar + gerundio (acción en curso)." },
+    { enunciado: "Estudiando mucho, conseguirás el título.", forma: "Estudiando", solución: "«Estudiando» → Gerundio simple con valor condicional (= si estudias mucho)." },
+    { enunciado: "Vinieron cantando por la calle.", forma: "cantando", solución: "«cantando» → Gerundio simple de cantar. Valor modal." },
+    { enunciado: "Llevaba dos horas esperando el autobús.", forma: "esperando", solución: "«esperando» → Gerundio simple en perífrasis durativa llevar + gerundio." },
+    { enunciado: "Se lesionó jugando al fútbol.", forma: "jugando", solución: "«jugando» → Gerundio simple de jugar. Valor temporal simultáneo con se lesionó." },
+    { enunciado: "Siendo tan tarde, decidimos quedarnos.", forma: "Siendo", solución: "«Siendo» → Gerundio simple de ser. Valor causal (= como era tan tarde)." },
+    { enunciado: "Siguió hablando a pesar del ruido.", forma: "hablando", solución: "«hablando» → Gerundio simple en perífrasis continuar/seguir + gerundio." },
+    { enunciado: "Aprobó el examen estudiando solo una semana.", forma: "estudiando", solución: "«estudiando» → Gerundio simple. Valor modal con matiz instrumental." },
+    { enunciado: "Anocheciendo ya, encendimos las farolas.", forma: "Anocheciendo", solución: "«Anocheciendo» → Gerundio simple de anochecer. Valor temporal." },
+    { enunciado: "Se pasó la tarde durmiendo en el sofá.", forma: "durmiendo", solución: "«durmiendo» → Gerundio simple de dormir. Perífrasis pasarse + gerundio (acción continua)." },
+    { enunciado: "Tocando el piano, se olvidaba de todo.", forma: "Tocando", solución: "«Tocando» → Gerundio simple. Valor temporal simultáneo o condicional." },
+  ],
+
+  "Formas no personales · Gerundio compuesto": [
+    { enunciado: "Habiendo terminado la tarea, salió a jugar.", forma: "Habiendo terminado", solución: "«Habiendo terminado» → Gerundio compuesto de terminar. Expresa anterioridad respecto al verbo principal." },
+    { enunciado: "Habiendo dormido poco, estaba agotada.", forma: "Habiendo dormido", solución: "«Habiendo dormido» → Gerundio compuesto. Causal-temporal anterior a estaba agotada." },
+    { enunciado: "Habiendo comido tan tarde, no tenía hambre.", forma: "Habiendo comido", solución: "«Habiendo comido» → Gerundio compuesto. Acción anterior con consecuencia en el presente del relato." },
+    { enunciado: "Habiendo vivido tantos años allí, lo echaba de menos.", forma: "Habiendo vivido", solución: "«Habiendo vivido» → Gerundio compuesto. Anterioridad causal." },
+    { enunciado: "Habiendo leído el informe, pudo responder a todas las preguntas.", forma: "Habiendo leído", solución: "«Habiendo leído» → Gerundio compuesto de leer. Anterioridad que posibilita la acción principal." },
+    { enunciado: "Habiendo estudiado toda la noche, aprobó sin problemas.", forma: "Habiendo estudiado", solución: "«Habiendo estudiado» → Gerundio compuesto. Causa anterior al resultado." },
+    { enunciado: "Habiendo perdido el autobús, tuve que ir andando.", forma: "Habiendo perdido", solución: "«Habiendo perdido» → Gerundio compuesto. Causa de una consecuencia posterior." },
+    { enunciado: "Habiendo sido médico toda su vida, sabía bien lo que decía.", forma: "Habiendo sido", solución: "«Habiendo sido» → Gerundio compuesto de ser. Anterioridad que fundamenta el predicado." },
+    { enunciado: "Habiendo visto lo ocurrido, preferí no decir nada.", forma: "Habiendo visto", solución: "«Habiendo visto» → Gerundio compuesto de ver. Temporal-causal de anterioridad." },
+    { enunciado: "Habiendo recibido las instrucciones, el equipo se puso a trabajar.", forma: "Habiendo recibido", solución: "«Habiendo recibido» → Gerundio compuesto. Condición previa cumplida." },
+    { enunciado: "Habiendo dicho eso, se marchó sin esperar respuesta.", forma: "Habiendo dicho", solución: "«Habiendo dicho» → Gerundio compuesto de decir (irregular: dicho). Acción inmediatamente anterior." },
+    { enunciado: "Habiendo llegado los últimos, nos tocaron los peores asientos.", forma: "Habiendo llegado", solución: "«Habiendo llegado» → Gerundio compuesto. Anterioridad causal." },
+  ],
+
+  "Formas no personales · Participio": [
+    { enunciado: "La carta ha sido escrita con mucho cuidado.", forma: "escrita", solución: "«escrita» → Participio de escribir (irregular: escrito/a). Concuerda con carta (fem. sing.)." },
+    { enunciado: "Los alumnos, agotados por el esfuerzo, se sentaron.", forma: "agotados", solución: "«agotados» → Participio de agotar, función de adjetivo predicativo. Masc. pl., concuerda con alumnos." },
+    { enunciado: "El trabajo terminado merece un descanso.", forma: "terminado", solución: "«terminado» → Participio de terminar como adjetivo atributivo. Masc. sing." },
+    { enunciado: "Resuelto el problema, nos fuimos a casa.", forma: "Resuelto", solución: "«Resuelto» → Participio de resolver (irregular) en construcción absoluta. Equivale a 'una vez que fue resuelto'." },
+    { enunciado: "Han construido un puente nuevo.", forma: "construido", solución: "«construido» → Participio de construir en perífrasis de perfecto. No concuerda con el complemento." },
+    { enunciado: "Las ventanas estaban rotas desde hacía días.", forma: "rotas", solución: "«rotas» → Participio de romper (irregular: roto/a). Adjetivo predicativo, fem. pl." },
+    { enunciado: "Dicho esto, abandonó la sala.", forma: "Dicho", solución: "«Dicho» → Participio de decir (irregular) en construcción absoluta. Valor temporal." },
+    { enunciado: "Los documentos firmados deben entregarse hoy.", forma: "firmados", solución: "«firmados» → Participio de firmar como adjetivo atributivo, masc. pl." },
+    { enunciado: "La ciudad, destruida por el terremoto, tardó años en recuperarse.", forma: "destruida", solución: "«destruida» → Participio de destruir, adjetivo predicativo o aposición. Fem. sing." },
+    { enunciado: "El camino recorrido nos enseñó mucho.", forma: "recorrido", solución: "«recorrido» → Participio de recorrer como adjetivo atributivo. Masc. sing." },
+    { enunciado: "Habiendo sido elegida presidenta, pronunció un discurso.", forma: "elegida", solución: "«elegida» → Participio de elegir (irregular) en gerundio compuesto pasivo. Concuerda con el sujeto femenino." },
+    { enunciado: "Los niños, sentados en círculo, escuchaban el cuento.", forma: "sentados", solución: "«sentados» → Participio de sentar, adjetivo predicativo. Masc. pl." },
+  ],
+
+};
+
+/* ====================================================
+   GRUPOS DE TIEMPOS
+==================================================== */
+const grupos = [
+  { label: "Indicativo", tiempos: [
+    "Indicativo · Presente",
+    "Indicativo · Pretérito imperfecto",
+    "Indicativo · Pretérito perfecto simple",
+    "Indicativo · Pretérito perfecto compuesto",
+    "Indicativo · Pretérito pluscuamperfecto",
+    "Indicativo · Pretérito anterior",
+    "Indicativo · Futuro simple",
+    "Indicativo · Futuro compuesto",
+    "Indicativo · Condicional simple",
+    "Indicativo · Condicional compuesto",
+  ]},
+  { label: "Subjuntivo", tiempos: [
+    "Subjuntivo · Presente",
+    "Subjuntivo · Pretérito imperfecto",
+    "Subjuntivo · Pretérito perfecto",
+    "Subjuntivo · Pretérito pluscuamperfecto",
+    "Subjuntivo · Futuro simple",
+    "Subjuntivo · Futuro compuesto",
+  ]},
+  { label: "Imperativo", tiempos: ["Imperativo"] },
+  { label: "Formas no personales", tiempos: [
+    "Formas no personales · Infinitivo simple",
+    "Formas no personales · Infinitivo compuesto",
+    "Formas no personales · Gerundio simple",
+    "Formas no personales · Gerundio compuesto",
+    "Formas no personales · Participio",
+  ]},
+];
+
+/* ====================================================
+   LÓGICA DE SESIÓN
+==================================================== */
+function elegirDos(arr) {
+  const copia = [...arr];
+  const resultado = [];
+  for (let i = 0; i < 2 && copia.length > 0; i++) {
+    const idx = Math.floor(Math.random() * copia.length);
+    resultado.push(copia.splice(idx, 1)[0]);
+  }
+  return resultado;
+}
+
+function marcaForma(enunciado, forma) {
+  const re = new RegExp('(' + forma.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'g');
+  return enunciado.replace(re, '<span class="forma-destacada">$1</span>');
+}
+
+function construirSesion() {
+  const contenedor = document.getElementById('contenedor');
+  contenedor.innerHTML = '';
+  let numEj = 1;
+
+  grupos.forEach(grupo => {
+    const div = document.createElement('div');
+    div.className = 'divisor-grupo';
+    div.textContent = grupo.label;
+    contenedor.appendChild(div);
+
+    grupo.tiempos.forEach(tiempo => {
+      const ejercicios = elegirDos(banco[tiempo]);
+      const bloque = document.createElement('div');
+      bloque.className = 'bloque-tiempo';
+
+      const partes = tiempo.split(' · ');
+      const etiqueta = partes.length > 1 ? partes[0] : '';
+      const nombre = partes.length > 1 ? partes[1] : partes[0];
+
+      bloque.innerHTML = `
+        ${etiqueta ? `<div class="etiqueta-tiempo">${etiqueta}</div>` : ''}
+        <div class="nombre-tiempo">${nombre}</div>
+      `;
+
+      ejercicios.forEach(ej => {
+        const divEj = document.createElement('div');
+        divEj.className = 'ejercicio';
+        const id = 'sol-' + (numEj++);
+
+        divEj.innerHTML = `
+          <div class="enunciado">${marcaForma(ej.enunciado, ej.forma)}</div>
+          <button class="btn-solución" onclick="toggleSol('${id}', this)">▶ ver solución</button>
+          <div class="solución" id="${id}"><strong>${ej.forma}</strong> — ${ej.solución}</div>
+        `;
+        bloque.appendChild(divEj);
+      });
+
+      contenedor.appendChild(bloque);
+    });
+  });
+}
+
+function toggleSol(id, btn) {
+  const el = document.getElementById(id);
+  if (el.classList.contains('visible')) {
+    el.classList.remove('visible');
+    btn.textContent = '▶ ver solución';
+  } else {
+    el.classList.add('visible');
+    btn.textContent = '▼ ocultar';
+  }
+}
+
+function mostrarTodo() {
+  document.querySelectorAll('.solución').forEach(el => el.classList.add('visible'));
+  document.querySelectorAll('.btn-solución').forEach(b => b.textContent = '▼ ocultar');
+}
+
+function ocultarTodo() {
+  document.querySelectorAll('.solución').forEach(el => el.classList.remove('visible'));
+  document.querySelectorAll('.btn-solución').forEach(b => b.textContent = '▶ ver solución');
+}
+
+function nuevaSesion() {
+  ocultarTodo();
+  construirSesion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* Inicialización */
+construirSesion();
+</script>
+</body>
+</html>
