@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El verbo: tiempos y perífrasis verbales</title>
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --ink-mid: #2d3561;
+    --accent: #1d6fa4;
+    --accent-light: #e8f4fd;
+    --accent-mid: #b3d9f0;
+    --gold: #c8902a;
+    --gold-light: #fdf3e3;
+    --paper: #f8f6f0;
+    --white: #ffffff;
+    --border: #d4cfc5;
+    --success: #1a6b3c;
+    --success-bg: #e6f4ec;
+    --error: #b91c1c;
+    --error-bg: #fef2f2;
+    --text-body: #2c2c3e;
+    --text-muted: #6b7280;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--paper);
+    color: var(--text-body);
+    line-height: 1.7;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: var(--white);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--accent), var(--gold));
+  }
+  header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  header h1 span { color: var(--gold); }
+  header p {
+    margin-top: 0.75rem;
+    color: #a0aec0;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── NAV TABS ── */
+  nav {
+    background: var(--ink-mid);
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    overflow-x: auto;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 2px solid var(--gold);
+  }
+  nav button {
+    background: none;
+    border: none;
+    color: #a0aec0;
+    padding: 0.85rem 1.4rem;
+    cursor: pointer;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+  }
+  nav button:hover { color: var(--white); }
+  nav button.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  /* ── MAIN LAYOUT ── */
+  main { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+  .section { display: none; }
+  .section.visible { display: block; }
+
+  /* ── TYPOGRAPHY ── */
+  h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+  }
+  h3 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink-mid);
+    margin: 2rem 0 0.75rem;
+  }
+  p { margin-bottom: 1rem; }
+
+  /* ── TEORÍA CARDS ── */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.25rem;
+    border-left: 4px solid var(--accent);
+  }
+  .card.gold { border-left-color: var(--gold); }
+  .card.green { border-left-color: var(--success); }
+
+  /* ── TIMELINE DE TIEMPOS ── */
+  .timeline-wrap {
+    background: var(--ink);
+    border-radius: 10px;
+    padding: 1.6rem;
+    margin: 1.5rem 0 2rem;
+    overflow-x: auto;
+  }
+  .timeline-label {
+    color: #a0aec0;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .timeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    min-width: 560px;
+    position: relative;
+  }
+  .timeline-axis {
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 2px;
+    background: #4a5568;
+    transform: translateY(-50%);
+    z-index: 0;
+  }
+  .tl-point {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    cursor: pointer;
+  }
+  .tl-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--ink);
+    transition: transform 0.2s;
+  }
+  .tl-point:hover .tl-dot { transform: scale(1.5); background: var(--gold); }
+  .tl-name {
+    font-size: 0.72rem;
+    color: #cbd5e0;
+    margin-top: 0.5rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .tl-example {
+    font-size: 0.68rem;
+    color: var(--gold);
+    font-style: italic;
+    text-align: center;
+    margin-top: 0.25rem;
+  }
+  .tl-point.past .tl-dot { background: #9f7aea; }
+  .tl-point.pres .tl-dot { background: var(--gold); }
+  .tl-point.fut .tl-dot { background: #48bb78; }
+
+  /* ── TABLA ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0 1.5rem;
+    font-size: 0.88rem;
+  }
+  th {
+    background: var(--ink-mid);
+    color: var(--white);
+    padding: 0.6rem 0.9rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  td { padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: var(--accent-light); }
+  .tag {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  .tag-modal { background: #fde68a; color: #92400e; }
+  .tag-asp { background: #d1fae5; color: #065f46; }
+  .tag-ob { background: #fee2e2; color: #991b1b; }
+  .tag-prob { background: #ede9fe; color: #5b21b6; }
+  .tag-pos { background: #dbeafe; color: #1e40af; }
+  .tag-dur { background: #d1fae5; color: #065f46; }
+  .tag-inc { background: #fce7f3; color: #9d174d; }
+  .tag-ter { background: #e0f2fe; color: #0c4a6e; }
+  .tag-rep { background: #f3e8ff; color: #6b21a8; }
+  .tag-per { background: #f0fdf4; color: #14532d; border: 1px solid #86efac; }
+
+  /* ── EJERCICIOS ── */
+  .ejercicio {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem 1.6rem;
+    margin-bottom: 2rem;
+  }
+  .ej-titulo {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink-mid);
+    margin-bottom: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .ej-num {
+    background: var(--accent);
+    color: var(--white);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+  }
+  .pregunta {
+    margin-bottom: 1rem;
+    padding: 0.8rem 1rem;
+    background: var(--paper);
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .pregunta-text {
+    font-size: 0.93rem;
+    margin-bottom: 0.6rem;
+    font-weight: 500;
+  }
+  .pregunta em { font-style: italic; color: var(--ink-mid); }
+  .opciones { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .opcion {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    padding: 0.35rem 0.8rem;
+    cursor: pointer;
+    font-size: 0.84rem;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    transition: all 0.15s;
+    color: var(--text-body);
+  }
+  .opcion:hover { border-color: var(--accent); background: var(--accent-light); }
+  .opcion.selected { border-color: var(--accent); background: var(--accent-light); color: var(--accent); font-weight: 600; }
+  .opcion.correct { border-color: var(--success); background: var(--success-bg); color: var(--success); font-weight: 600; }
+  .opcion.wrong { border-color: var(--error); background: var(--error-bg); color: var(--error); }
+  .opcion.reveal-correct { border-color: var(--success); background: var(--success-bg); color: var(--success); font-weight: 600; }
+
+  /* input de texto */
+  .input-wrap { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+  .input-text {
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.88rem;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    min-width: 160px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .input-text:focus { border-color: var(--accent); }
+  .input-text.correct { border-color: var(--success); background: var(--success-bg); color: var(--success); }
+  .input-text.wrong { border-color: var(--error); background: var(--error-bg); color: var(--error); }
+
+  .feedback {
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
+    font-weight: 500;
+    display: none;
+  }
+  .feedback.ok { color: var(--success); display: block; }
+  .feedback.ko { color: var(--error); display: block; }
+
+  /* botones de acción */
+  .btn-wrap { display: flex; gap: 0.75rem; margin-top: 1.2rem; flex-wrap: wrap; }
+  .btn {
+    padding: 0.55rem 1.3rem;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-primary { background: var(--accent); color: var(--white); }
+  .btn-secondary { background: var(--paper); border: 1.5px solid var(--border); color: var(--text-body); }
+  .btn-gold { background: var(--gold); color: var(--white); }
+
+  .resultado {
+    margin-top: 1rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    display: none;
+  }
+  .resultado.ok { background: var(--success-bg); color: var(--success); border: 1px solid #86efac; }
+  .resultado.ko { background: var(--error-bg); color: var(--error); border: 1px solid #fca5a5; }
+  .resultado.parcial { background: var(--gold-light); color: var(--gold); border: 1px solid #fcd34d; }
+
+  /* ── HIGHLIGHT ── */
+  .highlight {
+    display: inline-block;
+    background: var(--accent-light);
+    border: 1px solid var(--accent-mid);
+    border-radius: 3px;
+    padding: 0 0.35rem;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-style: italic;
+    color: var(--accent);
+    font-size: 0.95em;
+  }
+  .hl-gold { background: var(--gold-light); border-color: #fcd34d; color: var(--gold); }
+
+  /* ── PROGRESS ── */
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 1rem 0;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--gold));
+    border-radius: 2px;
+    transition: width 0.4s;
+  }
+
+  /* ── NOTA ── */
+  .nota {
+    background: var(--gold-light);
+    border: 1px solid #fcd34d;
+    border-radius: 6px;
+    padding: 0.9rem 1.1rem;
+    font-size: 0.87rem;
+    margin: 1rem 0;
+  }
+  .nota strong { color: var(--gold); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    nav button { padding: 0.7rem 0.9rem; font-size: 0.75rem; }
+    .opciones { gap: 0.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>El <span>verbo</span>: tiempos y perífrasis</h1>
+  <p>Lengua castellana · Bachillerato</p>
+</header>
+
+<nav>
+  <button class="active" onclick="showSection('teoria-tiempos')">Tiempos verbales</button>
+  <button onclick="showSection('teoria-perifrasis')">Perífrasis verbales</button>
+  <button onclick="showSection('ej-tiempos')">Ejercicios: tiempos</button>
+  <button onclick="showSection('ej-perifrasis')">Ejercicios: perífrasis</button>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════
+     SECCIÓN 1: TEORÍA — TIEMPOS VERBALES
+═══════════════════════════════════════════ -->
+<div id="teoria-tiempos" class="section visible">
+  <h2>Los tiempos verbales</h2>
+
+  <div class="card">
+    <h3 style="margin-top:0">¿Qué indica el tiempo verbal?</h3>
+    <p>El <strong>tiempo verbal</strong> sitúa la acción expresada por el verbo en relación con el <strong>momento del habla</strong>. Las acciones pueden presentarse como <em>pasadas</em>, <em>presentes</em> o <em>futuras</em>. Además, algunas formas expresan si la acción está terminada (<strong>aspecto perfectivo</strong>) o no (<strong>aspecto imperfectivo</strong>).</p>
+  </div>
+
+  <div class="timeline-wrap">
+    <div class="timeline-label">Eje temporal · haz clic para ver cada tiempo</div>
+    <div class="timeline" id="timeline">
+      <div class="timeline-axis"></div>
+      <div class="tl-point past" onclick="showTlInfo('plusc')">
+        <div class="tl-dot"></div>
+        <div class="tl-name">Pluscuamperf.</div>
+        <div class="tl-example">había cantado</div>
+      </div>
+      <div class="tl-point past" onclick="showTlInfo('pret-ant')">
+        <div class="tl-dot"></div>
+        <div class="tl-name">Pretérito anterior</div>
+        <div class="tl-example">hube cantado</div>
+      </div>
+      <div class="tl-point past" onclick="showTlInfo('imperf')">
+        <div class="tl-dot"></div>
+        <div class="tl-name">Pretérito imperf.</div>
+        <div class="tl-example">cantaba</div>
+      </div>
+      <div class="tl-point past" onclick="showTlInfo('pret-simple')">
+        <div class="tl-dot"></div>
+        <div class="tl-name">Pret. perf. simple</div>
+        <div class="tl-example">canté</div>
+      </div>
+      <div class="tl-point past" onclick="showTlInfo('pret-comp')">
+        <div class="tl-dot"></div>
+        <div class="tl-name">Pret. perf. comp.</div>
+        <div class="tl-example">he cantado</div>
+      </div>
+      <div class="tl-point pres" onclick="showTlInfo('presente')">
+        <div class="tl-dot"></div>
+        <div class="tl-name">Presente</div>
+        <div class="tl-example">canto</div>
+      </div>
+      <div class="tl-point fut" onclick="showTlInfo('condicional')">
+        <div class="tl-dot"></div>
+        <div class="tl-name">Condicional</div>
+        <div class="tl-example">cantaría</div>
+      </div>
+      <div class="tl-point fut" onclick="showTlInfo('futuro')">
+        <div class="tl-dot"></div>
+        <div class="tl-name">Futuro simple</div>
+        <div class="tl-example">cantaré</div>
+      </div>
+      <div class="tl-point fut" onclick="showTlInfo('futuro-comp')">
+        <div class="tl-dot"></div>
+        <div class="tl-name">Futuro compuesto</div>
+        <div class="tl-example">habré cantado</div>
+      </div>
+    </div>
+  </div>
+  <div id="tl-info" style="display:none;" class="card gold">
+    <div id="tl-info-text"></div>
+  </div>
+
+  <h3>Formas simples y compuestas</h3>
+  <div class="card">
+    <p>Las <strong>formas simples</strong> están compuestas por un solo verbo. Las <strong>formas compuestas</strong> se forman con el auxiliar <em>haber</em> conjugado + participio del verbo principal. En general, las formas compuestas tienen aspecto <strong>perfectivo</strong> (acción terminada).</p>
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Tiempo</th><th>Forma (cantar)</th><th>Aspecto</th><th>Ejemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Presente</td><td><span class="highlight">canto</span></td><td>Imperfectivo</td><td>Ahora canto una canción.</td></tr>
+      <tr><td>Pret. imperfecto</td><td><span class="highlight">cantaba</span></td><td>Imperfectivo</td><td>De niño cantaba en el coro.</td></tr>
+      <tr><td>Pret. perf. simple</td><td><span class="highlight">canté</span></td><td><strong>Perfectivo</strong></td><td>Ayer canté en el concierto.</td></tr>
+      <tr><td>Pret. perf. compuesto</td><td><span class="highlight">he cantado</span></td><td><strong>Perfectivo</strong></td><td>Hoy he cantado dos veces.</td></tr>
+      <tr><td>Pluscuamperfecto</td><td><span class="highlight">había cantado</span></td><td><strong>Perfectivo</strong></td><td>Ya había cantado cuando llegaste.</td></tr>
+      <tr><td>Pretérito anterior</td><td><span class="highlight">hube cantado</span></td><td><strong>Perfectivo</strong></td><td>Apenas hube cantado, aplaudieron.</td></tr>
+      <tr><td>Futuro simple</td><td><span class="highlight">cantaré</span></td><td>Imperfectivo</td><td>Mañana cantaré en el escenario.</td></tr>
+      <tr><td>Futuro compuesto</td><td><span class="highlight">habré cantado</span></td><td><strong>Perfectivo</strong></td><td>Para entonces ya habré cantado.</td></tr>
+      <tr><td>Condicional simple</td><td><span class="highlight">cantaría</span></td><td>Imperfectivo</td><td>Dijo que cantaría allí.</td></tr>
+      <tr><td>Condicional compuesto</td><td><span class="highlight">habría cantado</span></td><td><strong>Perfectivo</strong></td><td>Habría cantado, pero llegué tarde.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Los modos verbales</h3>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:1rem; margin-bottom:1.5rem;">
+    <div class="card" style="border-left-color: var(--accent)">
+      <strong style="color:var(--accent)">Indicativo</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">Presenta la acción como <strong>real</strong> u objetiva. Es el modo de los hechos constatados o supuestos.<br><span class="highlight" style="font-size:0.85rem">Ayer hizo frío.</span></p>
+    </div>
+    <div class="card" style="border-left-color: #9f7aea;">
+      <strong style="color:#7c3aed">Subjuntivo</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">Expresa duda, deseo, hipótesis o dependencia de otro verbo.<br><span class="highlight" style="font-size:0.85rem; background:#ede9fe; border-color:#c4b5fd; color:#7c3aed">Ojalá llegue pronto.</span></p>
+    </div>
+    <div class="card" style="border-left-color: var(--gold);">
+      <strong style="color:var(--gold)">Imperativo</strong>
+      <p style="margin-top:0.5rem; font-size:0.9rem;">Expresa mandato, ruego o exhortación. Solo existe en presente.<br><span class="highlight hl-gold" style="font-size:0.85rem">Ven aquí. / Abre la puerta.</span></p>
+    </div>
+  </div>
+
+  <h3>Tiempos del subjuntivo</h3>
+  <table>
+    <thead>
+      <tr><th>Tiempo</th><th>Forma (cantar)</th><th>Ejemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Presente</td><td><span class="highlight" style="background:#ede9fe; border-color:#c4b5fd; color:#7c3aed">cante</span></td><td>Quiero que <em>cante</em> María.</td></tr>
+      <tr><td>Pret. imperfecto</td><td><span class="highlight" style="background:#ede9fe; border-color:#c4b5fd; color:#7c3aed">cantara / cantase</span></td><td>Si yo <em>tuviera</em> tu suerte…</td></tr>
+      <tr><td>Pret. perfecto</td><td><span class="highlight" style="background:#ede9fe; border-color:#c4b5fd; color:#7c3aed">haya cantado</span></td><td>Es posible que <em>haya llegado</em>.</td></tr>
+      <tr><td>Pluscuamperfecto</td><td><span class="highlight" style="background:#ede9fe; border-color:#c4b5fd; color:#7c3aed">hubiera / hubiese cantado</span></td><td>Si lo <em>hubiera sabido</em>…</td></tr>
+    </tbody>
+  </table>
+
+  <div class="nota">
+    <strong>⚠ Recuerda:</strong> <span class="highlight">habremos supuesto</span> = <strong>futuro compuesto de indicativo</strong>. <span class="highlight" style="background:#ede9fe; border-color:#c4b5fd; color:#7c3aed">hubieran hablado</span> = <strong>pluscuamperfecto de subjuntivo</strong>.
+  </div>
+
+  <h3>Aspecto verbal: perfectivo e imperfectivo</h3>
+  <div class="card green">
+    <p>El <strong>aspecto perfectivo</strong> presenta la acción como <em>terminada o completa</em>: <span class="highlight">canté</span>, <span class="highlight">he cantado</span>, <span class="highlight">había cantado</span>.</p>
+    <p style="margin-bottom:0">El <strong>aspecto imperfectivo</strong> presenta la acción <em>sin indicar su final</em>: <span class="highlight">cantaba</span>, <span class="highlight">canto</span>, <span class="highlight">cantaré</span>. Son imperfectivas las formas simples excepto el pretérito perfecto simple.</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECCIÓN 2: TEORÍA — PERÍFRASIS
+═══════════════════════════════════════════ -->
+<div id="teoria-perifrasis" class="section">
+  <h2>Las perífrasis verbales</h2>
+
+  <div class="card">
+    <h3 style="margin-top:0">¿Qué es una perífrasis verbal?</h3>
+    <p>Una <strong>perífrasis verbal</strong> es una construcción formada por un <strong>verbo auxiliar</strong> conjugado + (posible nexo) + <strong>verbo principal en forma no personal</strong> (infinitivo, gerundio o participio). Los dos verbos funcionan como <strong>una sola unidad</strong> con un significado unitario.</p>
+    <p style="margin-bottom:0">La clave está en que el auxiliar <em>pierde total o parcialmente su significado propio</em>:<br>
+    <span class="highlight">Tengo muchos libros</span> → <em>tener</em> significa <em>poseer</em> (no hay perífrasis).<br>
+    <span class="highlight hl-gold">Tengo que leer muchos libros</span> → <em>tener</em> expresa <em>obligación</em> (sí hay perífrasis).</p>
+  </div>
+
+  <div class="nota">
+    <strong>¿Cómo distinguir una perífrasis?</strong> Pregúntate: ¿ha perdido el primer verbo su significado léxico propio? ¿Funciona el conjunto como un solo núcleo verbal? Si la respuesta es sí, hay perífrasis.<br><br>
+    <strong>No son perífrasis</strong>: <em>quiero aprobar, deseo viajar, prometo estudiar, necesito descansar</em> (los verbos conservan su significado pleno).
+  </div>
+
+  <h3>Clasificación de las perífrasis</h3>
+
+  <table>
+    <thead>
+      <tr><th>Tipo</th><th>Subtipo</th><th>Estructura</th><th>Ejemplo</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="3"><span class="tag tag-modal">Modal</span></td>
+        <td><span class="tag tag-ob">Obligación</span></td>
+        <td>tener que / deber / haber de / haber que + inf.</td>
+        <td><em>Tienes que estudiar.</em></td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-prob">Probabilidad</span></td>
+        <td>deber de / venir a + inf.</td>
+        <td><em>Deben de ser las cinco.</em></td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-pos">Posibilidad</span></td>
+        <td>poder + inf.</td>
+        <td><em>Puede llover esta tarde.</em></td>
+      </tr>
+      <tr>
+        <td rowspan="6"><span class="tag tag-asp">Aspectual</span></td>
+        <td><span class="tag" style="background:#e0f2fe;color:#075985">Ingresiva</span></td>
+        <td>ir a / estar a punto de / estar para + inf.</td>
+        <td><em>Voy a salir. / Está para llover.</em></td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-inc">Incoativa</span></td>
+        <td>ponerse a / echarse a / romper a / empezar a + inf.</td>
+        <td><em>Se puso a llorar.</em></td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-dur">Durativa</span></td>
+        <td>estar / seguir / llevar / ir / andar + gerundio</td>
+        <td><em>Sigue lloviendo.</em></td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-rep">Reiterativa</span></td>
+        <td>volver a + inf.</td>
+        <td><em>Volvió a llamar.</em></td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-ter">Terminativa</span></td>
+        <td>dejar de / acabar de / llegar a + inf.</td>
+        <td><em>Dejó de fumar.</em></td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-per">Perfectiva/Resultativa</span></td>
+        <td>llevar / tener / quedar / dejar + participio</td>
+        <td><em>Llevo leídas veinte páginas.</em></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Deber vs. deber de</h3>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:1rem 0 1.5rem;">
+    <div class="card" style="border-left-color: var(--error);">
+      <strong style="color:var(--error)">deber + infinitivo</strong>
+      <p style="margin-top:0.5rem;font-size:0.9rem;">Expresa <strong>obligación</strong>.<br><span class="highlight">Debes estudiar más.</span><br><span class="highlight">Debemos salir ya.</span></p>
+    </div>
+    <div class="card" style="border-left-color: #7c3aed;">
+      <strong style="color:#7c3aed">deber de + infinitivo</strong>
+      <p style="margin-top:0.5rem;font-size:0.9rem;">Expresa <strong>probabilidad</strong>.<br><span class="highlight" style="background:#ede9fe; border-color:#c4b5fd; color:#7c3aed">Deben de ser las cinco.</span><br><span class="highlight" style="background:#ede9fe; border-color:#c4b5fd; color:#7c3aed">Debe de haber un error.</span></p>
+    </div>
+  </div>
+
+  <h3>El verbo ir: ¿perífrasis o no?</h3>
+  <div class="card gold">
+    <p><span class="highlight hl-gold">Voy a salir pronto.</span> → Perífrasis ingresiva (<em>ir a</em> + infinitivo). <em>Ir</em> pierde su significado de movimiento.</p>
+    <p style="margin-bottom:0"><span class="highlight">Voy a correos a echar una carta.</span> → No es perífrasis. <em>Voy</em> conserva su significado de movimiento y se puede separar del infinitivo.</p>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECCIÓN 3: EJERCICIOS — TIEMPOS
+═══════════════════════════════════════════ -->
+<div id="ej-tiempos" class="section">
+  <h2>Ejercicios sobre tiempos verbales</h2>
+
+  <!-- EJ A: Identificar el tiempo verbal -->
+  <div class="ejercicio" id="ejA">
+    <div class="ej-titulo"><span class="ej-num">A</span> Identifica el tiempo verbal</div>
+    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;">Selecciona el tiempo al que pertenece cada forma verbal destacada.</p>
+
+    <div id="ejA-preguntas"></div>
+
+    <div class="btn-wrap">
+      <button class="btn btn-primary" onclick="corregirEjA()">Corregir</button>
+      <button class="btn btn-secondary" onclick="resetEjA()">Reintentar</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="ejA-progress" style="width:0%"></div></div>
+    <div class="resultado" id="ejA-resultado"></div>
+  </div>
+
+  <!-- EJ B: Aspecto perfectivo/imperfectivo -->
+  <div class="ejercicio" id="ejB">
+    <div class="ej-titulo"><span class="ej-num">B</span> Aspecto verbal: perfectivo o imperfectivo</div>
+    <div id="ejB-preguntas"></div>
+    <div class="btn-wrap">
+      <button class="btn btn-primary" onclick="corregirEjB()">Corregir</button>
+      <button class="btn btn-secondary" onclick="resetEjB()">Reintentar</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="ejB-progress" style="width:0%"></div></div>
+    <div class="resultado" id="ejB-resultado"></div>
+  </div>
+
+  <!-- EJ C: Modo verbal -->
+  <div class="ejercicio" id="ejC">
+    <div class="ej-titulo"><span class="ej-num">C</span> Identifica el modo verbal</div>
+    <div id="ejC-preguntas"></div>
+    <div class="btn-wrap">
+      <button class="btn btn-primary" onclick="corregirEjC()">Corregir</button>
+      <button class="btn btn-secondary" onclick="resetEjC()">Reintentar</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="ejC-progress" style="width:0%"></div></div>
+    <div class="resultado" id="ejC-resultado"></div>
+  </div>
+
+  <!-- EJ D: Corrección de errores -->
+  <div class="ejercicio" id="ejD">
+    <div class="ej-titulo"><span class="ej-num">D</span> Corrige la forma verbal incorrecta</div>
+    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;">Escribe la forma correcta de la forma errónea que aparece en cada oración.</p>
+    <div id="ejD-preguntas"></div>
+    <div class="btn-wrap">
+      <button class="btn btn-primary" onclick="corregirEjD()">Corregir</button>
+      <button class="btn btn-secondary" onclick="resetEjD()">Reintentar</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="ejD-progress" style="width:0%"></div></div>
+    <div class="resultado" id="ejD-resultado"></div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECCIÓN 4: EJERCICIOS — PERÍFRASIS
+═══════════════════════════════════════════ -->
+<div id="ej-perifrasis" class="section">
+  <h2>Ejercicios sobre perífrasis verbales</h2>
+
+  <!-- EJ E: ¿Hay perífrasis? -->
+  <div class="ejercicio" id="ejE">
+    <div class="ej-titulo"><span class="ej-num">E</span> ¿Hay perífrasis verbal?</div>
+    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;">Indica si en cada oración hay o no hay perífrasis verbal.</p>
+    <div id="ejE-preguntas"></div>
+    <div class="btn-wrap">
+      <button class="btn btn-primary" onclick="corregirEjE()">Corregir</button>
+      <button class="btn btn-secondary" onclick="resetEjE()">Reintentar</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="ejE-progress" style="width:0%"></div></div>
+    <div class="resultado" id="ejE-resultado"></div>
+  </div>
+
+  <!-- EJ F: Clasificar perífrasis -->
+  <div class="ejercicio" id="ejF">
+    <div class="ej-titulo"><span class="ej-num">F</span> Clasifica la perífrasis</div>
+    <p style="font-size:0.88rem; color:var(--text-muted); margin-bottom:1rem;">Selecciona el tipo de perífrasis que aparece en cada oración.</p>
+    <div id="ejF-preguntas"></div>
+    <div class="btn-wrap">
+      <button class="btn btn-primary" onclick="corregirEjF()">Corregir</button>
+      <button class="btn btn-secondary" onclick="resetEjF()">Reintentar</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="ejF-progress" style="width:0%"></div></div>
+    <div class="resultado" id="ejF-resultado"></div>
+  </div>
+
+  <!-- EJ G: Deber vs deber de -->
+  <div class="ejercicio" id="ejG">
+    <div class="ej-titulo"><span class="ej-num">G</span> <em>Deber</em> vs. <em>deber de</em>: obligación o probabilidad</div>
+    <div id="ejG-preguntas"></div>
+    <div class="btn-wrap">
+      <button class="btn btn-primary" onclick="corregirEjG()">Corregir</button>
+      <button class="btn btn-secondary" onclick="resetEjG()">Reintentar</button>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="ejG-progress" style="width:0%"></div></div>
+    <div class="resultado" id="ejG-resultado"></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+/* ══════════════════════════════════
+   DATOS
+══════════════════════════════════ */
+
+const tlInfo = {
+  presente: { nombre: 'Presente de indicativo', aspecto: 'Imperfectivo', uso: 'Expresa una acción simultánea al momento del habla, o acciones habituales.', ejemplo: '«Ahora <strong>canto</strong> en el coro.» / «<strong>Llueve</strong> todos los domingos.»' },
+  imperf: { nombre: 'Pretérito imperfecto', aspecto: 'Imperfectivo', uso: 'Expresa acciones pasadas habituales, durativas o simultáneas a otra acción pasada.', ejemplo: '«De niño <strong>cantaba</strong> en el coro.»' },
+  'pret-simple': { nombre: 'Pretérito perfecto simple', aspecto: '⚠ Perfectivo (excepción entre las simples)', uso: 'Expresa una acción pasada, acabada y desconectada del presente. Es la única forma simple perfectiva.', ejemplo: '«Ayer <strong>canté</strong> en el concierto.»' },
+  'pret-comp': { nombre: 'Pretérito perfecto compuesto', aspecto: 'Perfectivo', uso: 'Expresa una acción pasada pero conectada con el presente o con un período que aún no ha terminado.', ejemplo: '«Hoy <strong>he cantado</strong> dos veces.»' },
+  plusc: { nombre: 'Pretérito pluscuamperfecto', aspecto: 'Perfectivo', uso: 'Expresa una acción pasada anterior a otra también pasada.', ejemplo: '«Ya <strong>había cantado</strong> cuando llegaste.»' },
+  'pret-ant': { nombre: 'Pretérito anterior', aspecto: 'Perfectivo', uso: 'Expresa una acción inmediatamente anterior a otra pasada. Muy raro hoy; aparece tras conjunciones como <em>apenas</em>, <em>cuando</em>, <em>luego que</em>.', ejemplo: '«Apenas <strong>hube cantado</strong>, aplaudieron.»' },
+  futuro: { nombre: 'Futuro simple', aspecto: 'Imperfectivo', uso: 'Expresa una acción posterior al momento del habla. También puede expresar probabilidad en el presente.', ejemplo: '«Mañana <strong>cantaré</strong>.» / «<strong>Tendrá</strong> unos cuarenta años.»' },
+  'futuro-comp': { nombre: 'Futuro compuesto', aspecto: 'Perfectivo', uso: 'Expresa una acción futura pero anterior a otra también futura. O probabilidad en el pasado.', ejemplo: '«Para entonces ya <strong>habré cantado</strong>.»' },
+  condicional: { nombre: 'Condicional simple', aspecto: 'Imperfectivo', uso: 'Expresa una acción futura en relación con un punto del pasado, o una acción hipotética. También probabilidad en el pasado.', ejemplo: '«Dijo que <strong>cantaría</strong> allí.»' },
+};
+
+/* ── Ejercicio A: identificar tiempo ── */
+const dataA = [
+  { oracion: 'Yo <em>canto</em> en el coro.', opciones: ['Presente', 'Pret. imperfecto', 'Futuro simple', 'Pret. perf. simple'], correcta: 'Presente' },
+  { oracion: 'Tú <em>cantabas</em> muy bien.', opciones: ['Presente', 'Pret. imperfecto', 'Condicional', 'Futuro simple'], correcta: 'Pret. imperfecto' },
+  { oracion: 'Él <em>cantó</em> en la final.', opciones: ['Pret. imperfecto', 'Pret. perf. compuesto', 'Pret. perf. simple', 'Futuro simple'], correcta: 'Pret. perf. simple' },
+  { oracion: 'Nosotros <em>cantaremos</em> mañana.', opciones: ['Condicional', 'Futuro compuesto', 'Futuro simple', 'Presente'], correcta: 'Futuro simple' },
+  { oracion: 'Vosotros <em>habéis cantado</em> muy bien.', opciones: ['Pret. imperfecto', 'Pret. perf. compuesto', 'Pluscuamperfecto', 'Futuro compuesto'], correcta: 'Pret. perf. compuesto' },
+  { oracion: 'Ellos <em>habían cantado</em> antes de que llegaras.', opciones: ['Pret. anterior', 'Pluscuamperfecto', 'Futuro compuesto', 'Condicional compuesto'], correcta: 'Pluscuamperfecto' },
+  { oracion: 'Yo <em>habré cantado</em> para el lunes.', opciones: ['Pluscuamperfecto', 'Pret. anterior', 'Condicional compuesto', 'Futuro compuesto'], correcta: 'Futuro compuesto' },
+  { oracion: 'Él <em>habría cantado</em> si hubiera podido.', opciones: ['Futuro compuesto', 'Pluscuamperfecto de subj.', 'Condicional compuesto', 'Pret. perf. compuesto'], correcta: 'Condicional compuesto' },
+  { oracion: 'Nosotros <em>hayamos cantado</em> (que…)', opciones: ['Presente de subj.', 'Pret. perf. de subj.', 'Pluscuamp. de subj.', 'Pret. imperf. de subj.'], correcta: 'Pret. perf. de subj.' },
+  { oracion: 'Vosotros <em>hubierais cantado</em> si…', opciones: ['Pret. perf. de subj.', 'Condicional compuesto', 'Pluscuamp. de subj.', 'Pret. anterior'], correcta: 'Pluscuamp. de subj.' },
+];
+
+/* ── Ejercicio B: aspecto ── */
+const dataB = [
+  { forma: 'cantaba', correcta: 'Imperfectivo' },
+  { forma: 'canté', correcta: 'Perfectivo' },
+  { forma: 'he cantado', correcta: 'Perfectivo' },
+  { forma: 'canto', correcta: 'Imperfectivo' },
+  { forma: 'cantaré', correcta: 'Imperfectivo' },
+  { forma: 'había cantado', correcta: 'Perfectivo' },
+  { forma: 'cantaría', correcta: 'Imperfectivo' },
+  { forma: 'hube cantado', correcta: 'Perfectivo' },
+  { forma: 'habré cantado', correcta: 'Perfectivo' },
+  { forma: 'cantábamos', correcta: 'Imperfectivo' },
+];
+
+/* ── Ejercicio C: modo ── */
+const dataC = [
+  { oracion: '«Ayer <em>hizo</em> mucho frío.»', correcta: 'Indicativo' },
+  { oracion: '«Quizás <em>vuelva</em> esta tarde.»', correcta: 'Subjuntivo' },
+  { oracion: '«<em>Abre</em> la puerta.»', correcta: 'Imperativo' },
+  { oracion: '«Ojalá nunca <em>llegue</em> ese día.»', correcta: 'Subjuntivo' },
+  { oracion: '«Recoge la ropa para que no se <em>moje</em>.»', correcta: 'Subjuntivo' },
+  { oracion: '«No <em>consigo</em> nada aunque me esfuerzo.»', correcta: 'Indicativo' },
+  { oracion: '«<em>Ven</em> aquí inmediatamente.»', correcta: 'Imperativo' },
+  { oracion: '«Puede que todavía <em>esté</em> en casa.»', correcta: 'Subjuntivo' },
+  { oracion: '«<em>Cantad</em> más bajo.»', correcta: 'Imperativo' },
+  { oracion: '«Si <em>estudias</em>, aprobarás.»', correcta: 'Indicativo' },
+];
+
+/* ── Ejercicio D: corrección ── */
+const dataD = [
+  { oracion: 'Yo <em>conducí</em> hasta Madrid.', incorrecta: 'conducí', correcta: 'conduje', pista: 'El pretérito de <em>conducir</em> es irregular: conduje, condujiste…' },
+  { oracion: 'Ellos <em>preveyeron</em> el problema.', incorrecta: 'preveyeron', correcta: 'previeron', pista: '<em>Prever</em> se conjuga como <em>ver</em>: previó, previeron.' },
+  { oracion: 'Si lo <em>preveyeras</em> antes, no habría pasado.', incorrecta: 'preveyeras', correcta: 'previeras', pista: 'Pret. imperfecto de subj. de <em>prever</em>: previera/previese.' },
+  { oracion: '<em>Andé</em> mucho ayer.', incorrecta: 'Andé', correcta: 'Anduve', pista: 'Pretérito irregular de <em>andar</em>: anduve, anduviste…' },
+  { oracion: '<em>Poní</em> el libro en la mesa.', incorrecta: 'Poní', correcta: 'Puse', pista: 'Pretérito irregular de <em>poner</em>: puse, pusiste…' },
+  { oracion: 'No <em>contradeciría</em> a mi padre.', incorrecta: 'contradeciría', correcta: 'contradiría', pista: '<em>Contradecir</em> forma el condicional como <em>decir</em>: diría → contradiría.' },
+  { oracion: '<em>Habían</em> muchas personas en la sala.', incorrecta: 'Habían', correcta: 'Había', pista: '<em>Haber</em> impersonal no tiene plural: <em>había</em> muchas personas.' },
+  { oracion: 'El testigo <em>satisfació</em> todas las preguntas.', incorrecta: 'satisfació', correcta: 'satisfizo', pista: 'Pretérito irregular de <em>satisfacer</em>: satisfizo.' },
+];
+
+/* ── Ejercicio E: ¿hay perífrasis? ── */
+const dataE = [
+  { oracion: '<em>Va a ir</em> al cine.', correcta: 'Sí', explicacion: '<em>Va a ir</em> es una perífrasis ingresiva (ir a + infinitivo): expresa acción próxima.' },
+  { oracion: '<em>Quiere</em> aprobar todas las asignaturas.', correcta: 'No', explicacion: '<em>Querer</em> conserva su significado léxico pleno (deseo). No forma perífrasis.' },
+  { oracion: '<em>Tienes que</em> estudiar más.', correcta: 'Sí', explicacion: '<em>Tener que</em> + infinitivo: perífrasis modal de obligación.' },
+  { oracion: '<em>Deseo</em> ir a tu casa.', correcta: 'No', explicacion: '<em>Desear</em> conserva su significado pleno. No hay perífrasis.' },
+  { oracion: 'En aquella época un libro <em>venía a costar</em> quince pesetas.', correcta: 'Sí', explicacion: '<em>Venir a</em> + infinitivo: perífrasis modal de probabilidad/aproximación.' },
+  { oracion: 'Aquel viaje <em>debió de resultar</em> interesante.', correcta: 'Sí', explicacion: '<em>Deber de</em> + infinitivo: perífrasis modal de probabilidad.' },
+  { oracion: '<em>Anda</em> pintarrajeando todos los pupitres.', correcta: 'Sí', explicacion: '<em>Andar</em> + gerundio: perífrasis durativa.' },
+  { oracion: 'No os <em>pongáis a</em> charlar de nuevo.', correcta: 'Sí', explicacion: '<em>Ponerse a</em> + infinitivo: perífrasis incoativa.' },
+  { oracion: '<em>Venía</em> cansado del viaje.', correcta: 'No', explicacion: '<em>Venía</em> es el único verbo con su significado de movimiento. <em>Cansado</em> es un predicativo, no parte de una perífrasis.' },
+  { oracion: 'Te <em>tengo dicho</em> muchas veces que hagas caso.', correcta: 'Sí', explicacion: '<em>Tener</em> + participio: perífrasis de participio con valor resultativo.' },
+  { oracion: '<em>Pienso</em> ir a tu casa.', correcta: 'No', explicacion: '<em>Pensar</em> conserva su significado pleno (intención). No es perífrasis.' },
+  { oracion: 'La dejó <em>caer</em>.', correcta: 'No', explicacion: 'Aquí <em>dejar</em> + infinitivo no funciona como perífrasis unitaria; hay un objeto directo (<em>la</em>) que afecta solo al segundo verbo.' },
+];
+
+/* ── Ejercicio F: clasificar perífrasis ── */
+const dataF = [
+  { oracion: '<em>Lleva escritas</em> cinco páginas.', correcta: 'Perfectiva/Resultativa', opciones: ['Perfectiva/Resultativa','Durativa','Incoativa','Terminativa'] },
+  { oracion: '<em>Se echó a reír</em> de repente.', correcta: 'Incoativa', opciones: ['Durativa','Incoativa','Reiterativa','Ingresiva'] },
+  { oracion: '<em>Sigo cantando</em> a pesar de las desgracias.', correcta: 'Durativa', opciones: ['Durativa','Terminativa','Reiterativa','Perfectiva/Resultativa'] },
+  { oracion: '<em>Debe de haber</em> un incendio cerca.', correcta: 'Probabilidad', opciones: ['Obligación','Probabilidad','Posibilidad','Durativa'] },
+  { oracion: '<em>No volvió a llamar</em> nunca.', correcta: 'Reiterativa', opciones: ['Reiterativa','Terminativa','Incoativa','Durativa'] },
+  { oracion: '<em>Estaba a punto de dormirme</em> cuando me llamó.', correcta: 'Ingresiva', opciones: ['Ingresiva','Incoativa','Durativa','Terminativa'] },
+  { oracion: '<em>Hay que venir</em> antes.', correcta: 'Obligación', opciones: ['Posibilidad','Probabilidad','Obligación','Durativa'] },
+  { oracion: '<em>Acabo de llegar</em>.', correcta: 'Terminativa', opciones: ['Incoativa','Reiterativa','Terminativa','Ingresiva'] },
+  { oracion: '<em>Vamos a analizar</em> el uso del gerundio.', correcta: 'Ingresiva', opciones: ['Ingresiva','Incoativa','Durativa','Obligación'] },
+  { oracion: '<em>Vendrán a ganar</em> unos dos mil euros.', correcta: 'Probabilidad', opciones: ['Obligación','Probabilidad','Posibilidad','Ingresiva'] },
+  { oracion: '<em>Anda diciendo</em> a todos que no le llamé.', correcta: 'Durativa', opciones: ['Durativa','Incoativa','Terminativa','Reiterativa'] },
+  { oracion: '<em>Debéis asistir</em> a clase con normalidad.', correcta: 'Obligación', opciones: ['Posibilidad','Probabilidad','Obligación','Durativa'] },
+];
+
+/* ── Ejercicio G: deber vs deber de ── */
+const dataG = [
+  { oracion: '<em>Debes</em> estudiar más.', correcta: 'Obligación' },
+  { oracion: '<em>Deben de ser</em> las seis.', correcta: 'Probabilidad' },
+  { oracion: '<em>Debes</em> llamar a tu madre.', correcta: 'Obligación' },
+  { oracion: '<em>Debe de haber</em> mucha gente.', correcta: 'Probabilidad' },
+  { oracion: '<em>Debemos</em> entregar el trabajo mañana.', correcta: 'Obligación' },
+  { oracion: 'Ese coche <em>debe de costar</em> mucho.', correcta: 'Probabilidad' },
+  { oracion: '<em>Debes</em> decidir con prontitud.', correcta: 'Obligación' },
+  { oracion: '<em>Deben de</em> haber salido ya.', correcta: 'Probabilidad' },
+];
+
+/* ══════════════════════════════════
+   NAVEGACIÓN
+══════════════════════════════════ */
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
+  document.getElementById(id).classList.add('visible');
+  document.querySelectorAll('nav button').forEach((b, i) => {
+    const ids = ['teoria-tiempos','teoria-perifrasis','ej-tiempos','ej-perifrasis'];
+    b.classList.toggle('active', ids[i] === id);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ══════════════════════════════════
+   TIMELINE
+══════════════════════════════════ */
+function showTlInfo(key) {
+  const d = tlInfo[key];
+  const box = document.getElementById('tl-info');
+  const txt = document.getElementById('tl-info-text');
+  txt.innerHTML = `<strong style="font-family:Georgia,'Times New Roman',serif;font-size:1rem;color:var(--ink)">${d.nombre}</strong>
+    <span style="display:inline-block;margin-left:0.5rem;font-size:0.75rem;padding:0.1rem 0.45rem;border-radius:3px;background:${d.aspecto.includes('Imperfectivo') ? 'var(--accent-light)' : 'var(--success-bg)'};color:${d.aspecto.includes('Imperfectivo') ? 'var(--accent)' : 'var(--success)'};font-weight:600;">${d.aspecto}</span>
+    <p style="margin-top:0.5rem;font-size:0.9rem;">${d.uso}</p>
+    <p style="font-size:0.9rem;margin-bottom:0">${d.ejemplo}</p>`;
+  box.style.display = 'block';
+}
+
+/* ══════════════════════════════════
+   GENERADOR DE OPCIONES
+══════════════════════════════════ */
+function buildOpciones(opciones, name, disabled) {
+  return opciones.map(o =>
+    `<button class="opcion" data-value="${o}" onclick="selectOpcion(this,'${name}')" ${disabled ? 'disabled' : ''}>${o}</button>`
+  ).join('');
+}
+function selectOpcion(btn, name) {
+  const grupo = btn.closest('.opciones');
+  if (!grupo) return;
+  grupo.querySelectorAll('.opcion').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+/* ══════════════════════════════════
+   RENDER EJERCICIOS
+══════════════════════════════════ */
+function renderMultiple(containerId, data, namePrefix, getOracion) {
+  const cont = document.getElementById(containerId);
+  cont.innerHTML = data.map((item, i) => `
+    <div class="pregunta" id="${namePrefix}-p${i}">
+      <div class="pregunta-text">${i+1}. ${getOracion(item)}</div>
+      <div class="opciones" data-name="${namePrefix}-${i}">
+        ${item.opciones.map(o =>
+          `<button class="opcion" data-name="${namePrefix}-${i}" onclick="selectOpcion(this,'${namePrefix}-${i}')">${o}</button>`
+        ).join('')}
+      </div>
+      <div class="feedback" id="${namePrefix}-fb${i}"></div>
+    </div>
+  `).join('');
+}
+
+function renderBinario(containerId, data, namePrefix, getOracion, opciones, extra) {
+  const cont = document.getElementById(containerId);
+  cont.innerHTML = data.map((item, i) => `
+    <div class="pregunta" id="${namePrefix}-p${i}">
+      <div class="pregunta-text">${i+1}. ${getOracion(item)}</div>
+      <div class="opciones">
+        ${opciones.map(o =>
+          `<button class="opcion" data-name="${namePrefix}-${i}" onclick="selectOpcion(this,'${namePrefix}-${i}')">${o}</button>`
+        ).join('')}
+      </div>
+      ${extra ? `<div class="feedback" id="${namePrefix}-fb${i}"></div>` : ''}
+    </div>
+  `).join('');
+}
+
+function renderInput(containerId, data, namePrefix, getOracion) {
+  const cont = document.getElementById(containerId);
+  cont.innerHTML = data.map((item, i) => `
+    <div class="pregunta" id="${namePrefix}-p${i}">
+      <div class="pregunta-text">${i+1}. ${getOracion(item)}</div>
+      <div class="input-wrap">
+        <span style="font-size:0.83rem;color:var(--text-muted)">Forma correcta:</span>
+        <input class="input-text" id="${namePrefix}-in${i}" type="text" placeholder="escribe aquí" autocomplete="off" autocorrect="off" spellcheck="false">
+      </div>
+      <div class="feedback" id="${namePrefix}-fb${i}"></div>
+    </div>
+  `).join('');
+}
+
+/* ══════════════════════════════════
+   CORRECCIÓN GENÉRICA
+══════════════════════════════════ */
+function corregirMultiple(data, namePrefix, getCorrecta, progressId, resultadoId, getExplicacion) {
+  let ok = 0;
+  data.forEach((item, i) => {
+    const sel = document.querySelector(`#${namePrefix}-p${i} .opcion.selected`);
+    const fb = document.getElementById(`${namePrefix}-fb${i}`);
+    const correcta = getCorrecta(item);
+    // Deshabilitar todos
+    document.querySelectorAll(`#${namePrefix}-p${i} .opcion`).forEach(b => {
+      b.disabled = true;
+      if (b.textContent === correcta) b.classList.add('reveal-correct');
+    });
+    if (sel) {
+      if (sel.textContent === correcta) {
+        sel.classList.add('correct');
+        ok++;
+        if (fb) { fb.textContent = '✓ Correcto'; fb.className = 'feedback ok'; }
+      } else {
+        sel.classList.add('wrong');
+        if (fb) {
+          const exp = getExplicacion ? getExplicacion(item) : `Respuesta correcta: ${correcta}`;
+          fb.innerHTML = `✗ ${exp}`;
+          fb.className = 'feedback ko';
+        }
+      }
+    } else {
+      if (fb) { fb.innerHTML = `Sin respuesta. Correcta: <strong>${correcta}</strong>`; fb.className = 'feedback ko'; }
+    }
+  });
+  const pct = Math.round(ok / data.length * 100);
+  document.getElementById(progressId).style.width = pct + '%';
+  const res = document.getElementById(resultadoId);
+  res.style.display = 'block';
+  if (pct === 100) { res.className = 'resultado ok'; res.textContent = `✓ ¡Perfecto! ${ok}/${data.length} correctas.`; }
+  else if (pct >= 60) { res.className = 'resultado parcial'; res.textContent = `Bien: ${ok}/${data.length} correctas (${pct}%). Revisa los errores.`; }
+  else { res.className = 'resultado ko'; res.textContent = `${ok}/${data.length} correctas (${pct}%). Repasa la teoría e inténtalo de nuevo.`; }
+}
+
+function resetMultiple(data, namePrefix, renderFn, progressId, resultadoId) {
+  renderFn();
+  document.getElementById(progressId).style.width = '0%';
+  const res = document.getElementById(resultadoId);
+  res.style.display = 'none';
+  res.className = 'resultado';
+}
+
+/* ══════════════════════════════════
+   EJERCICIO A
+══════════════════════════════════ */
+function renderEjA() {
+  const cont = document.getElementById('ejA-preguntas');
+  cont.innerHTML = dataA.map((item, i) => `
+    <div class="pregunta" id="ejA-p${i}">
+      <div class="pregunta-text">${i+1}. ${item.oracion}</div>
+      <div class="opciones">
+        ${item.opciones.map(o =>
+          `<button class="opcion" data-name="ejA-${i}" onclick="selectOpcion(this,'ejA-${i}')">${o}</button>`
+        ).join('')}
+      </div>
+      <div class="feedback" id="ejA-fb${i}"></div>
+    </div>
+  `).join('');
+}
+function corregirEjA() {
+  corregirMultiple(dataA, 'ejA', item => item.correcta, 'ejA-progress', 'ejA-resultado', null);
+}
+function resetEjA() { renderEjA(); document.getElementById('ejA-progress').style.width='0%'; document.getElementById('ejA-resultado').style.display='none'; }
+
+/* ══════════════════════════════════
+   EJERCICIO B
+══════════════════════════════════ */
+function renderEjB() {
+  const cont = document.getElementById('ejB-preguntas');
+  cont.innerHTML = dataB.map((item, i) => `
+    <div class="pregunta" id="ejB-p${i}">
+      <div class="pregunta-text">${i+1}. <em>${item.forma}</em></div>
+      <div class="opciones">
+        <button class="opcion" data-name="ejB-${i}" onclick="selectOpcion(this,'ejB-${i}')">Perfectivo</button>
+        <button class="opcion" data-name="ejB-${i}" onclick="selectOpcion(this,'ejB-${i}')">Imperfectivo</button>
+      </div>
+      <div class="feedback" id="ejB-fb${i}"></div>
+    </div>
+  `).join('');
+}
+function corregirEjB() {
+  corregirMultiple(dataB, 'ejB', item => item.correcta, 'ejB-progress', 'ejB-resultado', null);
+}
+function resetEjB() { renderEjB(); document.getElementById('ejB-progress').style.width='0%'; document.getElementById('ejB-resultado').style.display='none'; }
+
+/* ══════════════════════════════════
+   EJERCICIO C
+══════════════════════════════════ */
+function renderEjC() {
+  const cont = document.getElementById('ejC-preguntas');
+  cont.innerHTML = dataC.map((item, i) => `
+    <div class="pregunta" id="ejC-p${i}">
+      <div class="pregunta-text">${i+1}. ${item.oracion}</div>
+      <div class="opciones">
+        ${['Indicativo','Subjuntivo','Imperativo'].map(o =>
+          `<button class="opcion" data-name="ejC-${i}" onclick="selectOpcion(this,'ejC-${i}')">${o}</button>`
+        ).join('')}
+      </div>
+      <div class="feedback" id="ejC-fb${i}"></div>
+    </div>
+  `).join('');
+}
+function corregirEjC() {
+  corregirMultiple(dataC, 'ejC', item => item.correcta, 'ejC-progress', 'ejC-resultado', null);
+}
+function resetEjC() { renderEjC(); document.getElementById('ejC-progress').style.width='0%'; document.getElementById('ejC-resultado').style.display='none'; }
+
+/* ══════════════════════════════════
+   EJERCICIO D (inputs)
+══════════════════════════════════ */
+function renderEjD() {
+  const cont = document.getElementById('ejD-preguntas');
+  cont.innerHTML = dataD.map((item, i) => `
+    <div class="pregunta" id="ejD-p${i}">
+      <div class="pregunta-text">${i+1}. ${item.oracion}</div>
+      <div class="input-wrap">
+        <span style="font-size:0.83rem;color:var(--text-muted)">Forma correcta:</span>
+        <input class="input-text" id="ejD-in${i}" type="text" placeholder="escribe aquí" autocomplete="off" autocorrect="off" spellcheck="false">
+      </div>
+      <div class="feedback" id="ejD-fb${i}"></div>
+    </div>
+  `).join('');
+}
+function corregirEjD() {
+  let ok = 0;
+  dataD.forEach((item, i) => {
+    const inp = document.getElementById(`ejD-in${i}`);
+    const fb = document.getElementById(`ejD-fb${i}`);
+    const val = inp.value.trim().toLowerCase();
+    const correcta = item.correcta.toLowerCase();
+    inp.disabled = true;
+    if (val === correcta) {
+      inp.classList.add('correct'); ok++;
+      fb.textContent = '✓ Correcto'; fb.className = 'feedback ok';
+    } else {
+      inp.classList.add('wrong');
+      fb.innerHTML = `✗ La forma correcta es <strong>${item.correcta}</strong>. ${item.pista}`;
+      fb.className = 'feedback ko';
+    }
+  });
+  const pct = Math.round(ok / dataD.length * 100);
+  document.getElementById('ejD-progress').style.width = pct + '%';
+  const res = document.getElementById('ejD-resultado');
+  res.style.display = 'block';
+  if (pct === 100) { res.className = 'resultado ok'; res.textContent = `✓ ¡Perfecto! ${ok}/${dataD.length} correctas.`; }
+  else if (pct >= 60) { res.className = 'resultado parcial'; res.textContent = `Bien: ${ok}/${dataD.length} correctas (${pct}%).`; }
+  else { res.className = 'resultado ko'; res.textContent = `${ok}/${dataD.length} correctas (${pct}%). Repasa la teoría.`; }
+}
+function resetEjD() { renderEjD(); document.getElementById('ejD-progress').style.width='0%'; document.getElementById('ejD-resultado').style.display='none'; }
+
+/* ══════════════════════════════════
+   EJERCICIO E
+══════════════════════════════════ */
+function renderEjE() {
+  const cont = document.getElementById('ejE-preguntas');
+  cont.innerHTML = dataE.map((item, i) => `
+    <div class="pregunta" id="ejE-p${i}">
+      <div class="pregunta-text">${i+1}. ${item.oracion}</div>
+      <div class="opciones">
+        <button class="opcion" data-name="ejE-${i}" onclick="selectOpcion(this,'ejE-${i}')">Sí hay perífrasis</button>
+        <button class="opcion" data-name="ejE-${i}" onclick="selectOpcion(this,'ejE-${i}')">No hay perífrasis</button>
+      </div>
+      <div class="feedback" id="ejE-fb${i}"></div>
+    </div>
+  `).join('');
+}
+function corregirEjE() {
+  let ok = 0;
+  dataE.forEach((item, i) => {
+    const opciones = document.querySelectorAll(`#ejE-p${i} .opcion`);
+    const sel = document.querySelector(`#ejE-p${i} .opcion.selected`);
+    const fb = document.getElementById(`ejE-fb${i}`);
+    const correctaTexto = item.correcta === 'Sí' ? 'Sí hay perífrasis' : 'No hay perífrasis';
+    opciones.forEach(b => { b.disabled = true; if (b.textContent === correctaTexto) b.classList.add('reveal-correct'); });
+    if (sel) {
+      if (sel.textContent === correctaTexto) {
+        sel.classList.add('correct'); ok++;
+        fb.innerHTML = `✓ Correcto. ${item.explicacion}`; fb.className = 'feedback ok';
+      } else {
+        sel.classList.add('wrong');
+        fb.innerHTML = `✗ ${item.explicacion}`; fb.className = 'feedback ko';
+      }
+    } else {
+      fb.innerHTML = `Sin respuesta. ${item.explicacion}`; fb.className = 'feedback ko';
+    }
+  });
+  const pct = Math.round(ok / dataE.length * 100);
+  document.getElementById('ejE-progress').style.width = pct + '%';
+  const res = document.getElementById('ejE-resultado');
+  res.style.display = 'block';
+  if (pct === 100) { res.className = 'resultado ok'; res.textContent = `✓ ¡Perfecto! ${ok}/${dataE.length} correctas.`; }
+  else if (pct >= 60) { res.className = 'resultado parcial'; res.textContent = `Bien: ${ok}/${dataE.length} correctas (${pct}%). Revisa los errores.`; }
+  else { res.className = 'resultado ko'; res.textContent = `${ok}/${dataE.length} correctas (${pct}%). Repasa la teoría.`; }
+}
+function resetEjE() { renderEjE(); document.getElementById('ejE-progress').style.width='0%'; document.getElementById('ejE-resultado').style.display='none'; }
+
+/* ══════════════════════════════════
+   EJERCICIO F
+══════════════════════════════════ */
+function renderEjF() {
+  const cont = document.getElementById('ejF-preguntas');
+  cont.innerHTML = dataF.map((item, i) => `
+    <div class="pregunta" id="ejF-p${i}">
+      <div class="pregunta-text">${i+1}. ${item.oracion}</div>
+      <div class="opciones">
+        ${item.opciones.map(o =>
+          `<button class="opcion" data-name="ejF-${i}" onclick="selectOpcion(this,'ejF-${i}')">${o}</button>`
+        ).join('')}
+      </div>
+      <div class="feedback" id="ejF-fb${i}"></div>
+    </div>
+  `).join('');
+}
+function corregirEjF() {
+  corregirMultiple(dataF, 'ejF', item => item.correcta, 'ejF-progress', 'ejF-resultado',
+    item => `Tipo correcto: <strong>${item.correcta}</strong>`);
+}
+function resetEjF() { renderEjF(); document.getElementById('ejF-progress').style.width='0%'; document.getElementById('ejF-resultado').style.display='none'; }
+
+/* ══════════════════════════════════
+   EJERCICIO G
+══════════════════════════════════ */
+function renderEjG() {
+  const cont = document.getElementById('ejG-preguntas');
+  cont.innerHTML = dataG.map((item, i) => `
+    <div class="pregunta" id="ejG-p${i}">
+      <div class="pregunta-text">${i+1}. ${item.oracion}</div>
+      <div class="opciones">
+        <button class="opcion" data-name="ejG-${i}" onclick="selectOpcion(this,'ejG-${i}')">Obligación</button>
+        <button class="opcion" data-name="ejG-${i}" onclick="selectOpcion(this,'ejG-${i}')">Probabilidad</button>
+      </div>
+      <div class="feedback" id="ejG-fb${i}"></div>
+    </div>
+  `).join('');
+}
+function corregirEjG() {
+  corregirMultiple(dataG, 'ejG', item => item.correcta, 'ejG-progress', 'ejG-resultado',
+    item => item.correcta === 'Obligación'
+      ? 'Es <strong>deber + inf.</strong> (sin <em>de</em>): expresa <strong>obligación</strong>.'
+      : 'Es <strong>deber de + inf.</strong> (con <em>de</em>): expresa <strong>probabilidad</strong>.');
+}
+function resetEjG() { renderEjG(); document.getElementById('ejG-progress').style.width='0%'; document.getElementById('ejG-resultado').style.display='none'; }
+
+/* ══════════════════════════════════
+   INIT
+══════════════════════════════════ */
+renderEjA(); renderEjB(); renderEjC(); renderEjD();
+renderEjE(); renderEjF(); renderEjG();
+</script>
+</body>
+</html>
