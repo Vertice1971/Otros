@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perífrasis verbales</title>
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f7f5f0;
+    color: #1a1816;
+    padding: 2.5rem 1rem 5rem;
+    line-height: 1.6;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.55rem;
+    font-weight: normal;
+    letter-spacing: 0.02em;
+    border-bottom: 2px solid #1a1816;
+    padding-bottom: 0.9rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitulo {
+    font-size: 0.85rem;
+    color: #6a6560;
+    font-style: italic;
+    margin-bottom: 2.5rem;
+  }
+
+  .seccion-titulo {
+    font-size: 0.72rem;
+    font-family: 'Courier New', Courier, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #ffffff;
+    background: #1a1816;
+    display: inline-block;
+    padding: 0.2em 0.6em;
+    margin-bottom: 1.4rem;
+  }
+
+  .teoria-grid {
+    display: grid;
+    gap: 1px;
+    background: #d0ccc4;
+    border: 1px solid #d0ccc4;
+    margin-bottom: 3rem;
+  }
+
+  .tipo-card {
+    background: #ffffff;
+    padding: 1.2rem 1.4rem;
+  }
+
+  .tipo-card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tipo-etiqueta {
+    font-size: 0.7rem;
+    font-family: 'Courier New', Courier, monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: #1a1816;
+    color: #ffffff;
+    padding: 0.15em 0.5em;
+    white-space: nowrap;
+  }
+
+  .tipo-subtitulo {
+    font-size: 0.82rem;
+    color: #6a6560;
+    font-style: italic;
+  }
+
+  .tipo-explicacion {
+    font-size: 0.9rem;
+    color: #2a2825;
+    margin-bottom: 0.7rem;
+  }
+
+  .tipo-estructura {
+    font-size: 0.8rem;
+    font-family: 'Courier New', Courier, monospace;
+    background: #f0ede6;
+    display: inline-block;
+    padding: 0.2em 0.6em;
+    margin-bottom: 0.7rem;
+    color: #3a3530;
+  }
+
+  .ejemplos {
+    list-style: none;
+    padding: 0;
+  }
+
+  .ejemplos li {
+    font-size: 0.88rem;
+    color: #1a1816;
+    padding: 0.3rem 0 0.3rem 1rem;
+    border-left: 2px solid #c8c4bc;
+    margin-bottom: 0.3rem;
+  }
+
+  .ejemplos li em {
+    font-style: normal;
+    font-weight: bold;
+    color: #1a1816;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #d0ccc4;
+    margin: 2.5rem 0;
+  }
+
+  .instruccion {
+    font-size: 0.87rem;
+    color: #6a6560;
+    margin-bottom: 1.4rem;
+  }
+
+  .marcador {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.82rem;
+    font-family: 'Courier New', Courier, monospace;
+    color: #6a6560;
+    margin-bottom: 1.6rem;
+    flex-wrap: wrap;
+  }
+
+  .marcador b {
+    color: #1a1816;
+  }
+
+  .ejercicios-wrap {
+    margin-bottom: 2rem;
+  }
+
+  .ejercicio {
+    background: #ffffff;
+    border: 1px solid #d0ccc4;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1px;
+  }
+
+  .ejercicio-num {
+    font-size: 0.7rem;
+    font-family: 'Courier New', Courier, monospace;
+    color: #9a9590;
+    margin-bottom: 0.4rem;
+  }
+
+  .ejercicio-frase {
+    font-size: 1rem;
+    margin-bottom: 0.9rem;
+    color: #1a1816;
+  }
+
+  .ejercicio-frase .perifrasis {
+    font-style: italic;
+    font-weight: bold;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .opcion-btn {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.82rem;
+    padding: 0.32em 0.85em;
+    border: 1px solid #b8b4ac;
+    background: #f7f5f0;
+    color: #1a1816;
+    cursor: pointer;
+    transition: background 0.1s, border-color 0.1s;
+  }
+
+  .opcion-btn:hover:not(:disabled),
+  .opcion-btn:focus-visible:not(:disabled) {
+    background: #eceae3;
+    border-color: #8a8680;
+    outline: none;
+  }
+
+  .opcion-btn:disabled {
+    cursor: default;
+  }
+
+  .opcion-btn.correcto,
+  .opcion-btn.mostrar-correcto {
+    background: #e6efe2;
+    border-color: #5a8a50;
+    color: #245a1c;
+  }
+
+  .opcion-btn.incorrecto {
+    background: #f5e6e2;
+    border-color: #aa4030;
+    color: #7a2018;
+  }
+
+  .feedback {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: #6a6560;
+    min-height: 1.1rem;
+    display: none;
+  }
+
+  .feedback.visible {
+    display: block;
+  }
+
+  .feedback.ok {
+    color: #245a1c;
+  }
+
+  .feedback.mal {
+    color: #7a2018;
+  }
+
+  .pie {
+    text-align: center;
+    margin-top: 2.5rem;
+  }
+
+  .btn-nueva {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.9rem;
+    padding: 0.6em 2.2em;
+    background: #1a1816;
+    color: #f7f5f0;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.04em;
+  }
+
+  .btn-nueva:hover,
+  .btn-nueva:focus-visible {
+    background: #3a3530;
+    outline: none;
+  }
+
+  @media (max-width: 520px) {
+    body {
+      padding: 1.5rem 0.8rem 4rem;
+    }
+
+    .tipo-card,
+    .ejercicio {
+      padding: 1rem;
+    }
+
+    .opcion-btn {
+      width: 100%;
+      text-align: left;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Perífrasis verbales</h1>
+  <p class="subtitulo">Teoría y reconocimiento: dos ejercicios de cada tipo por sesión, mezclados al azar.</p>
+
+  <div class="seccion-titulo">Teoría</div>
+  <div class="teoria-grid">
+
+    <div class="tipo-card">
+      <div class="tipo-card-head">
+        <span class="tipo-etiqueta">Modal de obligación</span>
+        <span class="tipo-subtitulo">deber o necesidad</span>
+      </div>
+      <p class="tipo-explicacion">Expresan que algo es necesario o que alguien tiene el deber de realizarlo. El hablante no describe simplemente lo que ocurre, sino lo que debe ocurrir.</p>
+      <span class="tipo-estructura">tener que + infinitivo | haber que + infinitivo | deber + infinitivo | haber de + infinitivo</span>
+      <ul class="ejemplos">
+        <li><em>Tienes que entregar</em> el trabajo antes del viernes.</li>
+        <li><em>Hay que respetar</em> las normas de convivencia.</li>
+      </ul>
+    </div>
+
+    <div class="tipo-card">
+      <div class="tipo-card-head">
+        <span class="tipo-etiqueta">Modal de probabilidad o aproximación</span>
+        <span class="tipo-subtitulo">conjetura o cálculo aproximado</span>
+      </div>
+      <p class="tipo-explicacion">Expresan que el hablante supone algo sin afirmarlo con certeza o calcula una cantidad de modo aproximado. La clave es que no se presenta como un hecho seguro.</p>
+      <span class="tipo-estructura">deber de + infinitivo | venir a + infinitivo</span>
+      <ul class="ejemplos">
+        <li><em>Debe de ser</em> tarde.</li>
+        <li>Este cuadro <em>viene a costar</em> unos tres mil euros.</li>
+      </ul>
+    </div>
+
+    <div class="tipo-card">
+      <div class="tipo-card-head">
+        <span class="tipo-etiqueta">Incoativa / ingresiva</span>
+        <span class="tipo-subtitulo">inicio de la acción</span>
+      </div>
+      <p class="tipo-explicacion">Señalan el comienzo de una acción. Ponen el foco en el instante en que algo arranca, a veces de forma repentina o inesperada.</p>
+      <span class="tipo-estructura">empezar a + infinitivo | comenzar a + infinitivo | ponerse a + infinitivo | echarse a + infinitivo | romper a + infinitivo</span>
+      <ul class="ejemplos">
+        <li>Al oír la noticia, <em>rompió a llorar</em>.</li>
+        <li><em>Se puso a estudiar</em> en cuanto llegó a casa.</li>
+      </ul>
+    </div>
+
+    <div class="tipo-card">
+      <div class="tipo-card-head">
+        <span class="tipo-etiqueta">Durativa</span>
+        <span class="tipo-subtitulo">acción en desarrollo</span>
+      </div>
+      <p class="tipo-explicacion">Presentan la acción como algo que está ocurriendo o que se prolonga en el tiempo. Pueden indicar el momento en curso o la duración de una actividad.</p>
+      <span class="tipo-estructura">estar + gerundio | seguir + gerundio | llevar + gerundio | continuar + gerundio | andar + gerundio</span>
+      <ul class="ejemplos">
+        <li><em>Lleva esperando</em> más de dos horas.</li>
+        <li><em>Sigue pensando</em> en lo mismo de siempre.</li>
+      </ul>
+    </div>
+
+    <div class="tipo-card">
+      <div class="tipo-card-head">
+        <span class="tipo-etiqueta">Terminativa</span>
+        <span class="tipo-subtitulo">fin de la acción</span>
+      </div>
+      <p class="tipo-explicacion">Expresan que la acción cesa, se interrumpe o llega a su término. El foco recae en el límite final del proceso.</p>
+      <span class="tipo-estructura">dejar de + infinitivo | parar de + infinitivo | terminar de + infinitivo | cesar de + infinitivo</span>
+      <ul class="ejemplos">
+        <li><em>Dejó de hablar</em> en cuanto entró el director.</li>
+        <li>Por fin <em>ha parado de llover</em>.</li>
+      </ul>
+    </div>
+
+    <div class="tipo-card">
+      <div class="tipo-card-head">
+        <span class="tipo-etiqueta">Perfectiva</span>
+        <span class="tipo-subtitulo">acción completada con resultado</span>
+      </div>
+      <p class="tipo-explicacion">Indican que la acción se ha llevado a cabo y que su resultado permanece o es relevante. Subrayan el estado resultante, no solo el hecho de que la acción haya ocurrido.</p>
+      <span class="tipo-estructura">tener + participio | llevar + participio | dejar + participio</span>
+      <ul class="ejemplos">
+        <li><em>Tengo hecho</em> el trabajo desde ayer.</li>
+        <li><em>Lleva escritas</em> cien páginas de la novela.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <div class="seccion-titulo">Reconocimiento</div>
+  <p class="instruccion">Lee cada frase e identifica el tipo de perífrasis subrayada. En cada sesión aparecen dos ejercicios de cada tipo, mezclados al azar.</p>
+
+  <div class="marcador" aria-live="polite">
+    <span>Aciertos: <b id="m-ok">0</b></span>
+    <span>Errores: <b id="m-mal">0</b></span>
+    <span>Respondidas: <b id="m-total">0</b></span>
+  </div>
+
+  <div class="ejercicios-wrap" id="ejercicios"></div>
+
+  <div class="pie">
+    <button class="btn-nueva" type="button" onclick="nuevaSesion()">Nueva sesión</button>
+  </div>
+
+</div>
+
+<script>
+const TIPOS = [
+  { id: 0, etiqueta: "Modal de obligación" },
+  { id: 1, etiqueta: "Modal de probabilidad o aproximación" },
+  { id: 2, etiqueta: "Incoativa / ingresiva" },
+  { id: 3, etiqueta: "Durativa" },
+  { id: 4, etiqueta: "Terminativa" },
+  { id: 5, etiqueta: "Perfectiva" }
+];
+
+const BANCO = {
+  0: [
+    { frase: "Tienes que llamar al médico cuanto antes.", perifrasis: "Tienes que llamar", tipo: 0 },
+    { frase: "Hay que guardar silencio durante el examen.", perifrasis: "Hay que guardar", tipo: 0 },
+    { frase: "Debéis entregar el proyecto antes del lunes.", perifrasis: "Debéis entregar", tipo: 0 },
+    { frase: "Han de presentar la documentación completa.", perifrasis: "Han de presentar", tipo: 0 },
+    { frase: "Tenemos que salir a las ocho en punto.", perifrasis: "Tenemos que salir", tipo: 0 },
+    { frase: "Hay que tomar la medicación con las comidas.", perifrasis: "Hay que tomar", tipo: 0 },
+    { frase: "Debes pedir disculpas por lo que dijiste.", perifrasis: "Debes pedir", tipo: 0 },
+    { frase: "Tienes que revisar los apuntes antes de dormir.", perifrasis: "Tienes que revisar", tipo: 0 },
+    { frase: "Hemos de cumplir los compromisos adquiridos.", perifrasis: "Hemos de cumplir", tipo: 0 },
+    { frase: "Hay que votar para que la democracia funcione.", perifrasis: "Hay que votar", tipo: 0 },
+    { frase: "Tenéis que terminar la tarea antes de salir.", perifrasis: "Tenéis que terminar", tipo: 0 },
+    { frase: "Deben firmar todos los contratos antes del cierre.", perifrasis: "Deben firmar", tipo: 0 },
+    { frase: "Tienes que comer más verdura.", perifrasis: "Tienes que comer", tipo: 0 },
+    { frase: "Hay que tener paciencia en estos casos.", perifrasis: "Hay que tener", tipo: 0 },
+    { frase: "Debes consultar al especialista antes de decidir.", perifrasis: "Debes consultar", tipo: 0 }
+  ],
+
+  1: [
+    { frase: "Debe de ser tarde si las tiendas están cerradas.", perifrasis: "Debe de ser", tipo: 1 },
+    { frase: "Este apartamento viene a costar unos mil euros al mes.", perifrasis: "viene a costar", tipo: 1 },
+    { frase: "Debe de haber un error en la factura.", perifrasis: "Debe de haber", tipo: 1 },
+    { frase: "Debe de saber la verdad desde hace tiempo.", perifrasis: "Debe de saber", tipo: 1 },
+    { frase: "Viene a tener unos cuarenta años, calculo.", perifrasis: "Viene a tener", tipo: 1 },
+    { frase: "El precio total viene a ser el mismo que el año pasado.", perifrasis: "viene a ser", tipo: 1 },
+    { frase: "Debía de tener razón cuando insistía en eso.", perifrasis: "Debía de tener", tipo: 1 },
+    { frase: "Debe de haber olvidado la contraseña otra vez.", perifrasis: "Debe de haber olvidado", tipo: 1 },
+    { frase: "Debe de pesar diez kilos como mínimo.", perifrasis: "Debe de pesar", tipo: 1 },
+    { frase: "Viene a medir dos metros, quizá un poco menos.", perifrasis: "Viene a medir", tipo: 1 },
+    { frase: "Debe de vivir cerca porque siempre llega pronto.", perifrasis: "Debe de vivir", tipo: 1 },
+    { frase: "Debe de faltar poco para que empiece la reunión.", perifrasis: "Debe de faltar", tipo: 1 },
+    { frase: "La reforma viene a salir por unos cinco mil euros.", perifrasis: "viene a salir", tipo: 1 },
+    { frase: "Debe de conocer bien ese barrio.", perifrasis: "Debe de conocer", tipo: 1 },
+    { frase: "El paquete debe de contener los libros que pedimos.", perifrasis: "debe de contener", tipo: 1 }
+  ],
+
+  2: [
+    { frase: "Al oír la noticia, rompió a llorar sin consuelo.", perifrasis: "rompió a llorar", tipo: 2 },
+    { frase: "Se puso a estudiar nada más llegar a casa.", perifrasis: "Se puso a estudiar", tipo: 2 },
+    { frase: "Empezó a llover justo cuando salíamos.", perifrasis: "Empezó a llover", tipo: 2 },
+    { frase: "El niño se echó a correr por el pasillo.", perifrasis: "se echó a correr", tipo: 2 },
+    { frase: "Comenzaron a construir el puente la primavera pasada.", perifrasis: "Comenzaron a construir", tipo: 2 },
+    { frase: "Se puso a llorar cuando vio la película.", perifrasis: "Se puso a llorar", tipo: 2 },
+    { frase: "Rompió a hablar en cuanto entró en la sala.", perifrasis: "Rompió a hablar", tipo: 2 },
+    { frase: "Se echó a reír al leer aquella carta.", perifrasis: "Se echó a reír", tipo: 2 },
+    { frase: "Empezó a nevar a primera hora de la mañana.", perifrasis: "Empezó a nevar", tipo: 2 },
+    { frase: "El motor empezó a funcionar después de varios intentos.", perifrasis: "empezó a funcionar", tipo: 2 },
+    { frase: "Se puso a cocinar en cuanto llegaron los invitados.", perifrasis: "Se puso a cocinar", tipo: 2 },
+    { frase: "Comenzó a hablar sin parar y nadie pudo interrumpirla.", perifrasis: "Comenzó a hablar", tipo: 2 },
+    { frase: "Los pájaros rompieron a cantar antes del amanecer.", perifrasis: "rompieron a cantar", tipo: 2 },
+    { frase: "Se echó a temblar cuando escuchó ese ruido.", perifrasis: "Se echó a temblar", tipo: 2 },
+    { frase: "La alarma empezó a sonar a las siete.", perifrasis: "empezó a sonar", tipo: 2 }
+  ],
+
+  3: [
+    { frase: "Lleva esperando más de dos horas en la consulta.", perifrasis: "Lleva esperando", tipo: 3 },
+    { frase: "Sigue pensando en aquel verano de hace años.", perifrasis: "Sigue pensando", tipo: 3 },
+    { frase: "Cuando llegué, estaban viendo la televisión.", perifrasis: "estaban viendo", tipo: 3 },
+    { frase: "Anda buscando siempre excusas para no trabajar.", perifrasis: "Anda buscando", tipo: 3 },
+    { frase: "Continúa lloviendo desde primera hora de la mañana.", perifrasis: "Continúa lloviendo", tipo: 3 },
+    { frase: "Sigue estudiando a las doce de la noche.", perifrasis: "Sigue estudiando", tipo: 3 },
+    { frase: "Lleva durmiendo mal varias semanas por el estrés.", perifrasis: "Lleva durmiendo", tipo: 3 },
+    { frase: "Están construyendo un nuevo hospital en las afueras.", perifrasis: "Están construyendo", tipo: 3 },
+    { frase: "Anda quejándose de todo desde que llegó.", perifrasis: "Anda quejándose", tipo: 3 },
+    { frase: "Continúa trabajando pese a las dificultades.", perifrasis: "Continúa trabajando", tipo: 3 },
+    { frase: "Sigue leyendo la misma novela desde hace un mes.", perifrasis: "Sigue leyendo", tipo: 3 },
+    { frase: "Lleva esperando una respuesta desde el lunes.", perifrasis: "Lleva esperando", tipo: 3 },
+    { frase: "Estaban discutiendo cuando llegó la policía.", perifrasis: "Estaban discutiendo", tipo: 3 },
+    { frase: "Anda tramando algo, lo noto en su cara.", perifrasis: "Anda tramando", tipo: 3 },
+    { frase: "Continúa leyendo aunque ya es muy tarde.", perifrasis: "Continúa leyendo", tipo: 3 }
+  ],
+
+  4: [
+    { frase: "Dejó de hablar en cuanto entró el director.", perifrasis: "Dejó de hablar", tipo: 4 },
+    { frase: "Por fin ha parado de llover esta tarde.", perifrasis: "ha parado de llover", tipo: 4 },
+    { frase: "Ha terminado de escribir el informe a medianoche.", perifrasis: "Ha terminado de escribir", tipo: 4 },
+    { frase: "Cesó de soplar el viento al caer la noche.", perifrasis: "Cesó de soplar", tipo: 4 },
+    { frase: "Dejó de fumar después de muchos intentos fallidos.", perifrasis: "Dejó de fumar", tipo: 4 },
+    { frase: "Cuando dejéis de discutir, os explicaré la situación.", perifrasis: "dejéis de discutir", tipo: 4 },
+    { frase: "La música paró de sonar a medianoche.", perifrasis: "paró de sonar", tipo: 4 },
+    { frase: "Terminó de revisar los apuntes antes del amanecer.", perifrasis: "Terminó de revisar", tipo: 4 },
+    { frase: "Dejaron de verse después de aquel verano.", perifrasis: "Dejaron de verse", tipo: 4 },
+    { frase: "Ha cesado de llover; por fin podemos salir.", perifrasis: "Ha cesado de llover", tipo: 4 },
+    { frase: "Deja de quejarte y busca una solución.", perifrasis: "Deja de quejarte", tipo: 4 },
+    { frase: "Paró de nevar a primera hora de la mañana.", perifrasis: "Paró de nevar", tipo: 4 },
+    { frase: "Terminó de leer la novela en un solo día.", perifrasis: "Terminó de leer", tipo: 4 },
+    { frase: "Dejó de tocar la guitarra cuando empezó la universidad.", perifrasis: "Dejó de tocar", tipo: 4 },
+    { frase: "Por fin han parado de hacer obras en la calle.", perifrasis: "han parado de hacer", tipo: 4 }
+  ],
+
+  5: [
+    { frase: "Tengo hecho el trabajo desde ayer por la tarde.", perifrasis: "Tengo hecho", tipo: 5 },
+    { frase: "Lleva escritas cien páginas de su primera novela.", perifrasis: "Lleva escritas", tipo: 5 },
+    { frase: "Tiene compradas las entradas desde hace semanas.", perifrasis: "Tiene compradas", tipo: 5 },
+    { frase: "Lleva aprobadas cuatro asignaturas este curso.", perifrasis: "Lleva aprobadas", tipo: 5 },
+    { frase: "Tengo dicho lo que pienso y no voy a repetirlo.", perifrasis: "Tengo dicho", tipo: 5 },
+    { frase: "Tiene resueltos todos los problemas de matemáticas.", perifrasis: "Tiene resueltos", tipo: 5 },
+    { frase: "Lleva vendidas más de mil copias del libro.", perifrasis: "Lleva vendidas", tipo: 5 },
+    { frase: "El cocinero tiene preparada la cena desde las siete.", perifrasis: "tiene preparada", tipo: 5 },
+    { frase: "Tengo aprendidas las capitales de todos los países.", perifrasis: "Tengo aprendidas", tipo: 5 },
+    { frase: "Lleva ganados tres trofeos en lo que va de temporada.", perifrasis: "Lleva ganados", tipo: 5 },
+    { frase: "Tiene resuelta la mitad del crucigrama.", perifrasis: "Tiene resuelta", tipo: 5 },
+    { frase: "Lleva recorridos más de cinco mil kilómetros este año.", perifrasis: "Lleva recorridos", tipo: 5 },
+    { frase: "Dejó firmados los documentos antes de marcharse.", perifrasis: "Dejó firmados", tipo: 5 },
+    { frase: "Dejó preparada la mochila para la excursión.", perifrasis: "Dejó preparada", tipo: 5 },
+    { frase: "Tiene corregidas todas las pruebas de la semana.", perifrasis: "Tiene corregidas", tipo: 5 }
+  ]
+};
+
+let mOk = 0;
+let mMal = 0;
+let mTotal = 0;
+
+function shuffle(arr) {
+  const copia = [...arr];
+
+  for (let i = copia.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copia[i], copia[j]] = [copia[j], copia[i]];
+  }
+
+  return copia;
+}
+
+function pick2(arr) {
+  return shuffle(arr).slice(0, 2);
+}
+
+function escaparHTML(texto) {
+  return texto
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
+function resaltarPerifrasis(frase, perifrasis) {
+  const fraseMinuscula = frase.toLocaleLowerCase('es-ES');
+  const perifrasisMinuscula = perifrasis.toLocaleLowerCase('es-ES');
+  const inicio = fraseMinuscula.indexOf(perifrasisMinuscula);
+
+  if (inicio === -1) {
+    return escaparHTML(frase);
+  }
+
+  const fin = inicio + perifrasis.length;
+  const antes = frase.slice(0, inicio);
+  const centro = frase.slice(inicio, fin);
+  const despues = frase.slice(fin);
+
+  return `${escaparHTML(antes)}<span class="perifrasis">${escaparHTML(centro)}</span>${escaparHTML(despues)}`;
+}
+
+function obtenerEtiquetaTipo(id) {
+  const tipo = TIPOS.find(t => t.id === id);
+  return tipo ? tipo.etiqueta : 'Tipo desconocido';
+}
+
+function actualizarMarcador() {
+  document.getElementById('m-ok').textContent = mOk;
+  document.getElementById('m-mal').textContent = mMal;
+  document.getElementById('m-total').textContent = mTotal;
+}
+
+function nuevaSesion() {
+  mOk = 0;
+  mMal = 0;
+  mTotal = 0;
+  actualizarMarcador();
+
+  const seleccion = [];
+
+  Object.keys(BANCO).forEach(tipoId => {
+    pick2(BANCO[tipoId]).forEach(item => seleccion.push(item));
+  });
+
+  renderEjercicios(shuffle(seleccion));
+}
+
+function renderEjercicios(lista) {
+  const contenedor = document.getElementById('ejercicios');
+  contenedor.innerHTML = '';
+
+  lista.forEach((item, indice) => {
+    const ejercicio = document.createElement('div');
+    ejercicio.className = 'ejercicio';
+    ejercicio.id = `ej-${indice}`;
+
+    const numero = document.createElement('div');
+    numero.className = 'ejercicio-num';
+    numero.textContent = `${indice + 1} de ${lista.length}`;
+    ejercicio.appendChild(numero);
+
+    const frase = document.createElement('p');
+    frase.className = 'ejercicio-frase';
+    frase.innerHTML = resaltarPerifrasis(item.frase, item.perifrasis);
+    ejercicio.appendChild(frase);
+
+    const opciones = document.createElement('div');
+    opciones.className = 'opciones';
+    opciones.id = `ops-${indice}`;
+
+    shuffle(TIPOS).forEach(tipo => {
+      const boton = document.createElement('button');
+      boton.type = 'button';
+      boton.className = 'opcion-btn';
+      boton.textContent = tipo.etiqueta;
+      boton.dataset.tipoId = tipo.id;
+      boton.addEventListener('click', () => responder(indice, boton, item.tipo));
+      opciones.appendChild(boton);
+    });
+
+    ejercicio.appendChild(opciones);
+
+    const feedback = document.createElement('div');
+    feedback.className = 'feedback';
+    feedback.id = `fb-${indice}`;
+    ejercicio.appendChild(feedback);
+
+    contenedor.appendChild(ejercicio);
+  });
+}
+
+function responder(indice, boton, tipoCorrectoId) {
+  const opciones = document.getElementById(`ops-${indice}`);
+  const feedback = document.getElementById(`fb-${indice}`);
+  const tipoElegido = Number(boton.dataset.tipoId);
+  const acierto = tipoElegido === tipoCorrectoId;
+
+  opciones.querySelectorAll('.opcion-btn').forEach(b => {
+    b.disabled = true;
+
+    if (Number(b.dataset.tipoId) === tipoCorrectoId) {
+      b.classList.add('mostrar-correcto');
+    }
+  });
+
+  mTotal++;
+
+  if (acierto) {
+    boton.classList.remove('mostrar-correcto');
+    boton.classList.add('correcto');
+    feedback.textContent = 'Correcto.';
+    feedback.className = 'feedback visible ok';
+    mOk++;
+  } else {
+    boton.classList.add('incorrecto');
+    feedback.textContent = `Incorrecto. La respuesta correcta es: ${obtenerEtiquetaTipo(tipoCorrectoId)}.`;
+    feedback.className = 'feedback visible mal';
+    mMal++;
+  }
+
+  actualizarMarcador();
+}
+
+nuevaSesion();
+</script>
+</body>
+</html>
